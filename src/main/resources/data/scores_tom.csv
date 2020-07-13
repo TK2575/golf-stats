@@ -1,0 +1,134 @@
+date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round
+5/17/2014,Indian Spring CC,White,34.9,118,35,2:53,Cart,44,5,7,2,18,TRUE
+5/23/2014,Ramblewood CC (White/Blue),White,35.2,121,36,1:48,Cart,44,4,7,4,18,TRUE
+5/24/2014,Golden Pheasant GC,White,67.0,116,72,4:22,Cart,99,6,14,1,35,FALSE
+5/26/2014,Ramblewood CC (Blue/Red),White,34.6,127,36,1:04,Cart,48,5,7,2,20,TRUE
+5/29/2014,Tavistock CC,White,67.5,122,72,4:54,Cart,101,6,14,2,39,FALSE
+5/31/2014,Ramblewood CC (Blue/Red),White,69.8,126,72,3:59,Cart,88,12,14,5,31,FALSE
+6/29/2014,Golden Pheasant GC,White,67.0,116,72,4:33,Cart,101,6,14,2,34,FALSE
+7/6/2014,Rancocas GC,White,68.7,126,71,4:31,Cart,96,6,14,2,34,FALSE
+8/11/2014,McCulloughs Emerald GL,White,67.8,119,71,,Cart,95,5,13,3,36,FALSE
+8/15/2014,Sand Barrens Golf Club (South/North),,34.9,125,36,,Cart,45,7,7,2,18,TRUE
+8/27/2014,Pine Meadows GC,White,33.5,105,35,2:23,Cart,51,3,6,0,18,TRUE
+8/30/2014,Butter Brook GC,White,68.6,120,72,4:56,Cart,93,10,13,4,34,FALSE
+8/31/2014,Lyman Orchard GC (Player),White,68.9,129,71,5:27,Cart,91,6,13,5,36,FALSE
+9/13/2014,Marine Park GC,White,35.6,125,35,2:54,Cart,54,2,7,0,18,TRUE
+9/14/2014,Ramblewood CC (Red/White),White,35.2,124,36,2:28,Cart,51,4,7,0,15,TRUE
+9/20/2014,Portland GC,White,34.4,123,35,2:20,Cart,53,2,7,0,19,TRUE
+9/27/2014,Ramblewood CC (Red/White),White,35.2,124,36,2:15,Cart,47,3,7,1,15,TRUE
+10/8/2014,Balboa Park (18),White,68.9,124,72,3:16,Walk,97,4,14,3,33,FALSE
+10/22/2014,Balboa Park (9),Back,30.1,94,32,1:24,Walk,42,2,5,1,17,TRUE
+11/9/2014,Balboa Park (9),Back,30.1,94,32,1:41,Walk,38,3,5,1,16,TRUE
+2/1/2015,Balboa Park (9),Back,30.1,94,32,2:14,Walk,41,1,5,2,15,TRUE
+2/8/2015,Balboa Park (9),Back,30.1,94,32,1:49,Walk,44,2,5,0,19,TRUE
+2/22/2015,Admiral Baker South,White,68.2,116,72,3:58,Walk,102,7,15,4,32,FALSE
+3/8/2015,Chula Vista GC,White,70.0,121,73,5:09,Walk,103,4,14,3,38,FALSE
+3/27/2015,Torrey Pines South,White,73.1,133,72,5:31,Cart,97,8,14,3,34,FALSE
+3/28/2015,Coronado Municipal GC,White,70.1,117,72,5:02,Cart,92,4,14,3,36,FALSE
+4/19/2015,Balboa Park (18),White,68.9,124,72,4:43,Walk,90,4,14,6,35,FALSE
+4/24/2015,Balboa Park (18),White,34.5,124,36,1:38,Cart,45,3,7,2,14,TRUE
+5/1/2015,Torrey Pines North,White,70.8,125,72,4:37,Walk,91,5,14,5,36,FALSE
+5/10/2015,Balboa Park (9),Back,30.1,94,32,1:10,Walk,37,2,5,4,17,TRUE
+5/10/2015,Balboa Park (9),Back,30.1,94,32,1:25,Walk,39,2,5,3,19,TRUE
+5/15/2015,Balboa Park (9),Back,30.1,94,32,1:29,Walk,39,0,5,3,16,TRUE
+5/22/2015,Riverwalk (Presidio/Mission),White,35.4,124,36,1:35,Cart,49,1,7,2,21,TRUE
+7/5/2015,Torrey Pines North,White,70.8,125,72,4:36,Walk,100,2,14,2,39,FALSE
+7/6/2015,Balboa Park (9),Back,30.1,94,32,1:34,Walk,39,3,5,2,16,TRUE
+7/12/2015,Torrey Pines North,White,70.8,125,72,4:13,Walk,93,7,14,4,34,FALSE
+7/26/2015,Torrey Pines South,White,73.1,133,72,4:43,Walk,100,4,14,1,36,FALSE
+7/31/2015,Balboa Park (9),Back,30.1,94,32,1:40,Walk,38,2,5,1,16,TRUE
+8/4/2015,Balboa Park (9),Back,30.1,94,32,1:32,Walk,42,2,5,0,15,TRUE
+8/7/2015,Crossings at Carlsbad,White,68.7,125,72,5:06,Cart,87,5,14,4,26,FALSE
+8/8/2015,Encinitas Ranch,White,68.0,119,72,4:49,Cart,95,7,14,4,34,FALSE
+8/14/2015,Balboa Park (9),Back,30.1,94,32,1:49,Walk,35,1,5,4,14,TRUE
+8/15/2015,Balboa Park (9),Back,30.1,94,32,1:51,Walk,34,2,5,4,15,TRUE
+8/26/2015,Balboa Park (18),White,68.9,124,72,4:16,Walk,90,10,14,3,31,FALSE
+8/30/2015,Riverwalk (Friars/Presidio),White,34.7,123,36,1:32,Cart,44,4,7,2,17,TRUE
+9/6/2015,Balboa Park (18),White,68.9,124,72,3:47,Walk,92,9,14,4,36,FALSE
+9/19/2015,Red Tail GC,Gold,68.5,126,72,5:05,Cart,93,8,14,5,38,FALSE
+9/25/2015,Balboa Park (9),Back,30.1,94,32,1:20,Walk,38,1,5,3,18,TRUE
+10/9/2015,Balboa Park (9),Back,30.1,94,32,1:44,Walk,39,2,5,2,14,TRUE
+10/9/2015,Balboa Park (9),Back,30.1,94,32,1:39,Walk,39,1,5,2,14,TRUE
+10/18/2015,Balboa Park (9),Back,30.1,94,32,1:06,Walk,35,2,5,5,17,TRUE
+10/18/2015,Balboa Park (9),Back,30.1,94,32,1:10,Walk,40,2,5,4,18,TRUE
+11/7/2015,Balboa Park (9),Back,30.1,94,32,2:04,Walk,36,0,5,2,14,TRUE
+11/13/2015,Balboa Park (9),Back,30.1,94,32,,Walk,39,1,5,3,19,TRUE
+11/18/2015,Mission Bay Golf Resort,Back,27.0,67.6,29,1:07,Walk,34,1,2,6,21,TRUE
+11/29/2015,Balboa Park (18),White,68.9,124,72,4:13,Walk,92,4,14,6,33,FALSE
+12/30/2015,Steele Canyon (Canyon/Ranch),White,70.9,133,71,5:13,Cart,93,6,13,4,37,FALSE
+1/3/2016,Industry Hills - Dwight Eisenhower,White,70.8,130,72,4:46,Cart,90,7,14,7,35,FALSE
+1/18/2016,Balboa Park (18),Blue,71.2,125,72,4:10,Cart,101,9,14,1,40,FALSE
+1/22/2016,Monarch Beach Golf Links,Gold,70.0,129,70,4:15,Cart,88,8,13,9,38,FALSE
+1/23/2016,Balboa Park (18),White,68.9,124,72,5:02,Cart,88,9,14,5,36,FALSE
+2/4/2016,Balboa Park (9),Back,30.1,94,32,1:52,Walk,39,2,5,2,17,TRUE
+2/7/2016,Carlton Oaks Country Club,White,70.1,128,72,4:43,Cart,95,4,14,3,32,FALSE
+2/15/2016,Salt Creek,Silver,69.1,122,72,5:30,Cart,90,10,14,6,35,FALSE
+3/25/2016,Balboa Park (18),White,34.5,124,36,2:57,Cart,48,1,7,2,23,TRUE
+3/26/2016,Riverwalk (Presidio/Mission),White,35.4,124,36,2:22,Cart,50,3,7,1,18,TRUE
+4/3/2016,Aviara Golf Club,White,70.0,129,72,5:07,Cart,104,6,14,3,35,FALSE
+4/9/2016,Riverwalk Golf Club (Presidio/Mission),White,69.7,122,72,4:37,Cart,92,8,14,4,36,FALSE
+4/15/2016,Balboa Park (18),Blue,71.2,125,72,4:29,Walk,91,8,14,1,26,FALSE
+4/17/2016,Vineyard At Escondido,White,69.1,122,70,5:02,Walk,84,6,14,6,30,FALSE
+4/26/2016,Balboa Park (9),Back,30.1,94,32,2:05,Walk,36,3,5,3,14,TRUE
+4/27/2016,Balboa Park (18),Blue,71.2,125,72,4:24,Walk,89,9,14,4,34,FALSE
+5/14/2016,Indian Wells Golf Resort (Players),White,69.2,123,72,4:47,Cart,93,5,14,2,31,FALSE
+5/15/2016,Mission Trails Golf Course,Blue,68.8,118,71,4:46,Walk,93,5,13,4,32,FALSE
+5/20/2016,Balboa Park (9),Back,30.1,94,32,2:05,Walk,37,0,5,3,16,TRUE
+5/22/2016,Oaks North (East/South),White,56.4,89,60,3:26,Walk,74,1,6,3,34,FALSE
+5/22/2016,Oaks North (North/East),White,28.0,86,30,2:01,Walk,37,1,3,3,18,TRUE
+6/18/2016,Maderas Golf Club,Blue,73.6,137,72,4:45,Cart,86,9,14,4,28,FALSE
+7/2/2016,Sierra Star Golf Club,White,66.9,129,70,4:33,Cart,88,6,14,7,38,FALSE
+7/3/2016,Bishop Golf Course,White,66.4,119,71,2:20,Cart,81,9,13,8,34,FALSE
+7/12/2016,Balboa Park (9),Back,30.1,94,32,1:21,Walk,34,0,5,4,14,TRUE
+7/12/2016,Balboa Park (9),Back,30.1,94,32,1:25,Walk,36,1,5,4,16,TRUE
+7/17/2016,Balboa Park (9),Back,30.1,94,32,1:41,Walk,33,2,5,5,16,TRUE
+7/31/2016,Admiral Baker North,Blue,72.6,128,72,4:15,Cart,87,10,14,6,34,FALSE
+8/4/2016,Balboa Park (9),Back,30.1,94,32,1:38,Walk,34,0,5,7,17,TRUE
+8/19/2016,Crossings at Carlsbad,White,34.7,123,36,2:34,Cart,52,2,7,0,20,TRUE
+8/20/2016,Coronado Municipal GC,White,70.1,117,72,5:00,Cart,91,5,14,3,35,FALSE
+9/17/2016,Woods Valley GC,Blue,70.7,127,72,4:58,Cart,82,7,14,7,30,FALSE
+10/8/2016,Temecula Creek Inn (Creek),Blue,35.7,127,36,1:27,Cart,47,4,7,2,19,TRUE
+10/8/2016,Temecula Creek Inn GC (Oaks/Stonehouse),Blue,72.2,131,72,5:17,Cart,94,8,14,4,36,FALSE
+10/14/2016,Balboa Park (18),White,34.1,118,36,2:18,Cart,46,3,7,3,20,TRUE
+10/22/2016,Black Gold GC,White,69.8,125,72,4:15,Cart,84,4,14,7,35,FALSE
+11/19/2016,Mission Trails Golf Course,White,66.7,114,71,4:35,Cart,88,7,13,5,33,FALSE
+12/11/2016,Tecolote Canyon Golf Course,Blue,58.6,101,58,3:01,Cart,69,3,4,4,33,FALSE
+1/2/2017,Chula Vista GC,White,70.0,121,73,4:15,Cart,90,7,14,4,33,FALSE
+7/15/2017,Rio Hondo Golf Club,White,69.1,120,71,5:23,Cart,88,7,13,1,28,FALSE
+7/31/2017,Golden Pheasant GC,White,68.1,123,72,4:15,Cart,87,4,14,6,34,FALSE
+8/6/2017,Ramblewood (Red/Blue),White,69.8,126,72,4:07,Cart,88,6,14,9,35,FALSE
+9/3/2017,Riverwalk Golf Club (Presidio/Mission),White,69.7,122,72,4:15,Cart,87,10,14,8,38,FALSE
+10/28/2017,Riverwalk Golf Club (Friars/Presidio),White,70.1,124,72,4:50,Cart,96,4,14,4,41,FALSE
+11/4/2017,Mission Trails Golf Course,White,66.8,114,71,5:45,Walk (Push),84,6,13,5,34,FALSE
+12/3/2017,Tecolote Canyon Golf Course,Blue,58.6,101,58,4:00,Cart,87,4,4,5,36,FALSE
+12/9/2017,Carlton Oaks Country Club,Green,71.1,131,72,5:30,Walk (Push),94,8,14,7,37,FALSE
+12/30/2017,Salt Creek,Gold,70.6,127,72,5:00,Cart,90,8,14,10,41,FALSE
+1/28/2018,Mt. Woodson,White,67.3,129,70,5:10,Cart,83,4,13,5,31,FALSE
+2/11/2018,Balboa Park (9),Back,30.1,94,32,1:33,Walk,35,1,5,5,16,TRUE
+2/18/2018,Carmel Mountain Ranch Country Club,Blue,70.6,126,72,5:04,Cart,91,5,14,7,36,FALSE
+2/19/2018,Torrey Pines North,Green,71.2,122,72,4:26,Walk (Push),96,6,14,4,40,FALSE
+2/22/2018,Mission Bay Golf Resort,Back,54.1,67.6,58,2:30,Walk,73,2,4,8,41,FALSE
+2/23/2018,Kierland Golf Club (Mesquite/Ironwood),Indigo,67.2,113,72,4:41,Cart,91,8,14,5,33,FALSE
+2/25/2018,Kierland Golf Club (Acacia/Ironwood),Indigo,67.2,114,72,4:26,Cart,82,9,13,9,34,FALSE
+3/4/2018,Torrey Pines North,Green,71.2,122,72,4:27,Walk (Push),83,8,14,8,34,FALSE
+3/30/2018,Balboa Park (9),Back,30.1,94,32,1:31,Walk,35,2,5,5,16,TRUE
+3/31/2018,Balboa Park (18),Blue,71.2,125,72,3:27,Walk (Push),88,5,14,5,33,FALSE
+4/7/2018,Carlton Oaks Country Club,Blue,72.8,135,72,5:15,Cart,90,10,14,5,33,FALSE
+4/20/2018,Tecolote Canyon Golf Course,Blue,58.6,101,58,3:24,Walk (Push),74,3,4,4,31,FALSE
+4/27/2018,Tecolote Canyon Golf Course,Blue,58.6,101,58,3:18,Walk (Push),74,4,4,8,39,FALSE
+5/6/2018,Tecolote Canyon Golf Course,Blue,58.6,101,58,3:38,Walk (Push),69,2,4,4,32,FALSE
+5/19/2018,Eastlake Country Club,White,68.0,124,72,5:02,Walk (Push),87,8,14,6,33,FALSE
+5/27/2018,Mission Trails Golf Course,Blue,68.9,119,71,4:21,Walk (Push),90,6,13,5,38,FALSE
+6/10/2018,Riverwalk Golf Club (Mission/Friars),Blue,35.3,123,36,2:11,Cart,47,4,7,2,19,TRUE
+6/17/2018,Steele Canyon (Canyon/Ranch),Gold,68.2,124,71,4:42,Cart,85,12,13,4,33,FALSE
+6/24/2018,Coronado Municipal GC,Blue,71.6,121,72,4:26,Cart,93,5,14,3,34,FALSE
+7/1/2018,Arrowood GC,White,68.5,125,71,4:45,Cart,89,6,14,2,34,FALSE
+12/23/2018,Balboa Park (9),Back,30.1,94,32,2:23,Walk (Push),46,1,5,3,18,TRUE
+12/29/2018,Riverwalk (Presidio/Mission),White,35.4,124,36,2:15,Walk (Push),49,6,7,1,19,TRUE
+2/16/2019,Balboa Park (18),White,68.9,124,72,5:05,Walk (Push),97,6,14,3,31,FALSE
+3/30/2019,Balboa Park (9),Back,30.1,94,32,2:01,Walk,42,2,5,3,15,TRUE
+10/12/2019,Mission Trails Golf Course,White,66.7,114,71,4:31,Cart,84,7,13,4,30,FALSE
+11/9/2019,Tijeras Creek Golf Club,White,69.5,125,72,4:24,Cart,91,2,14,4,36,FALSE
+6/25/2020,Newton Commonwealth Golf Course,Blue,67.0,119,70,4:36,Walk (Push),89,2,12,5,36,FALSE
+7/4/2020,Quail Ridge Country Club,Blue,34.3,128,35,2:28,Walk (Push),44,3,7,2,17,TRUE
+7/12/2020,Leo J Martin GC,Blue,34.6,116,36,2:30,Walk (Push),38,2,7,6,17,TRUE
