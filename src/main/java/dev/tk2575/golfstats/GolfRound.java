@@ -17,21 +17,21 @@ public class GolfRound {
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
 	private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
 
-	LocalDate date;
-	String golfer;
-	String course;
-	String tees;
-	Duration duration;
-	String transport;
-	BigDecimal rating;
-	BigDecimal slope;
-	Long par;
-	Long score;
-	Long fairwaysInRegulation;
-	Long fairways;
-	Long greensInRegulation;
-	Long putts;
-	Boolean nineHoleRound;
+	private LocalDate date;
+	private String golfer;
+	private String course;
+	private String tees;
+	private Duration duration;
+	private String transport;
+	private BigDecimal rating; //put whatever's on the scorecard, adjust if it's way off of par
+	private BigDecimal slope;
+	private Integer par; //expect par of holes played to be inputted (i.e. put 36 if playing a nine hole round)
+	private Integer score;
+	private Integer fairwaysInRegulation;
+	private Integer fairways;
+	private Integer greensInRegulation;
+	private Integer putts;
+	private Boolean nineHoleRound;
 
 	public GolfRound(String golfer, String[] row) {
 		this.golfer = golfer;
@@ -40,14 +40,14 @@ public class GolfRound {
 		this.tees = row[2];
 		this.rating = new BigDecimal(row[3]);
 		this.slope = new BigDecimal(row[4]);
-		this.par = Long.valueOf(row[5]);
+		this.par = Integer.valueOf(row[5]);
 		this.duration = row[6] == null || row[6].isBlank() ? null : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
 		this.transport = row[7];
-		this.score = Long.valueOf(row[8]);
-		this.fairwaysInRegulation = Long.valueOf(row[9]);
-		this.fairways = Long.valueOf(row[10]);
-		this.greensInRegulation = Long.valueOf(row[11]);
-		this.putts = Long.valueOf(row[12]);
-		this.nineHoleRound = Boolean.getBoolean(row[13]);
+		this.score = Integer.valueOf(row[8]);
+		this.fairwaysInRegulation = Integer.valueOf(row[9]);
+		this.fairways = Integer.valueOf(row[10]);
+		this.greensInRegulation = Integer.valueOf(row[11]);
+		this.putts = Integer.valueOf(row[12]);
+		this.nineHoleRound = Boolean.parseBoolean(row[13]);
 	}
 }
