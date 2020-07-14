@@ -25,7 +25,7 @@ public class GolfStatsApplication {
 
 			CurrentGolferStats stats = new CurrentGolferStats(golferRounds.getKey(), golferRounds.getValue());
 			currentStats.put(golferRounds.getKey(), stats);
-			log.info(stats.getGolfer() + " - " + stats.getHandicapIndex());
+			log.info(stats.toString());
 		}
 
 		System.exit(0);

@@ -16,7 +16,7 @@ public class CurrentGolferStats {
 	private BigDecimal handicapIndex;
 	private List<BigDecimal> scoreDifferentials;
 	private List<BigDecimal> scoreDifferentialsSubset;
-	private List<GolfRound> rounds;
+	@ToString.Exclude private List<GolfRound> rounds;
 
 	public CurrentGolferStats(String golfer, List<GolfRound> roundsUnsorted) {
 		List<GolfRound> roundsSorted = new ArrayList<>(roundsUnsorted);
