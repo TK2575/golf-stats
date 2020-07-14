@@ -4,58 +4,67 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GolfRoundCSVParser {
 
 	private static final Logger log = LoggerFactory.getLogger(GolfRoundCSVParser.class);
-
 	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round";
 
-	static List<GolfRound> readCsvData(File directory) {
+	static Map<String, List<GolfRound>> readCsvData(File directory) {
 		final List<File> csvs = getCSVFiles(directory);
 
-		List<GolfRound> rounds = new ArrayList<>();
+		Map<String, List<GolfRound>> results = new HashMap<>();
+		List<GolfRound> rounds;
 		String golfer;
 		String line;
 		String sep = ",";
-		GolfRound round;
 
 		for (File csv : csvs) {
+			rounds = new ArrayList<>();
 			boolean headersVerified = false;
 			golfer = parseGolferName(csv.getName());
 
 			try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
 				while ((line = br.readLine()) != null) {
 					if (!headersVerified) {
-						if (!line.equalsIgnoreCase(EXPECTED_HEADERS)) {
-							log.error("found headers = " + line);
-							throw new IllegalArgumentException("incorrect headers");
-						}
-						headersVerified = true;
+						headersVerified = verifyHeaders(line);
 					}
 					else {
-						round = new GolfRound(golfer, line.split(sep));
-						log.info(round.toString());
-						rounds.add(round);
+						rounds.add(new GolfRound(golfer, line.split(sep)));
 					}
 				}
-			}
-			catch (FileNotFoundException e) {
-				e.printStackTrace();
+				results.put(golfer, combinePrior(rounds, results.get(golfer)));
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		return results;
+	}
+
+	private static boolean verifyHeaders(String line) {
+		if (!line.equalsIgnoreCase(EXPECTED_HEADERS)) {
+			log.error("found headers = " + line);
+			throw new IllegalArgumentException("incorrect headers");
+		}
+		return true;
+	}
+
+	private static List<GolfRound> combinePrior(List<GolfRound> rounds, List<GolfRound> prior) {
+		if (prior != null && !prior.isEmpty()) {
+			rounds.addAll(prior);
+		}
 		return rounds;
 	}
 
 	private static List<File> getCSVFiles(File directory) {
-		return Arrays.stream(directory.listFiles()).filter(f -> f.getName().endsWith(".csv")).filter(File::isFile).collect(Collectors.toList());
+		final File[] fileList = directory.listFiles();
+		if (fileList != null) {
+			return Arrays.stream(fileList).filter(f -> f.getName().endsWith(".csv")).filter(File::isFile).collect(Collectors.toList());
+		}
+		else throw new IllegalArgumentException("could not find any csv files in " + directory);
 	}
 
 	private static String parseGolferName(String fileName) {
