@@ -19,16 +19,19 @@ public class GolfStatsApplication {
 		SpringApplication.run(GolfStatsApplication.class, args);
 
 		Map<String, List<GolfRound>> rounds = getCSVData();
-
-		Map<String, CurrentGolferStats> currentStats = new HashMap<>();
-		for (Map.Entry<String, List<GolfRound>> golferRounds : rounds.entrySet()) {
-
-			CurrentGolferStats stats = new CurrentGolferStats(golferRounds.getKey(), golferRounds.getValue());
-			currentStats.put(golferRounds.getKey(), stats);
-			log.info(stats.toString());
-		}
+		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
+		currentStats.values().forEach(s -> log.info(s.toString()));
 
 		System.exit(0);
+	}
+
+	private static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
+		Map<String, CurrentGolferStats> results = new HashMap<>();
+		for (Map.Entry<String, List<GolfRound>> golferRounds : rounds.entrySet()) {
+			CurrentGolferStats stats = new CurrentGolferStats(golferRounds.getKey(), golferRounds.getValue());
+			results.put(golferRounds.getKey(), stats);
+		}
+		return results;
 	}
 
 	private static Map<String, List<GolfRound>> getCSVData() {
