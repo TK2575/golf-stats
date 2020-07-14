@@ -9,7 +9,7 @@ import java.util.List;
 public class HandicapIndex {
 	//TODO merge analysis class, constructor from list of round data
 
-	private List<GolfRoundAnalysis> data;
+	private List<GolfRound> data;
 	private String golfer;
 	private BigDecimal handicapIndex;
 

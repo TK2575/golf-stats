@@ -3,16 +3,21 @@ package dev.tk2575.golfstats;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 
 @Data
 @Builder(toBuilder = true)
 @ToString
 @AllArgsConstructor
 public class GolfRound {
+
+	private static final int SCALE = 2;
+	private static final RoundingMode HALF_UP = RoundingMode.HALF_UP;
 
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
 	private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
@@ -33,6 +38,15 @@ public class GolfRound {
 	private Integer putts;
 	private Boolean nineHoleRound;
 
+	@Setter(AccessLevel.NONE) private Integer holes;
+	@Setter(AccessLevel.NONE) private BigDecimal scoreDifferential;
+	@Setter(AccessLevel.NONE) private BigDecimal puttsPerHole;
+	@Setter(AccessLevel.NONE) private BigDecimal effectiveCourseRating;
+	@Setter(AccessLevel.NONE) private BigDecimal fairwayInRegulationRate;
+	@Setter(AccessLevel.NONE) private BigDecimal greenInRegulationRate;
+	@Setter(AccessLevel.NONE) private BigDecimal minutesPerHole;
+	@Setter(AccessLevel.NONE) private Integer scoreToPar; //overUnder
+
 	public GolfRound(String golfer, String[] row) {
 		this.golfer = golfer;
 		this.date = LocalDate.parse(row[0], DATE_FORMAT);
@@ -49,5 +63,36 @@ public class GolfRound {
 		this.greensInRegulation = Integer.valueOf(row[11]);
 		this.putts = Integer.valueOf(row[12]);
 		this.nineHoleRound = Boolean.parseBoolean(row[13]);
+		calculate();
+	}
+
+	private void calculate() {
+		this.holes = Boolean.TRUE.equals(nineHoleRound) ? 9 : 18;
+		this.puttsPerHole = divideInts(putts, holes);
+		this.fairwayInRegulationRate = divideInts(fairwaysInRegulation, fairways);
+		this.greenInRegulationRate = divideInts(greensInRegulation, holes);
+		this.scoreToPar = score - par;
+		this.effectiveCourseRating = correctCourseRating(par, rating);
+		this.scoreDifferential = computeScoreDifferential();
+		this.minutesPerHole = duration == null ? BigDecimal.ZERO : divideInts(Math.toIntExact(duration.toMinutes()), holes);
+	}
+
+	private BigDecimal computeScoreDifferential() {
+		BigDecimal firstTerm = BigDecimal.valueOf(113).setScale(2).divide(slope, HALF_UP);
+		BigDecimal secondTerm = BigDecimal.valueOf(score).subtract(effectiveCourseRating).setScale(2);
+		return firstTerm.multiply(secondTerm).setScale(2, HALF_UP);
+	}
+
+	private BigDecimal correctCourseRating(Integer par, BigDecimal rating) {
+		if (rating.subtract(BigDecimal.valueOf(par)).compareTo(BigDecimal.TEN) > 0) {
+			return rating.divide(new BigDecimal("2"), HALF_UP).setScale(SCALE, HALF_UP);
+		}
+		else {
+			return rating;
+		}
+	}
+
+	private static BigDecimal divideInts(Integer value, Integer divisor) {
+		return BigDecimal.valueOf((float) value / divisor).setScale(SCALE, HALF_UP);
 	}
 }

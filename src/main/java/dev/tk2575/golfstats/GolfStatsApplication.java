@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -18,14 +17,7 @@ public class GolfStatsApplication {
 		SpringApplication.run(GolfStatsApplication.class, args);
 
 		List<GolfRound> rounds = getCSVData();
-
-		List<GolfRoundAnalysis> golfRoundAnalyses = new ArrayList<>();
-		for (GolfRound round : rounds) {
-			golfRoundAnalyses.add(new GolfRoundAnalysis(round));
-		}
-
-		golfRoundAnalyses.stream().filter(r -> r.getData().getGolfer().equalsIgnoreCase("tom"))
-				.forEach(r -> log.info(r.getData().getDate().toString() + ", " + r.getData().getNineHoleRound() + ", " + r.getScoreDifferential()));
+		rounds.forEach(r -> log.info(r.toString()));
 
 //		outputResults();
 
