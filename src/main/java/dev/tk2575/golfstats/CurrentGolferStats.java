@@ -1,5 +1,8 @@
 package dev.tk2575.golfstats;
 
+import dev.tk2575.golfstats.golfround.CompositeGolfRound;
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.NineHoleRound;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -7,6 +10,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -19,36 +23,34 @@ public class CurrentGolferStats {
 	@ToString.Exclude private List<GolfRound> rounds;
 
 	public CurrentGolferStats(String golfer, List<GolfRound> roundsUnsorted) {
-		List<GolfRound> roundsSorted = new ArrayList<>(roundsUnsorted);
-		roundsSorted.sort(Comparator.comparing(GolfRound::getDate).reversed());
-		this.rounds = roundsSorted;
-
+		this.rounds = new ArrayList<>(roundsUnsorted);
+		this.rounds.sort(Comparator.comparing(GolfRound::getDate).reversed());
 		this.golfer = golfer;
 		calculateDiffsAndIndex();
 	}
 
 	private void calculateDiffsAndIndex() {
-		List<BigDecimal> differentials = new ArrayList<>();
-		BigDecimal pendingNineHoleDifferential = null;
-		BigDecimal thisDiff;
+		List<GolfRound> differentials = new ArrayList<>();
+		NineHoleRound pendingNineHoleRound = null;
+		GolfRound thisRound;
 
-		for (GolfRound round : rounds) {
-			thisDiff = null;
-			if (Boolean.TRUE.equals(round.getNineHoleRound())) {
-				if (pendingNineHoleDifferential == null) {
-					pendingNineHoleDifferential = round.getScoreDifferential();
+		for (GolfRound round : this.rounds) {
+			thisRound = null;
+			if (round instanceof NineHoleRound) {
+				if (pendingNineHoleRound == null) {
+					pendingNineHoleRound = (NineHoleRound) round;
 				}
 				else {
-					thisDiff = pendingNineHoleDifferential.add(round.getScoreDifferential());
-					pendingNineHoleDifferential = null;
+					thisRound = new CompositeGolfRound(pendingNineHoleRound, (NineHoleRound) round);
+					pendingNineHoleRound = null;
 				}
 			}
 			else {
-				thisDiff = round.getScoreDifferential();
+				thisRound = round;
 			}
 
-			if (thisDiff != null) {
-				differentials.add(thisDiff);
+			if (thisRound != null) {
+				differentials.add(thisRound);
 			}
 
 			if (differentials.size() >= 20) break;
@@ -57,8 +59,8 @@ public class CurrentGolferStats {
 		this.handicapIndex = subsetAndAverageDiffs(differentials);
 	}
 
-	private BigDecimal subsetAndAverageDiffs(final List<BigDecimal> differentials) {
-		scoreDifferentials = new ArrayList<>(differentials);
+	private BigDecimal subsetAndAverageDiffs(final List<GolfRound> latestRounds) {
+		this.scoreDifferentials = latestRounds.stream().map(GolfRound::getScoreDifferential).collect(Collectors.toList());
 		scoreDifferentials.sort(Comparator.naturalOrder());
 
 		int subsetSize = (int) Math.floor(scoreDifferentials.size() * .4);

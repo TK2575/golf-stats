@@ -1,9 +1,14 @@
 package dev.tk2575.golfstats;
 
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.GolfRoundFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +37,7 @@ public class GolfRoundCSVParser {
 						headersVerified = verifyHeaders(line);
 					}
 					else {
-						rounds.add(new GolfRound(golfer, line.split(sep)));
+						rounds.add(new GolfRoundFactory().recordRound(golfer, line.split(sep)));
 					}
 				}
 				results.put(golfer, combinePrior(rounds, results.get(golfer)));
@@ -46,7 +51,7 @@ public class GolfRoundCSVParser {
 
 	private static boolean verifyHeaders(String line) {
 		if (!line.equalsIgnoreCase(EXPECTED_HEADERS)) {
-			log.error("found headers = " + line);
+			log.error(String.format("found headers = %s", line));
 			throw new IllegalArgumentException("incorrect headers");
 		}
 		return true;
