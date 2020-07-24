@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 
 @Getter
+@ToString
 public class CompositeGolfRound implements GolfRound {
 
 	private static final String DELIMITER = " - ";
@@ -19,13 +20,17 @@ public class CompositeGolfRound implements GolfRound {
 	}
 
 	private LocalDate date;
+	private Duration duration;
+
 	private String golfer;
 	private String course;
 	private String tees;
-	private Duration duration;
 	private String transport;
+
 	private BigDecimal rating;
 	private BigDecimal slope;
+	private BigDecimal scoreDifferential;
+
 	private Integer par;
 	private Integer score;
 	private Integer fairwaysInRegulation;
@@ -33,8 +38,8 @@ public class CompositeGolfRound implements GolfRound {
 	private Integer greensInRegulation;
 	private Integer putts;
 
-	private NineHoleRound firstRound;
-	private NineHoleRound secondRound;
+	@ToString.Exclude private NineHoleRound firstRound;
+	@ToString.Exclude private NineHoleRound secondRound;
 
 	public CompositeGolfRound(NineHoleRound round1, NineHoleRound round2) {
 		validateArguments(round1, round2);
@@ -54,7 +59,7 @@ public class CompositeGolfRound implements GolfRound {
 		}
 
 		this.transport = secondRound.getTransport();
-		if (!this.transport.equalsIgnoreCase(firstRound.getTees())) {
+		if (!this.transport.equalsIgnoreCase(firstRound.getTransport())) {
 			this.transport = String.join(DELIMITER, firstRound.getTransport(), secondRound.getTransport());
 		}
 
@@ -68,6 +73,8 @@ public class CompositeGolfRound implements GolfRound {
 		this.fairways = firstRound.getFairways() + secondRound.getFairways();
 		this.greensInRegulation = firstRound.getGreensInRegulation() + secondRound.getGreensInRegulation();
 		this.putts = firstRound.getPutts() + secondRound.getPutts();
+
+		this.scoreDifferential = computeScoreDifferential();
 	}
 
 	private void assignFirstAndSecondRound(NineHoleRound round1, NineHoleRound round2) {

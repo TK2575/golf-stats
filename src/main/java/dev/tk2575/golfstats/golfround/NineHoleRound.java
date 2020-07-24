@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import static java.math.RoundingMode.HALF_UP;
 
 @Getter
+@ToString
 public class NineHoleRound implements GolfRound {
 
 	@Getter(AccessLevel.NONE) private static final Integer HOLES = 9;
@@ -18,13 +19,16 @@ public class NineHoleRound implements GolfRound {
 	}
 
 	private LocalDate date;
+	private Duration duration;
+
 	private String golfer;
 	private String course;
 	private String tees;
-	private Duration duration;
 	private String transport;
 	private BigDecimal rating;
 	private BigDecimal slope;
+	private BigDecimal scoreDifferential;
+
 	private Integer par;
 	private Integer score;
 	private Integer fairwaysInRegulation;
@@ -47,6 +51,7 @@ public class NineHoleRound implements GolfRound {
 		this.fairways = factory.getFairways();
 		this.greensInRegulation = factory.getGreensInRegulation();
 		this.putts = factory.getPutts();
+		this.scoreDifferential = computeScoreDifferential();
 	}
 
 	private BigDecimal correctCourseRating(Integer par, BigDecimal rating) {

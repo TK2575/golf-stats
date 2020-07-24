@@ -11,13 +11,17 @@ import static java.math.RoundingMode.HALF_UP;
 public interface GolfRound {
 
 	LocalDate getDate();
+	Duration getDuration();
+
 	String getGolfer();
 	String getCourse();
 	String getTees();
-	Duration getDuration();
 	String getTransport();
+
 	BigDecimal getRating();
 	BigDecimal getSlope();
+	BigDecimal getScoreDifferential();
+
 	Integer getPar();
 	Integer getScore();
 	Integer getFairwaysInRegulation();
@@ -26,7 +30,7 @@ public interface GolfRound {
 	Integer getPutts();
 	Integer getHoles();
 
-	default BigDecimal getScoreDifferential() {
+	default BigDecimal computeScoreDifferential() {
 		BigDecimal firstTerm = BigDecimal.valueOf(113).setScale(2, HALF_UP).divide(getSlope(), HALF_UP);
 		BigDecimal secondTerm = BigDecimal.valueOf(getScore()).subtract(getRating()).setScale(2, HALF_UP);
 		return firstTerm.multiply(secondTerm).setScale(2, HALF_UP);

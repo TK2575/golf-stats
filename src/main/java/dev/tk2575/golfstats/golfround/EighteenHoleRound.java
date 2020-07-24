@@ -19,20 +19,24 @@ public class EighteenHoleRound implements GolfRound {
 	}
 
 	private LocalDate date;
+	private Duration duration;
+
 	private String golfer;
 	private String course;
 	private String tees;
-	private Duration duration;
 	private String transport;
+
 	private BigDecimal rating; //put whatever's on the scorecard, adjust if it's way off of par
 	private BigDecimal slope;
+	private BigDecimal scoreDifferential;
+
 	private Integer par; //expect par of holes played to be inputted (i.e. put 36 if playing a nine hole round)
 	private Integer score;
 	private Integer fairwaysInRegulation;
 	private Integer fairways;
 	private Integer greensInRegulation;
 	private Integer putts;
-	private Boolean nineHoleRound;
+
 
 	public EighteenHoleRound(GolfRoundFactory factory) {
 		this.date = factory.getDate();
@@ -49,5 +53,6 @@ public class EighteenHoleRound implements GolfRound {
 		this.fairways = factory.getFairways();
 		this.greensInRegulation = factory.getGreensInRegulation();
 		this.putts = factory.getPutts();
+		this.scoreDifferential = computeScoreDifferential();
 	}
 }

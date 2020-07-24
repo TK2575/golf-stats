@@ -4,6 +4,7 @@ import dev.tk2575.golfstats.Utils;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -16,13 +17,16 @@ import java.util.stream.Collectors;
 public class MultiRoundSummary implements GolfRound {
 
 	private LocalDate date;
+	private Duration duration;
+
 	private String golfer;
 	private String course;
 	private String tees;
-	private Duration duration;
 	private String transport;
 	private BigDecimal rating;
 	private BigDecimal slope;
+	private BigDecimal scoreDifferential;
+
 	private Integer par;
 	private Integer score;
 	private Integer fairwaysInRegulation;
@@ -30,7 +34,9 @@ public class MultiRoundSummary implements GolfRound {
 	private Integer greensInRegulation;
 	private Integer putts;
 	private Integer holes;
-	private List<GolfRound> rounds;
+
+	@ToString.Exclude private List<GolfRound> rounds;
+
 
 	public MultiRoundSummary(List<GolfRound> rounds) {
 		if (rounds == null) {
@@ -45,6 +51,7 @@ public class MultiRoundSummary implements GolfRound {
 
 		this.rounds.sort(Comparator.comparing(GolfRound::getDate).reversed());
 
+		this.date = this.rounds.stream().max(Comparator.comparing(GolfRound::getDate)).get().getDate();
 		this.golfer = getUniqueValues(GolfRound::getGolfer);
 		this.course = getUniqueValues(GolfRound::getCourse);
 		this.tees = getUniqueValues(GolfRound::getTees);
@@ -62,6 +69,8 @@ public class MultiRoundSummary implements GolfRound {
 		this.slope = Utils.median(this.rounds.stream().map(GolfRound::getSlope).collect(Collectors.toList()));
 
 		this.duration = this.rounds.stream().map(GolfRound::getDuration).reduce(Duration::plus).orElse(Duration.ZERO);
+
+		this.scoreDifferential = computeScoreDifferential();
 	}
 
 	private String getUniqueValues(Function<? super GolfRound, ? extends String> mapper) {
