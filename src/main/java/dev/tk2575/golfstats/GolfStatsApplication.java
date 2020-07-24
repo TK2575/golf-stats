@@ -24,11 +24,7 @@ public class GolfStatsApplication {
 
 		Map<String, List<GolfRound>> rounds = getCSVData();
 		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
-		currentStats.values().forEach(s -> {
-			log.info(s.toString());
-			log.info(s.getIndexCalculatingGolfRounds().toString());
-			log.info(s.getMostRecentGolfRounds().toString());
-		});
+		currentStats.values().forEach(s -> log.info(s.toString()));
 
 		System.exit(0);
 	}
