@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class GolfStatsApplication {
@@ -24,10 +23,15 @@ public class GolfStatsApplication {
 
 		Map<String, List<GolfRound>> rounds = getCSVData();
 		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
-		currentStats.values().forEach(s -> log.info(s.toString()));
+		currentStats.values().forEach(s -> {
+			log.info(s.toString());
+			log.info(s.currentRoundsToCSV());
+		});
 
 		System.exit(0);
 	}
+
+
 
 	private static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		Map<String, CurrentGolferStats> results = new HashMap<>();

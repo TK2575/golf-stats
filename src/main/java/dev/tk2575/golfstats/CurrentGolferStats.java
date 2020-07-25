@@ -10,6 +10,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @ToString
@@ -83,6 +85,26 @@ public class CurrentGolferStats {
 				.reduce(BigDecimal.ZERO, BigDecimal::add)
 				.divide(BigDecimal.valueOf(roundsList.size()), RoundingMode.HALF_UP)
 				.setScale(2, RoundingMode.HALF_UP);
+	}
+
+	public String currentRoundsToCSV() {
+		final List<String[]> datalines = this.currentGolfRounds.stream().map(GolfRound::toCSV).collect(Collectors.toList());
+		return datalines.stream().map(this::convertToCSV).collect(Collectors.joining("\n"));
+	}
+
+	private String convertToCSV(String[] data) {
+		return Stream.of(data)
+				.map(this::escapeSpecialCharacters)
+				.collect(Collectors.joining("\t"));
+	}
+
+	private String escapeSpecialCharacters(String data) {
+		String escapedData = data.replaceAll("\\R", " ");
+		if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+			data = data.replace("\"", "\"\"");
+			escapedData = "\"" + data + "\"";
+		}
+		return escapedData;
 	}
 
 }

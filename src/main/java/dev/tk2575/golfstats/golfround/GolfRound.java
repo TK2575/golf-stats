@@ -56,5 +56,7 @@ public interface GolfRound {
 		return getScore() - getPar();
 	}
 
-
+	default String[] toCSV() {
+		return new String[]{this.getClass().getSimpleName(), String.valueOf(getDate()), getCourse(), getTees(), getTransport(), String.valueOf(getScoreToPar()), String.valueOf(getScoreDifferential())};
+	}
 }
