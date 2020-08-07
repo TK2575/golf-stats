@@ -88,7 +88,7 @@ public class CurrentGolferStats {
 	}
 
 	public String currentRoundsToCSV() {
-		final List<String[]> datalines = this.currentGolfRounds.stream().map(GolfRound::toCSV).collect(Collectors.toList());
+		final List<String[]> datalines = this.currentGolfRounds.stream().sorted(Comparator.comparing(GolfRound::getDate)).map(GolfRound::toCSV).collect(Collectors.toList());
 		return datalines.stream().map(this::convertToCSV).collect(Collectors.joining("\n"));
 	}
 

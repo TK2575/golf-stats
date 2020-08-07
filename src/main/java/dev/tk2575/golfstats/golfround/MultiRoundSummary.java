@@ -4,7 +4,6 @@ import dev.tk2575.golfstats.Utils;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Comparator;
