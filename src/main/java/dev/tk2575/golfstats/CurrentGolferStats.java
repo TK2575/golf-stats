@@ -34,7 +34,7 @@ public class CurrentGolferStats {
 		this.allGolfRounds = new ArrayList<>(roundsUnsorted);
 		this.allGolfRounds.sort(Comparator.comparing(GolfRound::getDate).reversed());
 		this.currentGolfRounds = generateCurrentGolfRounds(this.allGolfRounds);
-		this.currentGolfRounds.sort(Comparator.comparing(GolfRound::getDate).reversed());
+
 		this.mostRecentGolfRounds = this.currentGolfRounds.size() > 5
 				? new ArrayList<>(this.currentGolfRounds.subList(0, 5))
 				: new ArrayList<>(this.currentGolfRounds);
@@ -71,6 +71,8 @@ public class CurrentGolferStats {
 
 			if (differentials.size() >= 20) break;
 		}
+
+		differentials.sort(Comparator.comparing(GolfRound::getDate).reversed());
 		return differentials;
 	}
 
