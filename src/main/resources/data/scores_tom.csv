@@ -136,3 +136,5 @@ date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways
 7/25/2020,Patriot Golf Course,Blue,68.6,128,35,2:06,Walk (Push),44,2,7,1,15,TRUE
 8/2/2020,Pine Meadows GC,Blue,67.0,105,35,2:05,Walk (Push),45,1,6,4,19,TRUE
 8/22/2020,Leo J Martin GC,Blue,34.6,116,36,2:15,Walk (Push),42,3,7,6,19,TRUE
+8/26/2020,Wayland Country Club,Blue,68.5,118,70,4:00,Walk (Push),81,3,14,6,33,FALSE
+8/30/2020,Lyman Orchard GC (Apple Nine),Back,28.2,87,29,2:00,Walk,37,1,2,7,20,TRUE

@@ -22,35 +22,46 @@ public class CurrentGolferStats {
 	private final BigDecimal handicapIndex;
 	private final BigDecimal handicapIndexTrend;
 
-	@ToString.Exclude private final List<GolfRound> allGolfRounds;
-	@ToString.Exclude private final List<GolfRound> currentGolfRounds;
+	@ToString.Exclude
+	private final List<GolfRound> allGolfRounds;
+	@ToString.Exclude
+	private final List<GolfRound> currentGolfRounds;
+	@ToString.Exclude
 	private final List<GolfRound> indexCalculatingGolfRounds;
+	@ToString.Exclude
 	private final List<GolfRound> mostRecentGolfRounds;
-
 
 	public CurrentGolferStats(String golfer, List<GolfRound> roundsUnsorted) {
 		this.golfer = golfer;
 
-		this.allGolfRounds = new ArrayList<>(roundsUnsorted);
-		this.allGolfRounds.sort(Comparator.comparing(GolfRound::getDate).reversed());
-		this.currentGolfRounds = generateCurrentGolfRounds(this.allGolfRounds);
-
+		this.allGolfRounds = generateCompositeRounds(roundsUnsorted);
+		this.currentGolfRounds = getUpTo20RecentRounds(this.allGolfRounds);
+		this.indexCalculatingGolfRounds = findBestScoreDifferentials(this.currentGolfRounds);
 		this.mostRecentGolfRounds = this.currentGolfRounds.size() > 5
-				? new ArrayList<>(this.currentGolfRounds.subList(0, 5))
-				: new ArrayList<>(this.currentGolfRounds);
+		                            ? new ArrayList<>(this.currentGolfRounds.subList(0, 5))
+		                            : new ArrayList<>(this.currentGolfRounds);
 
-		this.currentGolfRounds.sort(Comparator.comparing(GolfRound::getScoreDifferential));
-		this.indexCalculatingGolfRounds = subsetForIndexCalc(currentGolfRounds);
 		this.handicapIndex = computeIndex(this.indexCalculatingGolfRounds);
 		this.handicapIndexTrend = computeIndex(this.mostRecentGolfRounds);
 	}
 
-	private List<GolfRound> generateCurrentGolfRounds(List<GolfRound> roundsList) {
+	private List<GolfRound> getUpTo20RecentRounds(List<GolfRound> allGolfRounds) {
+		return allGolfRounds.stream()
+		                    .sorted(Comparator.comparing(GolfRound::getDate)
+		                                      .reversed())
+		                    .limit(20)
+		                    .collect(Collectors.toList());
+	}
+
+	private List<GolfRound> generateCompositeRounds(List<GolfRound> roundsList) {
+		List<GolfRound> rounds = new ArrayList<>(roundsList);
+		rounds.sort(Comparator.comparing(GolfRound::getDate));
+
 		List<GolfRound> differentials = new ArrayList<>();
 		NineHoleRound pendingNineHoleRound = null;
 		GolfRound thisRound;
 
-		for (GolfRound round : roundsList) {
+		for (GolfRound round : rounds) {
 			thisRound = null;
 			if (round instanceof NineHoleRound) {
 				if (pendingNineHoleRound == null) {
@@ -68,36 +79,53 @@ public class CurrentGolferStats {
 			if (thisRound != null) {
 				differentials.add(thisRound);
 			}
-
-			if (differentials.size() >= 20) break;
 		}
 
-		differentials.sort(Comparator.comparing(GolfRound::getDate).reversed());
 		return differentials;
 	}
 
-	private List<GolfRound> subsetForIndexCalc(List<GolfRound> roundsList) {
+	private List<GolfRound> findBestScoreDifferentials(List<GolfRound> roundsList) {
 		int subsetSize = (int) Math.floor(roundsList.size() * .4);
-		return roundsList.subList(0, subsetSize);
+		return roundsList.stream()
+		                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential))
+		                 .collect(Collectors.toList())
+		                 .subList(0, subsetSize);
 	}
 
 	private BigDecimal computeIndex(List<GolfRound> roundsList) {
 		return roundsList.stream()
-				.map(GolfRound::getScoreDifferential)
-				.reduce(BigDecimal.ZERO, BigDecimal::add)
-				.divide(BigDecimal.valueOf(roundsList.size()), RoundingMode.HALF_UP)
-				.setScale(2, RoundingMode.HALF_UP);
+		                 .map(GolfRound::getScoreDifferential)
+		                 .reduce(BigDecimal.ZERO, BigDecimal::add)
+		                 .divide(BigDecimal.valueOf(roundsList.size()), RoundingMode.HALF_UP)
+		                 .setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public String currentRoundsToCSV() {
-		final List<String[]> datalines = this.currentGolfRounds.stream().sorted(Comparator.comparing(GolfRound::getDate)).map(GolfRound::toCSV).collect(Collectors.toList());
-		return datalines.stream().map(this::convertToCSV).collect(Collectors.joining("\n"));
+		final List<String[]> datalines = this.currentGolfRounds.stream()
+		                                                       .sorted(Comparator
+				                                                       .comparing(GolfRound::getDate))
+		                                                       .map(GolfRound::toCSV)
+		                                                       .collect(Collectors
+				                                                       .toList());
+		return datalines.stream()
+		                .map(this::convertToCSV)
+		                .collect(Collectors.joining("\n"));
+	}
+
+	public String allRoundsToCSV() {
+		final List<String[]> datalines = this.allGolfRounds.stream()
+		                                                   .sorted(Comparator.comparing(GolfRound::getDate))
+		                                                   .map(GolfRound::toCSV)
+		                                                   .collect(Collectors.toList());
+		return datalines.stream()
+		                .map(this::convertToCSV)
+		                .collect(Collectors.joining("\n"));
 	}
 
 	private String convertToCSV(String[] data) {
 		return Stream.of(data)
-				.map(this::escapeSpecialCharacters)
-				.collect(Collectors.joining("\t"));
+		             .map(this::escapeSpecialCharacters)
+		             .collect(Collectors.joining("\t"));
 	}
 
 	private String escapeSpecialCharacters(String data) {

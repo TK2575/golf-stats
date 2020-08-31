@@ -42,6 +42,8 @@ public class CompositeGolfRound implements GolfRound {
 	@ToString.Exclude private NineHoleRound secondRound;
 
 	public CompositeGolfRound(NineHoleRound round1, NineHoleRound round2) {
+		//TODO better defend against individual fields being null
+
 		validateArguments(round1, round2);
 		assignFirstAndSecondRound(round1, round2);
 
@@ -63,7 +65,7 @@ public class CompositeGolfRound implements GolfRound {
 			this.transport = String.join(DELIMITER, firstRound.getTransport(), secondRound.getTransport());
 		}
 
-		this.duration = firstRound.getDuration().plus(secondRound.getDuration());
+		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
 		this.rating = firstRound.getRating().add(secondRound.getRating());
 		this.slope = Utils.mean(firstRound.getSlope(), secondRound.getSlope());
 
@@ -75,6 +77,12 @@ public class CompositeGolfRound implements GolfRound {
 		this.putts = firstRound.getPutts() + secondRound.getPutts();
 
 		this.scoreDifferential = computeScoreDifferential();
+	}
+
+	private Duration setDuration(Duration duration1, Duration duration2) {
+		if (duration1 == null) return duration2;
+		else if (duration2 == null) return duration1;
+		else return duration1.plus(duration2);
 	}
 
 	private void assignFirstAndSecondRound(NineHoleRound round1, NineHoleRound round2) {

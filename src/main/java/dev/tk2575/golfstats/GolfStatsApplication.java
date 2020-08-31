@@ -25,17 +25,22 @@ public class GolfStatsApplication {
 		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
 		currentStats.values().forEach(s -> {
 			log.info(s.toString());
-			log.info(String.format("Rounds used to compute %s's Handicap Index: \n%s", s.getGolfer(), s.currentRoundsToCSV()));
+			//			log.info(String.format("Rounds used to compute %s's Handicap Index: \n%s", s.getGolfer(), s.currentRoundsToCSV()));
+			log.info(String.format("All Rounds : %n%s%n%s", csvHeader(),
+					s.allRoundsToCSV()));
 		});
 
 		System.exit(0);
 	}
 
-
+	private static String csvHeader() {
+		return String.join("\t", "Round Type", "Date", "Course", "Score to " +
+				"Par", "Score Differential", "Fairways in Reg", "Fairways", "Greens " + "in Reg", "Putts", "Holes");
+	}
 
 	public static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		Map<String, CurrentGolferStats> results = new HashMap<>();
-		rounds.forEach((k,v) -> results.put(k, new CurrentGolferStats(k, v)));
+		rounds.forEach((k, v) -> results.put(k, new CurrentGolferStats(k, v)));
 		return results;
 	}
 
