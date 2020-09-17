@@ -5,6 +5,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -32,6 +34,30 @@ public class Utils {
 		else {
 			return (list.get(midPoint-1).add(midValue)).divide(new BigDecimal("2.0"), HALF_UP);
 		}
+	}
+
+	public static String convertToTSV(String[] data) {
+		return printAsDelimitedValues(data, "\t");
+	}
+
+	public static String convertToCSV(String[] data) {
+		return printAsDelimitedValues(data, ",");
+	}
+
+	private static String printAsDelimitedValues(String[] data,
+	                                             String delimiter) {
+		return Stream.of(data)
+		             .map(Utils::escapeSpecialCharacters)
+		             .collect(Collectors.joining(delimiter));
+	}
+
+	private static String escapeSpecialCharacters(String data) {
+		String escapedData = data.replaceAll("\\R", " ");
+		if (data.contains(",") || data.contains("\"") || data.contains("'")) {
+			data = data.replace("\"", "\"\"");
+			escapedData = "\"" + data + "\"";
+		}
+		return escapedData;
 	}
 
 

@@ -1,0 +1,56 @@
+package dev.tk2575.golfstats.golferperformance;
+
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.GolfRoundStream;
+import dev.tk2575.golfstats.handicapindex.HandicapIndex;
+import dev.tk2575.golfstats.handicapindex.WHSHandicapIndex;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+public class CurrentGolferStats implements GolferPerformance {
+
+	private final String golfer;
+	private final List<GolfRound> golfRounds;
+	private final HandicapIndex handicapIndex;
+
+	public CurrentGolferStats(String golfer, List<GolfRound> roundsUnsorted) {
+		this.golfer = golfer;
+		this.golfRounds = GolfRound.stream(roundsUnsorted)
+		                           .sortOldestToNewest()
+		                           .collect(Collectors.toList());
+		this.handicapIndex = new WHSHandicapIndex(roundsUnsorted);
+	}
+
+	public String toString() {
+		return toStringDefault();
+	}
+
+	public LocalDate asOf() {
+		return rounds().getMostRecentRound().getDate();
+	}
+
+	public BigDecimal getFairwaysInRegulation() {
+		return rounds().getFairwaysInRegulation();
+	}
+
+	public BigDecimal getGreensInRegulation() {
+		return rounds().getGreensInRegulation();
+	}
+
+	public BigDecimal getPuttsPerHole() {
+		return rounds().getPuttsPerHole();
+	}
+
+	public Long getMinutesPer18Holes() {
+		return rounds().compileTo18HoleRounds().getMinutesPerRound();
+	}
+
+	private GolfRoundStream rounds() {
+		return GolfRound.stream(this.golfRounds);
+	}
+}

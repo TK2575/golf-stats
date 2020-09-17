@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats;
 
+import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +26,12 @@ public class GolfStatsApplication {
 		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
 		currentStats.values().forEach(s -> {
 			log.info(s.toString());
-			//			log.info(String.format("Rounds used to compute %s's Handicap Index: \n%s", s.getGolfer(), s.currentRoundsToCSV()));
-			log.info(String.format("All Rounds : %n%s%n%s", csvHeader(),
-					s.allRoundsToCSV()));
+			log.info(GolfRound.stream(s.getGolfRounds())
+			                  .compileTo18HoleRounds()
+			                  .toTSV());
 		});
 
 		System.exit(0);
-	}
-
-	private static String csvHeader() {
-		return String.join("\t", "Round Type", "Date", "Course", "Score to " +
-				"Par", "Score Differential", "Fairways in Reg", "Fairways", "Greens " + "in Reg", "Putts", "Holes");
 	}
 
 	public static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {

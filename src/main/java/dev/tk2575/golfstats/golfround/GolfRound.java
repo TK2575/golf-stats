@@ -5,6 +5,7 @@ import dev.tk2575.golfstats.Utils;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -74,7 +75,22 @@ public interface GolfRound {
 		return getScore() - getPar();
 	}
 
-	default String[] toCSV() {
+	static String[] roundHeaders() {
+		return new String[]{
+				"Round Type",
+				"Date",
+				"Course",
+				"Score to " + "Par",
+				"Score Differential",
+				"Fairways in Reg",
+				"Fairways",
+				"Greens " + "in Reg",
+				"Putts",
+				"Holes"
+		};
+	}
+
+	default String[] roundToArray() {
 		return new String[]{
 				this.getClass().getSimpleName(),
 				String.valueOf(getDate()),
@@ -86,6 +102,10 @@ public interface GolfRound {
 				String.valueOf(getGreensInRegulation()),
 				String.valueOf(getPutts()),
 				String.valueOf(getHoles())
-				};
+		};
+	}
+
+	static GolfRoundStream stream(List<GolfRound> rounds) {
+		return new GolfRoundStream(rounds.stream());
 	}
 }

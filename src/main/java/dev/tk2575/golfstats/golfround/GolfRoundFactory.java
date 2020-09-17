@@ -37,7 +37,9 @@ public class GolfRoundFactory {
 		this.rating = new BigDecimal(row[3]);
 		this.slope = new BigDecimal(row[4]);
 		this.par = Integer.valueOf(row[5]);
-		this.duration = row[6] == null || row[6].isBlank() ? null : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
+		this.duration = row[6] == null || row[6].isBlank()
+		                ? Duration.ZERO
+		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
 		this.transport = row[7];
 		this.score = Integer.valueOf(row[8]);
 		this.fairwaysInRegulation = Integer.valueOf(row[9]);

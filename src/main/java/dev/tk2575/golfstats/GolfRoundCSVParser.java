@@ -2,6 +2,7 @@ package dev.tk2575.golfstats;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.GolfRoundFactory;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GolfRoundCSVParser {
 
 	private static final Logger log = LoggerFactory.getLogger(GolfRoundCSVParser.class);
