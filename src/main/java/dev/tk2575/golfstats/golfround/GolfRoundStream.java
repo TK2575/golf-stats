@@ -25,10 +25,6 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		                  .collect(Collectors.joining(", "));
 	}
 
-	public GolfRoundStream subsetMostRecentForHandicap() {
-		return new GolfRoundStream(sortNewestToOldest().limit(20));
-	}
-
 	public BigDecimal meanDifferential() {
 		List<GolfRound> rounds = collectToList();
 		return rounds.stream()

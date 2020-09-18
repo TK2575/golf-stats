@@ -16,6 +16,8 @@ public interface GolferPerformance {
 
 	HandicapIndex getHandicapIndex();
 
+	HandicapIndex getTrendingHandicap();
+
 	LocalDate asOf();
 
 	BigDecimal getFairwaysInRegulation();
@@ -29,9 +31,8 @@ public interface GolferPerformance {
 	default String toStringDefault() {
 		List<String> fields = new ArrayList<>();
 		fields.add(String.format("golfer=%s", getGolfer()));
-		//TODO create a handicapindex to string and include class name,
-		// value, round count, etc
-		fields.add(String.format("handicapIndex=%s", getHandicapIndex().getValue()));
+		fields.add(String.format("handicapIndex=%s", getHandicapIndex().toString()));
+		fields.add(String.format("trendingHandicap=%s", getTrendingHandicap().toString()));
 		fields.add(String.format("fairwaysInRegulation=%s", getFairwaysInRegulation()));
 		fields.add(String.format("greensInRegulation=%s", getGreensInRegulation()));
 		fields.add(String.format("puttsPerHole=%s", getPuttsPerHole()));

@@ -36,7 +36,7 @@ public class GolfStatsApplication {
 
 	public static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		Map<String, CurrentGolferStats> results = new HashMap<>();
-		rounds.forEach((k, v) -> results.put(k, new CurrentGolferStats(k, v)));
+		rounds.forEach((k, v) -> results.put(k, new CurrentGolferStats(v)));
 		return results;
 	}
 

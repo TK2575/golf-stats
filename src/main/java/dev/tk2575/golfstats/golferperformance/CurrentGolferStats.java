@@ -3,7 +3,6 @@ package dev.tk2575.golfstats.golferperformance;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.handicapindex.HandicapIndex;
-import dev.tk2575.golfstats.handicapindex.WHSHandicapIndex;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,13 +16,15 @@ public class CurrentGolferStats implements GolferPerformance {
 	private final String golfer;
 	private final List<GolfRound> golfRounds;
 	private final HandicapIndex handicapIndex;
+	private final HandicapIndex trendingHandicap;
 
-	public CurrentGolferStats(String golfer, List<GolfRound> roundsUnsorted) {
-		this.golfer = golfer;
+	public CurrentGolferStats(List<GolfRound> roundsUnsorted) {
 		this.golfRounds = GolfRound.stream(roundsUnsorted)
 		                           .sortOldestToNewest()
 		                           .collect(Collectors.toList());
-		this.handicapIndex = new WHSHandicapIndex(roundsUnsorted);
+		this.golfer = rounds().golferNames();
+		this.handicapIndex = HandicapIndex.newIndex(roundsUnsorted);
+		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(roundsUnsorted);
 	}
 
 	public String toString() {
