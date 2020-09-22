@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.golfround;
 
+import dev.tk2575.golfstats.Golfer;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class EighteenHoleRound implements GolfRound {
 	private LocalDate date;
 	private Duration duration;
 
-	private String golfer;
+	private Golfer golfer;
 	private String course;
 	private String tees;
 	private String transport;
@@ -40,7 +41,7 @@ public class EighteenHoleRound implements GolfRound {
 
 	public EighteenHoleRound(GolfRoundFactory factory) {
 		this.date = factory.getDate();
-		this.golfer = factory.getGolfer();
+		this.golfer = Golfer.newGolfer(factory.getGolferName());
 		this.course = factory.getCourse();
 		this.tees = factory.getTees();
 		this.duration = factory.getDuration();

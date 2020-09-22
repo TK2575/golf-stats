@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.golfround;
 
+import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.Utils;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class CompositeGolfRound implements GolfRound {
 	private LocalDate date;
 	private Duration duration;
 
-	private String golfer;
+	private Golfer golfer;
 	private String course;
 	private String tees;
 	private String transport;
@@ -105,7 +106,7 @@ public class CompositeGolfRound implements GolfRound {
 			throw new IllegalArgumentException("these nine hole rounds are the same");
 		}
 
-		if (!round1.getGolfer().equalsIgnoreCase(round2.getGolfer())) {
+		if (!round1.getGolfer().equals(round2.getGolfer())) {
 			throw new IllegalArgumentException("cannot create composite round for two different golfers' rounds");
 		}
 	}

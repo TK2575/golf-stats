@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.golfround;
 
+import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.Utils;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public interface GolfRound {
 
 	Duration getDuration();
 
-	String getGolfer();
+	Golfer getGolfer();
 
 	String getCourse();
 

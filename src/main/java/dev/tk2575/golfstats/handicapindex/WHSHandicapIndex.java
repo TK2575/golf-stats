@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 @Getter
 public class WHSHandicapIndex implements HandicapIndex {
 
-	private final String golfer;
 	private final BigDecimal value;
 
 	@ToString.Exclude
@@ -28,7 +27,6 @@ public class WHSHandicapIndex implements HandicapIndex {
 		                       .limit(20)
 		                       .collect(Collectors.toList());
 
-		this.golfer = rounds().golferNames();
 		this.value = rounds().getBestDifferentials().meanDifferential();
 	}
 

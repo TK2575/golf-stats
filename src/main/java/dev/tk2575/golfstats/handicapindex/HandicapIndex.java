@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface HandicapIndex {
 
-	String getGolfer();
+	static HandicapIndex emptyIndex() {
+		return new EmptyHandicapIndex();
+	}
 
 	BigDecimal getValue();
 
@@ -16,7 +18,6 @@ public interface HandicapIndex {
 
 	default String toStringDefault() {
 		List<String> fields = new ArrayList<>();
-		fields.add(String.format("golfer=%s", getGolfer()));
 		fields.add(String.format("value=%s", getValue()));
 		fields.add(String.format("roundCount=%s", getRoundCount()));
 

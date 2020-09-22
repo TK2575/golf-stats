@@ -15,7 +15,7 @@ public class GolfRoundFactory {
 	private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
 
 	private LocalDate date;
-	private String golfer;
+	private String golferName;
 	private String course;
 	private String tees;
 	private Duration duration;
@@ -29,8 +29,8 @@ public class GolfRoundFactory {
 	private Integer greensInRegulation;
 	private Integer putts;
 
-	public GolfRound recordRound(String golfer, String[] row) {
-		this.golfer = golfer;
+	public GolfRound recordRound(String golferName, String[] row) {
+		this.golferName = golferName;
 		this.date = LocalDate.parse(row[0], DATE_FORMAT);
 		this.course = row[1];
 		this.tees = row[2];

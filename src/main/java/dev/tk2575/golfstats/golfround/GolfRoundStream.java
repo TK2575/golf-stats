@@ -20,7 +20,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	private final Stream<GolfRound> stream;
 
 	public String golferNames() {
-		return this.stream.map(GolfRound::getGolfer)
+		return this.stream.map(r -> r.getGolfer().getName())
 		                  .distinct()
 		                  .collect(Collectors.joining(", "));
 	}
