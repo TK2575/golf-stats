@@ -18,7 +18,7 @@ public interface GolfRound {
 
 	Golfer getGolfer();
 
-	String getCourse();
+	Course getCourse();
 
 	String getTees();
 
@@ -95,7 +95,7 @@ public interface GolfRound {
 		return new String[]{
 				this.getClass().getSimpleName(),
 				String.valueOf(getDate()),
-				getCourse(),
+				getCourse().getName(),
 				String.valueOf(getScoreToPar()),
 				String.valueOf(getScoreDifferential()),
 				String.valueOf(getFairwaysInRegulation()),

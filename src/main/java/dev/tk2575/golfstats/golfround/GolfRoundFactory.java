@@ -16,7 +16,7 @@ public class GolfRoundFactory {
 
 	private LocalDate date;
 	private String golferName;
-	private String course;
+	private String courseName;
 	private String tees;
 	private Duration duration;
 	private String transport;
@@ -32,7 +32,7 @@ public class GolfRoundFactory {
 	public GolfRound recordRound(String golferName, String[] row) {
 		this.golferName = golferName;
 		this.date = LocalDate.parse(row[0], DATE_FORMAT);
-		this.course = row[1];
+		this.courseName = row[1];
 		this.tees = row[2];
 		this.rating = new BigDecimal(row[3]);
 		this.slope = new BigDecimal(row[4]);

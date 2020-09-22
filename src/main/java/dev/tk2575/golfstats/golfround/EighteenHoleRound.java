@@ -23,7 +23,7 @@ public class EighteenHoleRound implements GolfRound {
 	private Duration duration;
 
 	private Golfer golfer;
-	private String course;
+	private Course course;
 	private String tees;
 	private String transport;
 
@@ -42,7 +42,7 @@ public class EighteenHoleRound implements GolfRound {
 	public EighteenHoleRound(GolfRoundFactory factory) {
 		this.date = factory.getDate();
 		this.golfer = Golfer.newGolfer(factory.getGolferName());
-		this.course = factory.getCourse();
+		this.course = Course.newCourse(factory.getCourseName());
 		this.tees = factory.getTees();
 		this.duration = factory.getDuration();
 		this.transport = factory.getTransport();

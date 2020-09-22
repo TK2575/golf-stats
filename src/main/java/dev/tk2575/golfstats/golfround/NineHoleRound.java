@@ -23,7 +23,7 @@ public class NineHoleRound implements GolfRound {
 	private Duration duration;
 
 	private Golfer golfer;
-	private String course;
+	private Course course;
 	private String tees;
 	private String transport;
 	private BigDecimal rating;
@@ -40,7 +40,7 @@ public class NineHoleRound implements GolfRound {
 	public NineHoleRound(GolfRoundFactory factory) {
 		this.date = factory.getDate();
 		this.golfer = Golfer.newGolfer(factory.getGolferName());
-		this.course = factory.getCourse();
+		this.course = Course.newCourse(factory.getCourseName());
 		this.tees = factory.getTees();
 		this.duration = factory.getDuration();
 		this.transport = factory.getTransport();
