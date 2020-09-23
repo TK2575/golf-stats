@@ -24,31 +24,41 @@ public class EighteenHoleRound implements GolfRound {
 
 	private Golfer golfer;
 	private Course course;
-	private String tees;
+	private Tee tee;
 	private String transport;
 
-	private BigDecimal rating; //put whatever's on the scorecard, adjust if it's way off of par
-	private BigDecimal slope;
 	private BigDecimal scoreDifferential;
 
-	private Integer par; //expect par of holes played to be inputted (i.e. put 36 if playing a nine hole round)
 	private Integer score;
 	private Integer fairwaysInRegulation;
 	private Integer fairways;
 	private Integer greensInRegulation;
 	private Integer putts;
 
+	@Override
+	public BigDecimal getRating() {
+		return this.tee.getRating();
+	}
+
+	@Override
+	public BigDecimal getSlope() {
+		return this.tee.getSlope();
+	}
+
+	@Override
+	public Integer getPar() {
+		return this.tee.getPar();
+	}
 
 	public EighteenHoleRound(GolfRoundFactory factory) {
 		this.date = factory.getDate();
 		this.golfer = Golfer.newGolfer(factory.getGolferName());
 		this.course = Course.newCourse(factory.getCourseName());
-		this.tees = factory.getTees();
+		this.tee = Tee.newTee(factory.getTees(), factory.getRating(),
+				factory.getSlope(), factory
+				.getPar());
 		this.duration = factory.getDuration();
 		this.transport = factory.getTransport();
-		this.rating = factory.getRating();
-		this.slope = factory.getSlope();
-		this.par = factory.getPar();
 		this.score = factory.getScore();
 		this.fairwaysInRegulation = factory.getFairwaysInRegulation();
 		this.fairways = factory.getFairways();

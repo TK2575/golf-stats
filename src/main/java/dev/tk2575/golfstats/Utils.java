@@ -17,12 +17,20 @@ public class Utils {
 		return BigDecimal.valueOf((float) value / divisor).setScale(2, HALF_UP);
 	}
 
+	public static Long mean(Long int1, Long int2) {
+		if (int1.equals(int2)) return int1;
+		return mean(BigDecimal.valueOf(int1), BigDecimal.valueOf(int2)).longValueExact();
+	}
+
 	public static BigDecimal mean(BigDecimal int1, BigDecimal int2) {
+		if (int1.equals(int2)) return int1;
 		return (int1.add(int2)).divide(new BigDecimal("2"), HALF_UP);
 	}
 
 	public static BigDecimal median(List<BigDecimal> list) {
-		if (list == null || list.isEmpty()) throw new IllegalArgumentException("cannot compute median of null or empty list");
+		if (list == null || list.isEmpty()) {
+			throw new IllegalArgumentException("cannot compute median of null or empty list");
+		}
 
 		list.sort(Comparator.comparing(BigDecimal::doubleValue));
 		int size = list.size();
@@ -32,7 +40,8 @@ public class Utils {
 			return midValue;
 		}
 		else {
-			return (list.get(midPoint-1).add(midValue)).divide(new BigDecimal("2.0"), HALF_UP);
+			return (list.get(midPoint - 1)
+			            .add(midValue)).divide(new BigDecimal("2.0"), HALF_UP);
 		}
 	}
 
@@ -44,8 +53,18 @@ public class Utils {
 		return printAsDelimitedValues(data, ",");
 	}
 
-	private static String printAsDelimitedValues(String[] data,
-	                                             String delimiter) {
+	public static <T> String joinByHyphenIfUnequal(T o1, T o2) {
+		return joinIfUnequal(" - ", o1, o2);
+	}
+
+	public static <T> String joinIfUnequal(String delimiter, T o1, T o2) {
+		if (o1.equals(o2)) {
+			return o1.toString();
+		}
+		return String.join(delimiter, o1.toString(), o2.toString());
+	}
+
+	private static String printAsDelimitedValues(String[] data, String delimiter) {
 		return Stream.of(data)
 		             .map(Utils::escapeSpecialCharacters)
 		             .collect(Collectors.joining(delimiter));
@@ -59,6 +78,5 @@ public class Utils {
 		}
 		return escapedData;
 	}
-
 
 }

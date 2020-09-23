@@ -10,9 +10,7 @@ public interface Course {
 		if (course1.equals(course2)) {
 			return course1;
 		}
-		else {
-			return new CompositeCourse(course1, course2);
-		}
+		return new CompositeCourse(course1, course2);
 	}
 
 	String getName();

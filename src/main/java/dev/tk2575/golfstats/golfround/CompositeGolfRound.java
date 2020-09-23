@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.golfround;
 
 import dev.tk2575.golfstats.Golfer;
-import dev.tk2575.golfstats.Utils;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,6 +16,16 @@ public class CompositeGolfRound implements GolfRound {
 	@Getter(AccessLevel.NONE)
 	private static final Integer HOLES = 18;
 
+	@Override
+	public BigDecimal getRating() {
+		return this.tee.getRating();
+	}
+
+	@Override
+	public BigDecimal getSlope() {
+		return this.tee.getSlope();
+	}
+
 	public Integer getHoles() {
 		return HOLES;
 	}
@@ -26,11 +35,9 @@ public class CompositeGolfRound implements GolfRound {
 
 	private Golfer golfer;
 	private Course course;
-	private String tees;
+	private Tee tee;
 	private String transport;
 
-	private BigDecimal rating;
-	private BigDecimal slope;
 	private BigDecimal scoreDifferential;
 
 	private Integer par;
@@ -57,11 +64,7 @@ public class CompositeGolfRound implements GolfRound {
 		this.course = Course.compositeCourse(firstRound.getCourse(), secondRound
 				.getCourse());
 
-		this.tees = secondRound.getTees();
-		if (!this.tees.equalsIgnoreCase(firstRound.getTees())) {
-			this.tees = String.join(DELIMITER, firstRound.getTees(), secondRound
-					.getTees());
-		}
+		this.tee = Tee.compositeTee(firstRound.getTee(), secondRound.getTee());
 
 		this.transport = secondRound.getTransport();
 		if (!this.transport.equalsIgnoreCase(firstRound.getTransport())) {
@@ -70,8 +73,6 @@ public class CompositeGolfRound implements GolfRound {
 		}
 
 		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
-		this.rating = firstRound.getRating().add(secondRound.getRating());
-		this.slope = Utils.mean(firstRound.getSlope(), secondRound.getSlope());
 
 		this.par = firstRound.getPar() + secondRound.getPar();
 		this.score = firstRound.getScore() + secondRound.getScore();

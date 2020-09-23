@@ -20,7 +20,7 @@ public interface GolfRound {
 
 	Course getCourse();
 
-	String getTees();
+	Tee getTee();
 
 	String getTransport();
 
@@ -81,11 +81,11 @@ public interface GolfRound {
 				"Round Type",
 				"Date",
 				"Course",
-				"Score to " + "Par",
+				"Score to Par",
 				"Score Differential",
 				"Fairways in Reg",
 				"Fairways",
-				"Greens " + "in Reg",
+				"Greens in Reg",
 				"Putts",
 				"Holes"
 		};
