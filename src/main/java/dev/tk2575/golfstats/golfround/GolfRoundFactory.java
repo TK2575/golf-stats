@@ -19,7 +19,7 @@ public class GolfRoundFactory {
 	private String courseName;
 	private String tees;
 	private Duration duration;
-	private String transport;
+	private Transport transport;
 	private BigDecimal rating;
 	private BigDecimal slope;
 	private Integer par;
@@ -40,7 +40,7 @@ public class GolfRoundFactory {
 		this.duration = row[6] == null || row[6].isBlank()
 		                ? Duration.ZERO
 		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
-		this.transport = row[7];
+		this.transport = Transport.valueOf(row[7]);
 		this.score = Integer.valueOf(row[8]);
 		this.fairwaysInRegulation = Integer.valueOf(row[9]);
 		this.fairways = Integer.valueOf(row[10]);

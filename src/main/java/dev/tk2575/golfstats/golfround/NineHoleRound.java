@@ -38,7 +38,7 @@ public class NineHoleRound implements GolfRound {
 		this.golfer = Golfer.newGolfer(factory.getGolferName());
 		this.course = Course.newCourse(factory.getCourseName());
 		this.duration = factory.getDuration();
-		this.transport = factory.getTransport();
+		this.transport = factory.getTransport().toString();
 		this.tee = Tee.newTee(factory.getTees(), factory.getRating(),
 				factory.getSlope(), factory
 				.getPar());

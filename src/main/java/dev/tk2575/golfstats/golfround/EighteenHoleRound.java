@@ -58,7 +58,7 @@ public class EighteenHoleRound implements GolfRound {
 				factory.getSlope(), factory
 				.getPar());
 		this.duration = factory.getDuration();
-		this.transport = factory.getTransport();
+		this.transport = factory.getTransport().toString();
 		this.score = factory.getScore();
 		this.fairwaysInRegulation = factory.getFairwaysInRegulation();
 		this.fairways = factory.getFairways();
