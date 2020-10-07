@@ -8,10 +8,6 @@ import java.util.List;
 
 public interface HandicapIndex {
 
-	static HandicapIndex emptyIndex() {
-		return new EmptyHandicapIndex();
-	}
-
 	BigDecimal getValue();
 
 	long getRoundCount();
@@ -31,5 +27,9 @@ public interface HandicapIndex {
 
 	static HandicapIndex lastFiveRoundsTrendingHandicap(List<GolfRound> rounds) {
 		return new LastNRoundsTrendingHandicap(rounds, 5);
+	}
+
+	static HandicapIndex emptyIndex() {
+		return new EmptyHandicapIndex();
 	}
 }

@@ -6,7 +6,7 @@ import static java.math.RoundingMode.HALF_UP;
 
 public interface Tee {
 
-	static Tee compositeTee(Tee tee1, Tee tee2) {
+	static Tee compositeOf(Tee tee1, Tee tee2) {
 		if (tee1.equals(tee2)) {
 			return tee1;
 		}

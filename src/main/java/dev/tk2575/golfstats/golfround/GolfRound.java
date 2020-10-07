@@ -22,15 +22,9 @@ public interface GolfRound {
 
 	Tee getTee();
 
-	String getTransport();
-
-	BigDecimal getRating();
-
-	BigDecimal getSlope();
+	Transport getTransport();
 
 	BigDecimal getScoreDifferential();
-
-	Integer getPar();
 
 	Integer getScore();
 
@@ -42,7 +36,9 @@ public interface GolfRound {
 
 	Integer getPutts();
 
-	Integer getHoles();
+	Integer getHoleCount();
+
+	boolean isNineHoleRound();
 
 	default BigDecimal computeScoreDifferential() {
 		BigDecimal firstTerm = BigDecimal.valueOf(113)
@@ -55,7 +51,7 @@ public interface GolfRound {
 	}
 
 	default BigDecimal getPuttsPerHole() {
-		return Utils.divideInts(getPutts(), getHoles());
+		return Utils.divideInts(getPutts(), getHoleCount());
 	}
 
 	default BigDecimal getFairwayInRegulationRate() {
@@ -63,13 +59,25 @@ public interface GolfRound {
 	}
 
 	default BigDecimal getGreensInRegulationRate() {
-		return Utils.divideInts(getGreensInRegulation(), getHoles());
+		return Utils.divideInts(getGreensInRegulation(), getHoleCount());
 	}
 
 	default BigDecimal getMinutesPerHole() {
 		return getDuration() == null
 		       ? BigDecimal.ZERO
-		       : Utils.divideInts(Math.toIntExact(getDuration().toMinutes()), getHoles());
+		       : Utils.divideInts(Math.toIntExact(getDuration().toMinutes()), getHoleCount());
+	}
+
+	default BigDecimal getRating() {
+		return getTee().getRating();
+	}
+
+	default BigDecimal getSlope() {
+		return getTee().getSlope();
+	}
+
+	default Integer getPar() {
+		return getTee().getPar();
 	}
 
 	default Integer getScoreToPar() {
@@ -102,7 +110,7 @@ public interface GolfRound {
 				String.valueOf(getFairways()),
 				String.valueOf(getGreensInRegulation()),
 				String.valueOf(getPutts()),
-				String.valueOf(getHoles())
+				String.valueOf(getHoleCount())
 		};
 	}
 

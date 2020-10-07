@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Getter
+@ToString
 public class EmptyHandicapIndex implements HandicapIndex {
 
 	private final BigDecimal value;

@@ -5,6 +5,7 @@ import lombok.*;
 
 @Getter
 @EqualsAndHashCode
+@ToString
 public class SimpleGolfer implements Golfer {
 
 	private static final String UNKNOWN = "UNKNOWN";

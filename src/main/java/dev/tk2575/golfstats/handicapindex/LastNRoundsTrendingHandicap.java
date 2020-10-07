@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class LastNRoundsTrendingHandicap implements HandicapIndex {
@@ -17,11 +16,7 @@ public class LastNRoundsTrendingHandicap implements HandicapIndex {
 	public LastNRoundsTrendingHandicap(List<GolfRound> rounds, int maxSize) {
 		validateArguments(rounds, maxSize);
 
-		this.rounds = GolfRound.stream(rounds)
-		                       .compileTo18HoleRounds()
-		                       .sortNewestToOldest()
-		                       .limit(maxSize)
-		                       .collect(Collectors.toList());
+		this.rounds = GolfRound.stream(rounds).compileTo18HoleRounds().sortNewestToOldest().limit(maxSize).asList();
 
 		this.golfer = GolfRound.stream(this.rounds).golferNames();
 		this.value = GolfRound.stream(this.rounds).meanDifferential();

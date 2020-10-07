@@ -17,6 +17,8 @@ public class Transport {
 
 	private static Transport unknown() { return new Transport(8); }
 
+	private static Transport various() { return new Transport(16); }
+
 	private Transport(int representation) {
 		this.representation = representation;
 	}
@@ -37,12 +39,36 @@ public class Transport {
 		return unknown();
 	}
 
+	public static Transport compositeOf(Transport transport1, Transport transport2) {
+		if (transport1.equals(transport2)) {
+			return transport1;
+		}
+		if (bothSupersetOf(walk(), transport1, transport2)) {
+			return walk();
+		}
+		if (bothSupersetOf(ride(), transport1, transport2)) {
+			return ride();
+		}
+		return various();
+	}
+
+	private static boolean bothSupersetOf(Transport parent, Transport transport1, Transport transport2) {
+		return transport1.isSupersetOf(parent) && transport2.isSupersetOf(parent);
+	}
+
 	private Transport with(Transport status) {
 		return new Transport(this.representation | status.representation);
 	}
 
 	@Override
 	public String toString() {
+		if (this.equals(unknown())) {
+			return "Unknown";
+		}
+		if (this.equals(various())) {
+			return "Various";
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		if (this.isSupersetOf(ride())) {

@@ -2,6 +2,7 @@ package dev.tk2575.golfstats;
 
 import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.SimpleGolfRoundCSVParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -42,7 +43,7 @@ public class GolfStatsApplication {
 
 	public static Map<String, List<GolfRound>> getCSVData() {
 		final File dataDirectory = new File(System.getProperty("user.dir"), "src\\main\\resources\\data");
-		return GolfRoundCSVParser.readCsvData(dataDirectory);
+		return new SimpleGolfRoundCSVParser(dataDirectory).readCsvData();
 	}
 
 }

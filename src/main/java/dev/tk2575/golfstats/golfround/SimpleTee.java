@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Getter
+@ToString
 public class SimpleTee implements Tee {
 
 	private final String name;

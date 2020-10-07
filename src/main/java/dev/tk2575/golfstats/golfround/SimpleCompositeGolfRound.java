@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-public class CompositeGolfRound implements GolfRound {
+public class SimpleCompositeGolfRound implements GolfRound {
 
 	private static final String DELIMITER = " - ";
 
@@ -26,61 +26,54 @@ public class CompositeGolfRound implements GolfRound {
 		return this.tee.getSlope();
 	}
 
-	public Integer getHoles() {
+	public Integer getHoleCount() {
 		return HOLES;
 	}
 
-	private LocalDate date;
-	private Duration duration;
+	public boolean isNineHoleRound() {
+		return false;
+	}
 
-	private Golfer golfer;
-	private Course course;
-	private Tee tee;
-	private String transport;
+	private final LocalDate date;
+	private final Duration duration;
 
-	private BigDecimal scoreDifferential;
+	private final Golfer golfer;
+	private final Course course;
+	private final Tee tee;
+	private final Transport transport;
 
-	private Integer par;
-	private Integer score;
-	private Integer fairwaysInRegulation;
-	private Integer fairways;
-	private Integer greensInRegulation;
-	private Integer putts;
+	private final BigDecimal scoreDifferential;
+
+	private final Integer par;
+	private final Integer score;
+	private final Integer fairwaysInRegulation;
+	private final Integer fairways;
+	private final Integer greensInRegulation;
+	private final Integer putts;
 
 	@ToString.Exclude
-	private NineHoleRound firstRound;
+	private GolfRound firstRound;
 	@ToString.Exclude
-	private NineHoleRound secondRound;
+	private GolfRound secondRound;
 
-	public CompositeGolfRound(NineHoleRound round1, NineHoleRound round2) {
-		//TODO better defend against individual fields being null
-
+	public SimpleCompositeGolfRound(GolfRound round1, GolfRound round2) {
 		validateArguments(round1, round2);
 		assignFirstAndSecondRound(round1, round2);
 
 		this.date = secondRound.getDate();
 		this.golfer = secondRound.getGolfer();
 
-		this.course = Course.compositeCourse(firstRound.getCourse(), secondRound
-				.getCourse());
-
-		this.tee = Tee.compositeTee(firstRound.getTee(), secondRound.getTee());
-
-		this.transport = secondRound.getTransport();
-		if (!this.transport.equalsIgnoreCase(firstRound.getTransport())) {
-			this.transport = String.join(DELIMITER, firstRound.getTransport(), secondRound
-					.getTransport());
-		}
+		this.course = Course.compositeOf(firstRound.getCourse(), secondRound.getCourse());
+		this.tee = Tee.compositeOf(firstRound.getTee(), secondRound.getTee());
+		this.transport = Transport.compositeOf(firstRound.getTransport(), secondRound.getTransport());
 
 		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
 
 		this.par = firstRound.getPar() + secondRound.getPar();
 		this.score = firstRound.getScore() + secondRound.getScore();
-		this.fairwaysInRegulation = firstRound.getFairwaysInRegulation() + secondRound
-				.getFairwaysInRegulation();
+		this.fairwaysInRegulation = firstRound.getFairwaysInRegulation() + secondRound.getFairwaysInRegulation();
 		this.fairways = firstRound.getFairways() + secondRound.getFairways();
-		this.greensInRegulation = firstRound.getGreensInRegulation() + secondRound
-				.getGreensInRegulation();
+		this.greensInRegulation = firstRound.getGreensInRegulation() + secondRound.getGreensInRegulation();
 		this.putts = firstRound.getPutts() + secondRound.getPutts();
 
 		this.scoreDifferential = computeScoreDifferential();
@@ -92,7 +85,7 @@ public class CompositeGolfRound implements GolfRound {
 		else { return duration1.plus(duration2); }
 	}
 
-	private void assignFirstAndSecondRound(NineHoleRound round1, NineHoleRound round2) {
+	private void assignFirstAndSecondRound(GolfRound round1, GolfRound round2) {
 		if (round1.getDate().isBefore(round2.getDate())) {
 			this.firstRound = round1;
 			this.secondRound = round2;
@@ -103,13 +96,17 @@ public class CompositeGolfRound implements GolfRound {
 		}
 	}
 
-	private void validateArguments(NineHoleRound round1, NineHoleRound round2) {
+	private void validateArguments(GolfRound round1, GolfRound round2) {
 		if (round1 == null || round2 == null) {
 			throw new IllegalArgumentException("round1 and round2 are required arguments");
 		}
 
 		if (round1.equals(round2)) {
-			throw new IllegalArgumentException("these nine hole rounds are the same");
+			throw new IllegalArgumentException("these rounds are the same");
+		}
+
+		if (!round1.isNineHoleRound() || !round2.isNineHoleRound()) {
+			throw new IllegalArgumentException("both rounds must be nine hole rounds");
 		}
 
 		if (!round1.getGolfer().equals(round2.getGolfer())) {

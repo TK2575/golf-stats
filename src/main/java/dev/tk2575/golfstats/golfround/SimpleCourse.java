@@ -3,6 +3,7 @@ package dev.tk2575.golfstats.golfround;
 import lombok.*;
 
 @Getter
+@ToString
 public class SimpleCourse implements Course {
 
 	private static final String UNKNOWN = "UNKNOWN";

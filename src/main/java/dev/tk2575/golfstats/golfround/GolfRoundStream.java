@@ -26,7 +26,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public BigDecimal meanDifferential() {
-		List<GolfRound> rounds = collectToList();
+		List<GolfRound> rounds = asList();
 		return rounds.stream()
 		             .map(GolfRound::getScoreDifferential)
 		             .reduce(BigDecimal.ZERO, BigDecimal::add)
@@ -36,21 +36,21 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public GolfRoundStream compileTo18HoleRounds() {
 		List<GolfRound> roundsList = this.sortOldestToNewest()
-		                                 .collect(Collectors.toList());
+		                                 .asList();
 
 		List<GolfRound> compiledRounds = new ArrayList<>();
-		NineHoleRound pendingNineHoleRound = null;
+		GolfRound pendingNineHoleRound = null;
 		GolfRound thisRound;
 
 		//TODO refactor without for loop
 		for (GolfRound round : roundsList) {
 			thisRound = null;
-			if (round instanceof NineHoleRound) {
+			if (round.isNineHoleRound()) {
 				if (pendingNineHoleRound == null) {
-					pendingNineHoleRound = (NineHoleRound) round;
+					pendingNineHoleRound = round;
 				}
 				else {
-					thisRound = new CompositeGolfRound(pendingNineHoleRound, (NineHoleRound) round);
+					thisRound = new SimpleCompositeGolfRound(pendingNineHoleRound, round);
 					pendingNineHoleRound = null;
 				}
 			}
@@ -75,7 +75,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRound getMostRecentRound() {
-		return this.sortNewestToOldest().collect(Collectors.toList()).get(0);
+		return this.sortNewestToOldest().asList().get(0);
 	}
 
 	public String toTSV() {
@@ -93,7 +93,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	// pure stream operations? perhaps some functional interface to avoid
 	// code duplication?
 	public GolfRoundStream getBestDifferentials() {
-		final List<GolfRound> rounds = this.collectToList();
+		final List<GolfRound> rounds = this.asList();
 		long subsetSize = (long) (rounds.size() * .4);
 		return new GolfRoundStream(rounds.stream()
 		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential))
@@ -101,7 +101,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public BigDecimal getFairwaysInRegulation() {
-		final List<GolfRound> rounds = this.collectToList();
+		final List<GolfRound> rounds = this.asList();
 		long fairwaysInRegulation = rounds.stream()
 		                                  .mapToLong(GolfRound::getFairwaysInRegulation)
 		                                  .sum();
@@ -110,7 +110,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public BigDecimal getGreensInRegulation() {
-		final List<GolfRound> rounds = this.collectToList();
+		final List<GolfRound> rounds = this.asList();
 		final long greensInRegulation = rounds.stream()
 		                                      .mapToLong(GolfRound::getGreensInRegulation)
 		                                      .sum();
@@ -119,19 +119,15 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public BigDecimal getPuttsPerHole() {
-		final List<GolfRound> rounds = this.collectToList();
+		final List<GolfRound> rounds = this.asList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes),
 				2, RoundingMode.HALF_UP);
 	}
 
-	private long getHoles() {
-		return this.stream.mapToLong(GolfRound::getHoles).sum();
-	}
-
 	public Long getMinutesPerRound() {
-		final List<GolfRound> rounds = this.collect(Collectors.toList());
+		final List<GolfRound> rounds = this.asList();
 		final Duration duration = rounds.stream()
 		                                .map(GolfRound::getDuration)
 		                                .filter(d -> !d.isZero())
@@ -143,7 +139,17 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		       : duration.toMinutes() / rounds.size();
 	}
 
-	private List<GolfRound> collectToList() {
+	private long getHoles() {
+		return this.stream.mapToLong(GolfRound::getHoleCount).sum();
+	}
+
+	public List<GolfRound> asList() {
 		return this.stream.collect(Collectors.toList());
+	}
+
+	//FIXME how do I get get away from needing this on this child class?
+	@Override
+	public GolfRoundStream limit(long maxSize) {
+		return new GolfRoundStream(this.stream.limit(maxSize));
 	}
 }
