@@ -8,6 +8,8 @@ public interface Golfer {
 		return new SimpleGolfer(golferName);
 	}
 
+	static Golfer of(String golferName, HandicapIndex index) { return new SimpleGolfer(golferName, index); }
+
 	String getName();
 
 	HandicapIndex getHandicapIndex();

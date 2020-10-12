@@ -12,6 +12,7 @@ public class SimpleTee implements Tee {
 	private final BigDecimal rating;
 	private final BigDecimal slope;
 	private final Integer par;
+	private final Integer holeCount;
 
 	public SimpleTee(String name, BigDecimal rating, BigDecimal slope,
 	                 Integer par) {
@@ -19,5 +20,6 @@ public class SimpleTee implements Tee {
 		this.slope = slope;
 		this.par = par;
 		this.rating = correctCourseRating(this.par, rating);
+		this.holeCount = this.par < 54 ? 9 : 18;
 	}
 }

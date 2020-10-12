@@ -32,4 +32,6 @@ public interface HandicapIndex {
 	static HandicapIndex emptyIndex() {
 		return new EmptyHandicapIndex();
 	}
+
+	static HandicapIndex of(BigDecimal value) { return new EmptyHandicapIndex(value); }
 }

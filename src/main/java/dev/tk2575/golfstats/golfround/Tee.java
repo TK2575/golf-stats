@@ -26,6 +26,8 @@ public interface Tee {
 
 	Integer getPar();
 
+	Integer getHoleCount();
+
 	default BigDecimal correctCourseRating(Integer par, BigDecimal rating) {
 		if (rating.subtract(BigDecimal.valueOf(par))
 		          .compareTo(BigDecimal.TEN) > 0) {

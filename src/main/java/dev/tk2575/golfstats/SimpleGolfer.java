@@ -19,4 +19,10 @@ public class SimpleGolfer implements Golfer {
 		this.handicapIndex = HandicapIndex.emptyIndex();
 		this.gender = UNKNOWN;
 	}
+
+	public SimpleGolfer(String golferName, HandicapIndex index) {
+		this.name = golferName;
+		this.handicapIndex = index;
+		this.gender = UNKNOWN;
+	}
 }

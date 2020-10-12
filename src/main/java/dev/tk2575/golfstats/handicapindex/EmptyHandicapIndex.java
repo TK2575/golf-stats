@@ -15,4 +15,9 @@ public class EmptyHandicapIndex implements HandicapIndex {
 		this.value = BigDecimal.ZERO;
 		this.roundCount = 0L;
 	}
+
+	public EmptyHandicapIndex(BigDecimal value) {
+		this.value = value;
+		this.roundCount = 20L;
+	}
 }
