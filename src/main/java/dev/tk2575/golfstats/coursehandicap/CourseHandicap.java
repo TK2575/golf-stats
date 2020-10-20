@@ -31,6 +31,11 @@ public interface CourseHandicap {
 
 		BigDecimal slopeDiff = slope.divide(baseSlope, 2, RoundingMode.HALF_UP);
 		BigDecimal result = index.multiply(slopeDiff).add((rating.subtract(par)));
+
+		//course handicap formula assumes 18 hole rounds, so divide by two for nine hole rounds
+		//no idea about rounds that aren't either 9 or 18 holes
+		if (getTee().getHoleCount() <= 9) result = result.divide(BigDecimal.valueOf(2L), 2, RoundingMode.HALF_UP);
+
 		return result.setScale(0, RoundingMode.HALF_UP).intValue();
 	}
 

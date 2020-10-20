@@ -63,4 +63,15 @@ class CourseHandicapTest {
 		assertEquals(72-43, handicap.getStablefordQuota());
 	}
 
+	@Test
+	void testSingleBogeyGolferOnNineHoleCourse() {
+		Golfer golfer = Golfer.of("Tom", HandicapIndex.of(new BigDecimal("18.0")));
+		Course course = Course.newCourse("Golden Pheasant");
+		Tee tee = Tee.newTee("White", new BigDecimal("30.7"), new BigDecimal("111"), 32);
+
+		CourseHandicap handicap = CourseHandicap.of(golfer, course, tee);
+		assertEquals(8, handicap.getHandicapStrokes());
+		assertEquals(10, handicap.getStablefordQuota());
+	}
+
 }
