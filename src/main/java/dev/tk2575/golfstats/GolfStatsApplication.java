@@ -51,7 +51,11 @@ public class GolfStatsApplication {
 	private static void logStatsAndRoundHistory(Map<String, CurrentGolferStats> currentStats) {
 		currentStats.values().forEach(s -> {
 			log.info(s.toString());
-			log.info(GolfRound.stream(s.getGolfRounds()).compileTo18HoleRounds().toTSV());
+			log.info(GolfRound.stream(s.getGolfRounds())
+			                  .compileTo18HoleRounds()
+			                  .sortNewestToOldest()
+			                  .limit(20)
+			                  .toTSV());
 		});
 	}
 
@@ -89,13 +93,13 @@ public class GolfStatsApplication {
 
 		log.info(String.format("Course handicap at %s based on true index", courseName));
 		CourseHandicap courseHandicap = CourseHandicap.teamOf(List.of(tom, will), course, tee);
-		courseHandicap.getHandicapStrokesPerGolfer().forEach((k,v) -> log.info(String.join(": ", k, v.toString())));
+		courseHandicap.getHandicapStrokesPerGolfer().forEach((k, v) -> log.info(String.join(": ", k, v.toString())));
 		log.info(String.format("Quota = %s", courseHandicap.getStablefordQuota()));
-		//FIXME incorrect for nine hole rounds
 
 		log.info(String.format("Course handicap at %s based on trending index", courseName));
 		CourseHandicap courseHandicapFromTrend = CourseHandicap.teamOf(List.of(tomTrend, willTrend), course, tee);
-		courseHandicapFromTrend.getHandicapStrokesPerGolfer().forEach((k,v) -> log.info(String.join(": ", k, v.toString())));
+		courseHandicapFromTrend.getHandicapStrokesPerGolfer()
+		                       .forEach((k, v) -> log.info(String.join(": ", k, v.toString())));
 		log.info(String.format("Quota = %s", courseHandicapFromTrend.getStablefordQuota()));
 	}
 
