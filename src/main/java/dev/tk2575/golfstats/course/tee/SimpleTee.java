@@ -1,11 +1,14 @@
-package dev.tk2575.golfstats.golfround;
+package dev.tk2575.golfstats.course.tee;
 
 import lombok.*;
 
 import java.math.BigDecimal;
 
+import static java.math.RoundingMode.HALF_UP;
+
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.NONE)
 public class SimpleTee implements Tee {
 
 	private final String name;
@@ -21,5 +24,12 @@ public class SimpleTee implements Tee {
 		this.par = par;
 		this.rating = correctCourseRating(this.par, rating);
 		this.holeCount = this.par < 54 ? 9 : 18;
+	}
+
+	private BigDecimal correctCourseRating(Integer par, BigDecimal rating) {
+		if (rating.subtract(BigDecimal.valueOf(par)).compareTo(BigDecimal.TEN) > 0) {
+			return rating.divide(new BigDecimal("2"), HALF_UP).setScale(2, HALF_UP);
+		}
+		return rating;
 	}
 }

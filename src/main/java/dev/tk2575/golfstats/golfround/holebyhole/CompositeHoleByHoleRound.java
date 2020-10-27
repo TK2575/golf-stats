@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CompositeHoleByHoleRound extends SimpleCompositeGolfRound implements HoleByHole {
 
-	private List<Hole> holes;
+	private final List<Hole> holes;
 
 	public HoleStream getHoles() {
 		return Hole.stream(this.holes);

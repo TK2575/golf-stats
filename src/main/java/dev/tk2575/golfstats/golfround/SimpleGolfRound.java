@@ -1,6 +1,8 @@
 package dev.tk2575.golfstats.golfround;
 
 import dev.tk2575.golfstats.Golfer;
+import dev.tk2575.golfstats.course.Course;
+import dev.tk2575.golfstats.course.tee.Tee;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -41,8 +43,8 @@ public class SimpleGolfRound implements GolfRound {
 	public SimpleGolfRound(SimpleGolfRoundCSVParser factory) {
 		this.date = factory.getDate();
 		this.golfer = Golfer.newGolfer(factory.getGolferName());
-		this.course = Course.newCourse(factory.getCourseName());
-		this.tee = Tee.newTee(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
+		this.course = Course.of(factory.getCourseName());
+		this.tee = Tee.of(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
 		this.duration = factory.getDuration();
 		this.transport = factory.getTransport();
 		this.score = factory.getScore();

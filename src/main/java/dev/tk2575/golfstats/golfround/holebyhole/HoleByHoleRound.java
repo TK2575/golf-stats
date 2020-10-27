@@ -1,9 +1,9 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.Golfer;
-import dev.tk2575.golfstats.golfround.Course;
+import dev.tk2575.golfstats.course.Course;
 import dev.tk2575.golfstats.golfround.GolfRound;
-import dev.tk2575.golfstats.golfround.Tee;
+import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.Transport;
 import lombok.*;
 
@@ -40,8 +40,8 @@ public class HoleByHoleRound implements GolfRound, HoleByHole {
 		this.date = factory.getDate();
 		this.duration = factory.getDuration();
 		this.golfer = Golfer.newGolfer(factory.getGolfer());
-		this.course = Course.newCourse(factory.getCourse());
-		this.tee = Tee.newTee(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
+		this.course = Course.of(factory.getCourse());
+		this.tee = Tee.of(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
 		this.transport = Transport.valueOf(factory.getTransport());
 
 		this.holes = Hole.stream(factory.getHoles()).validate().sortFirstToLast().asList();

@@ -1,11 +1,12 @@
 package dev.tk2575.golfstats;
 
-import dev.tk2575.golfstats.coursehandicap.CourseHandicap;
+import dev.tk2575.golfstats.course.Course;
+import dev.tk2575.golfstats.course.tee.Tee;
+import dev.tk2575.golfstats.course.tee.TeeHandicap;
 import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
-import dev.tk2575.golfstats.golfround.Course;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.SimpleGolfRoundCSVParser;
-import dev.tk2575.golfstats.golfround.Tee;
+import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -60,19 +61,11 @@ public class GolfStatsApplication {
 	}
 
 	private static void logCourseHandicapForNextRound(Map<String, CurrentGolferStats> currentStats) {
-		String courseName = "Sassy Nine";
-		String teeName = "White";
-		BigDecimal rating = new BigDecimal("30.7");
-		BigDecimal slope = new BigDecimal("111");
-		BigDecimal par = new BigDecimal("32");
-
-		if (courseName.isBlank() || teeName.isBlank() || rating.compareTo(BigDecimal.ZERO) <= 0 || slope.compareTo(BigDecimal.ZERO) <= 0 || par
-				.compareTo(BigDecimal.ZERO) <= 0) {
-			throw new IllegalArgumentException("need to pass some arguments by hand...");
-		}
-
-		Course course = Course.newCourse(courseName);
-		Tee tee = Tee.newTee(teeName, rating, slope, par.intValue());
+		Tee green = Tee.of("Green", new BigDecimal("66.2"), new BigDecimal("115"), 72, 5654L);
+		Tee gold = Tee.of("Gold", new BigDecimal("68.5"), new BigDecimal("126"), 72, 6292L);
+		Tee silver = Tee.of("Silver", new BigDecimal("71.0"), new BigDecimal("133"), 72, 6694L);
+		Tee black = Tee.of("Black", new BigDecimal("72.7"), new BigDecimal("135"), 72, 7006L);
+		Course blueHead = Course.of("Blue Head", List.of(green, gold, silver, black));
 
 		Golfer tom = null, will = null, tomTrend = null, willTrend = null;
 
@@ -91,16 +84,20 @@ public class GolfStatsApplication {
 			throw new IllegalArgumentException("could not find all golfer stats");
 		}
 
-		log.info(String.format("Course handicap at %s based on true index", courseName));
-		CourseHandicap courseHandicap = CourseHandicap.teamOf(List.of(tom, will), course, tee);
-		courseHandicap.getHandicapStrokesPerGolfer().forEach((k, v) -> log.info(String.join(": ", k, v.toString())));
-		log.info(String.format("Quota = %s", courseHandicap.getStablefordQuota()));
+		TeeHandicap blackHandicapForTom = black.handicapOf(tom);
+		log.info(blackHandicapForTom.toString());
 
-		log.info(String.format("Course handicap at %s based on trending index", courseName));
-		CourseHandicap courseHandicapFromTrend = CourseHandicap.teamOf(List.of(tomTrend, willTrend), course, tee);
-		courseHandicapFromTrend.getHandicapStrokesPerGolfer()
-		                       .forEach((k, v) -> log.info(String.join(": ", k, v.toString())));
-		log.info(String.format("Quota = %s", courseHandicapFromTrend.getStablefordQuota()));
+		TeeHandicap blackHandicapForTomAndWill = black.handicapOf(List.of(tom, will));
+		log.info(blackHandicapForTomAndWill.toString());
+
+		List<TeeHandicap> blueHeadHandicapsForTom = blueHead.handicapOf(tom);
+		log.info(blueHeadHandicapsForTom.toString());
+
+		List<TeeHandicap> blueHeadHandicapsForTomWillAndTrends = blueHead.handicapOf(List.of(tom, will, tomTrend, willTrend));
+		log.info(blueHeadHandicapsForTomWillAndTrends.toString());
+
+		StablefordQuota silverQuotaForTom = silver.stablefordQuota(tom);
+		log.info(silverQuotaForTom.toString());
 	}
 
 }

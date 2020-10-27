@@ -31,7 +31,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		             .map(GolfRound::getScoreDifferential)
 		             .reduce(BigDecimal.ZERO, BigDecimal::add)
 		             .divide(BigDecimal.valueOf(rounds.size()), RoundingMode.HALF_UP)
-		             .setScale(2, RoundingMode.HALF_UP);
+		             .setScale(1, RoundingMode.HALF_UP);
 	}
 
 	public GolfRoundStream compileTo18HoleRounds() {

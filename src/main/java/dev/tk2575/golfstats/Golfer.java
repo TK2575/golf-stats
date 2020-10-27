@@ -15,4 +15,8 @@ public interface Golfer {
 	HandicapIndex getHandicapIndex();
 
 	String getGender();
+
+	default String getKey() {
+		return String.join("-", getName(), getHandicapIndex().getValue().toPlainString());
+	}
 }
