@@ -62,4 +62,16 @@ class StablefordQuotaTest {
 		assertEquals(18-8, quota.getQuotaPerGolfer().get(golfer.getKey()));
 	}
 
+	@Test
+	void testSingleGolferZeroQuota() {
+		Golfer golfer = Golfer.of("Double-Bogey Dave", HandicapIndex.of(new BigDecimal("38.0")));
+		Tee tee = Tee.of("White", new BigDecimal("72"), new BigDecimal("113"), 72);
+		StablefordQuota quota = tee.stablefordQuota(golfer);
+		assertEquals(0, quota.getQuotaPerGolfer().get(golfer.getKey()));
+
+		tee = Tee.of("White", new BigDecimal("72"), new BigDecimal("113"), 36);
+		quota = tee.stablefordQuota(golfer);
+		assertEquals(0, quota.getQuotaPerGolfer().get(golfer.getKey()));
+	}
+
 }

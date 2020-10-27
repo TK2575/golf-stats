@@ -61,11 +61,8 @@ public class GolfStatsApplication {
 	}
 
 	private static void logCourseHandicapForNextRound(Map<String, CurrentGolferStats> currentStats) {
-		Tee green = Tee.of("Green", new BigDecimal("66.2"), new BigDecimal("115"), 72, 5654L);
-		Tee gold = Tee.of("Gold", new BigDecimal("68.5"), new BigDecimal("126"), 72, 6292L);
-		Tee silver = Tee.of("Silver", new BigDecimal("71.0"), new BigDecimal("133"), 72, 6694L);
-		Tee black = Tee.of("Black", new BigDecimal("72.7"), new BigDecimal("135"), 72, 7006L);
-		Course blueHead = Course.of("Blue Head", List.of(green, gold, silver, black));
+		Tee back = Tee.of("Back", new BigDecimal("70.4"), new BigDecimal("122"), 35, 3189L);
+		Course narwhal = Course.of("Narwhal GC", back);
 
 		Golfer tom = null, will = null, tomTrend = null, willTrend = null;
 
@@ -84,20 +81,11 @@ public class GolfStatsApplication {
 			throw new IllegalArgumentException("could not find all golfer stats");
 		}
 
-		TeeHandicap blackHandicapForTom = black.handicapOf(tom);
-		log.info(blackHandicapForTom.toString());
+		StablefordQuota highQuota = back.stablefordQuota(List.of(tom, will));
+		StablefordQuota lowQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
 
-		TeeHandicap blackHandicapForTomAndWill = black.handicapOf(List.of(tom, will));
-		log.info(blackHandicapForTomAndWill.toString());
-
-		List<TeeHandicap> blueHeadHandicapsForTom = blueHead.handicapOf(tom);
-		log.info(blueHeadHandicapsForTom.toString());
-
-		List<TeeHandicap> blueHeadHandicapsForTomWillAndTrends = blueHead.handicapOf(List.of(tom, will, tomTrend, willTrend));
-		log.info(blueHeadHandicapsForTomWillAndTrends.toString());
-
-		StablefordQuota silverQuotaForTom = silver.stablefordQuota(tom);
-		log.info(silverQuotaForTom.toString());
+		log.info(String.format("High quota = %s, (%s)", highQuota.getTotalQuota(), highQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("Low quota = %s, (%s)", lowQuota.getTotalQuota(), lowQuota.getTee().getHandicapStrokes()));
 	}
 
 }

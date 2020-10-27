@@ -38,7 +38,7 @@ public class StablefordQuota {
 		//TODO encapsulate potentially varying stableford values?
 		Integer scratch = this.tee.getHoleCount() * 2;
 		for (Map.Entry<String, Integer> each : this.tee.getHandicapStrokes().entrySet()) {
-			results.put(each.getKey(), scratch - each.getValue());
+			results.put(each.getKey(), Math.max(0,scratch - each.getValue()));
 		}
 		return results;
 	}

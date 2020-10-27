@@ -24,6 +24,10 @@ public interface Course {
 		return new SimpleCourse(courseName, tees);
 	}
 
+	static Course of(String courseName, Tee tee) {
+		return new SimpleCourse(courseName, List.of(tee));
+	}
+
 	static Course compositeOf(Course course1, Course course2) {
 		if (course1.equals(course2)) {
 			return course1;
