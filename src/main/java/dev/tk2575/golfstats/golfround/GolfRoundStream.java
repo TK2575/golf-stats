@@ -100,6 +100,14 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		                                 .limit(subsetSize));
 	}
 
+	public GolfRoundStream getWorstDifferentials() {
+		final List<GolfRound> rounds = this.asList();
+		long subsetSize = (long) (rounds.size() * .4);
+		return new GolfRoundStream(rounds.stream()
+		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential).reversed())
+		                                 .limit(subsetSize));
+	}
+
 	public BigDecimal getFairwaysInRegulation() {
 		final List<GolfRound> rounds = this.asList();
 		long fairwaysInRegulation = rounds.stream()

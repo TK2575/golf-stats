@@ -25,6 +25,8 @@ public interface HandicapIndex {
 		return new WHSHandicapIndex(rounds);
 	}
 
+	static HandicapIndex antiHandicapOf(List<GolfRound> rounds) { return new AntiWHSHandicapIndex(rounds); }
+
 	static HandicapIndex lastFiveRoundsTrendingHandicap(List<GolfRound> rounds) {
 		return new LastNRoundsTrendingHandicap(rounds, 5);
 	}

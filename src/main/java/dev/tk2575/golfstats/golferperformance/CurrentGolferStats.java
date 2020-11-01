@@ -17,6 +17,7 @@ public class CurrentGolferStats implements GolferPerformance {
 	private final List<GolfRound> golfRounds;
 	private final HandicapIndex handicapIndex;
 	private final HandicapIndex trendingHandicap;
+	private final HandicapIndex antiHandicap;
 
 	public CurrentGolferStats(List<GolfRound> roundsUnsorted) {
 		this.golfRounds = GolfRound.stream(roundsUnsorted)
@@ -25,6 +26,7 @@ public class CurrentGolferStats implements GolferPerformance {
 		this.golfer = rounds().golferNames();
 		this.handicapIndex = HandicapIndex.newIndex(roundsUnsorted);
 		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(roundsUnsorted);
+		this.antiHandicap = HandicapIndex.antiHandicapOf(roundsUnsorted);
 	}
 
 	public String toString() {

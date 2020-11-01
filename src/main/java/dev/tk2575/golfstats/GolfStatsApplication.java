@@ -1,8 +1,6 @@
 package dev.tk2575.golfstats;
 
-import dev.tk2575.golfstats.course.Course;
 import dev.tk2575.golfstats.course.tee.Tee;
-import dev.tk2575.golfstats.course.tee.TeeHandicap;
 import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.SimpleGolfRoundCSVParser;
@@ -14,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +27,7 @@ public class GolfStatsApplication {
 		SpringApplication.run(GolfStatsApplication.class, args);
 
 		Map<String, List<GolfRound>> rounds = getCSVData();
-		Map<String, CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
+		List<CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
 
 		logStatsAndRoundHistory(currentStats);
 		logCourseHandicapForNextRound(currentStats);
@@ -42,16 +40,16 @@ public class GolfStatsApplication {
 		return new SimpleGolfRoundCSVParser(dataDirectory).readCsvData();
 	}
 
-	private static Map<String, CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
+	private static List<CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		//TODO one-liner via stream?
-		Map<String, CurrentGolferStats> results = new HashMap<>();
-		rounds.forEach((k, v) -> results.put(k, new CurrentGolferStats(v)));
+		List<CurrentGolferStats> results = new ArrayList<>();
+		rounds.forEach((k, v) -> results.add(new CurrentGolferStats(v)));
 		return results;
 	}
 
-	private static void logStatsAndRoundHistory(Map<String, CurrentGolferStats> currentStats) {
-		currentStats.values().forEach(s -> {
-			log.info(s.toString());
+	private static void logStatsAndRoundHistory(List<CurrentGolferStats> currentStats) {
+		currentStats.forEach(s -> {
+			log.info(s.getGolfer());
 			log.info(GolfRound.stream(s.getGolfRounds())
 			                  .compileTo18HoleRounds()
 			                  .sortNewestToOldest()
@@ -60,20 +58,22 @@ public class GolfStatsApplication {
 		});
 	}
 
-	private static void logCourseHandicapForNextRound(Map<String, CurrentGolferStats> currentStats) {
+	private static void logCourseHandicapForNextRound(List<CurrentGolferStats> currentStats) {
 		Tee back = Tee.of("Back", new BigDecimal("70.4"), new BigDecimal("122"), 35, 3189L);
-		Course narwhal = Course.of("Narwhal GC", back);
 
-		Golfer tom = null, will = null, tomTrend = null, willTrend = null;
+		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
 
-		for (CurrentGolferStats stats : currentStats.values()) {
+		for (CurrentGolferStats stats : currentStats) {
 			if (stats.getGolfer().equalsIgnoreCase("tom")) {
 				tom = Golfer.of(stats.getGolfer(), stats.getHandicapIndex());
 				tomTrend = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
+				tomAnti = Golfer.of(stats.getGolfer(), stats.getAntiHandicap());
+
 			}
 			else if (stats.getGolfer().equalsIgnoreCase("will")) {
 				will = Golfer.of(stats.getGolfer(), stats.getHandicapIndex());
 				willTrend = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
+				willAnti = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
 			}
 		}
 
@@ -82,9 +82,11 @@ public class GolfStatsApplication {
 		}
 
 		StablefordQuota highQuota = back.stablefordQuota(List.of(tom, will));
-		StablefordQuota lowQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
+		StablefordQuota trendQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
+		StablefordQuota lowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
 
 		log.info(String.format("High quota = %s, (%s)", highQuota.getTotalQuota(), highQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("Trend quota = %s, (%s)", trendQuota.getTotalQuota(), trendQuota.getTee().getHandicapStrokes()));
 		log.info(String.format("Low quota = %s, (%s)", lowQuota.getTotalQuota(), lowQuota.getTee().getHandicapStrokes()));
 	}
 
