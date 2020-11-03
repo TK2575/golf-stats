@@ -8,8 +8,6 @@ import lombok.*;
 @ToString
 public class SimpleGolfer implements Golfer {
 
-	private static final String UNKNOWN = "UNKNOWN";
-
 	private final String name;
 	@EqualsAndHashCode.Exclude private final HandicapIndex handicapIndex;
 	private final String gender;

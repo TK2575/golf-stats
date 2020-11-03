@@ -7,19 +7,19 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Getter
 public class CurrentGolferStats implements GolferPerformance {
 
 	private final String golfer;
-	private final List<GolfRound> golfRounds;
+	private final Collection<GolfRound> golfRounds;
 	private final HandicapIndex handicapIndex;
 	private final HandicapIndex trendingHandicap;
 	private final HandicapIndex antiHandicap;
 
-	public CurrentGolferStats(List<GolfRound> roundsUnsorted) {
+	public CurrentGolferStats(Collection<GolfRound> roundsUnsorted) {
 		this.golfRounds = GolfRound.stream(roundsUnsorted)
 		                           .sortOldestToNewest()
 		                           .collect(Collectors.toList());

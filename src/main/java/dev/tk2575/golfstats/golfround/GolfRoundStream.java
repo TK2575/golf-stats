@@ -30,8 +30,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return rounds.stream()
 		             .map(GolfRound::getScoreDifferential)
 		             .reduce(BigDecimal.ZERO, BigDecimal::add)
-		             .divide(BigDecimal.valueOf(rounds.size()), RoundingMode.HALF_UP)
-		             .setScale(1, RoundingMode.HALF_UP);
+		             .divide(BigDecimal.valueOf(rounds.size()), 1, RoundingMode.HALF_UP);
 	}
 
 	public GolfRoundStream compileTo18HoleRounds() {
@@ -50,7 +49,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 					pendingNineHoleRound = round;
 				}
 				else {
-					thisRound = new SimpleCompositeGolfRound(pendingNineHoleRound, round);
+					thisRound = GolfRound.compositeOf(pendingNineHoleRound, round);
 					pendingNineHoleRound = null;
 				}
 			}

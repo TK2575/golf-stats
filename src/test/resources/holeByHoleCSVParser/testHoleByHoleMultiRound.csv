@@ -1,0 +1,18 @@
+id,golfer,date,course,tees,rating,slope,duration,transport
+1,Will,6/17/2018,Mercer Oaks Golf Course (West),White,70.7,131,2:20,Cart
+2,Will,6/22/2018,Eisenhower Park GC (White),White,71,124,2:24,Cart
+3,Will,7/7/2018,Bethpage State Park Golf Course (Red),White,71.9,127,4:45,Cart
+5,Will,9/23/2019,Skyway Golf Course at Lincoln Park West,White,68.2,118,2:06,Cart
+6,Will,10/8/2019,Mountain View Golf Course,White,71.8,122,2:32,Cart
+7,Will,6/6/2020,Ramblewood Country Club (Red),White,70.8,129,3:08,Cart
+8,Will,6/25/2020,Newton Commonwealth Golf Course,Blue,67,119,4:36,Walk
+9,Will,7/12/2020,Leo J Martin GC,Blue,69.2,116,2:30,Walk
+10,Will,7/19/2020,Patriot Golf Course,Blue,68.6,128,2:06,Walk
+11,Will,8/2/2020,Pine Meadows GC,Blue,67,105,2:05,Walk
+12,Will,8/22/2020,Leo J Martin GC,Blue,34.6,116,2:15,Walk
+13,Will,9/18/2020,Newton Commonwealth Golf Course,Blue,67,119,4:35,Walk
+14,Will,9/26/2020,Quail Ridge Country Club,White-Blue,68.6,128,4:47,Walk
+15,Will,10/2/2020,Westborough CC,White,34.3,119,2:30,Walk
+16,Will,10/10/2020,Norwood CC,Gold,67.1,113,4:55,Walk
+17,Will,10/18/2020,Butter Brook GC,White,68.6,120,4:41,Walk
+18,Will,10/24/2020,Sassamon Trace Golf Course,White,30.7,111,2:25,Walk

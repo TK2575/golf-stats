@@ -5,7 +5,7 @@ import dev.tk2575.golfstats.golfround.GolfRoundStream;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 
 @Getter
 public class AntiWHSHandicapIndex implements HandicapIndex {
@@ -13,9 +13,9 @@ public class AntiWHSHandicapIndex implements HandicapIndex {
 	private final BigDecimal value;
 
 	@ToString.Exclude
-	private final List<GolfRound> rounds;
+	private final Collection<GolfRound> rounds;
 
-	public AntiWHSHandicapIndex(List<GolfRound> rounds) {
+	public AntiWHSHandicapIndex(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}

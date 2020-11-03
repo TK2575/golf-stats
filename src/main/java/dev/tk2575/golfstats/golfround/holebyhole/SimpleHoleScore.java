@@ -4,13 +4,12 @@ import lombok.*;
 
 @Getter
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class SimpleHoleScore implements Hole {
 	private final Integer number;
 	private final Integer index;
 	private final Integer par;
-	private final Integer score;
-	private final boolean fairwayPresent;
+	private final Integer strokes;
 	private final boolean fairwayInRegulation;
-	private final boolean greenInRegulation;
 	private final Integer putts;
 }

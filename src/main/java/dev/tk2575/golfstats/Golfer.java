@@ -4,6 +4,8 @@ import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 
 public interface Golfer {
 
+	String UNKNOWN = "UNKNOWN";
+
 	static Golfer newGolfer(String golferName) {
 		return new SimpleGolfer(golferName);
 	}

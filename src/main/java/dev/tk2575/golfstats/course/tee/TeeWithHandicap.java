@@ -4,15 +4,15 @@ import dev.tk2575.golfstats.Golfer;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.math.RoundingMode.HALF_UP;
 
 @Getter
 @ToString
-public class TeeWithHandicap implements TeeHandicap {
+public class TeeWithHandicap implements Tee {
 
 	private static final BigDecimal BASE_SLOPE = BigDecimal.valueOf(113);
 
@@ -21,18 +21,20 @@ public class TeeWithHandicap implements TeeHandicap {
 	private final BigDecimal slope;
 	private final Integer par;
 	private final Integer holeCount;
+	private final Long yards;
 	private final Map<String,Integer> handicapStrokes;
 
-	public TeeWithHandicap(Tee tee, List<Golfer> golfers) {
+	public TeeWithHandicap(Tee tee, Collection<Golfer> golfers) {
 		this.name = tee.getName();
 		this.rating = tee.getRating();
 		this.slope = tee.getSlope();
 		this.par = tee.getPar();
+		this.yards = tee.getYards();
 		this.holeCount = tee.getHoleCount();
 		this.handicapStrokes = computeHandicapStrokes(golfers);
 	}
 
-	private Map<String,Integer> computeHandicapStrokes(List<Golfer> golfers) {
+	private Map<String,Integer> computeHandicapStrokes(Collection<Golfer> golfers) {
 		Map<String,Integer> results = new HashMap<>();
 		BigDecimal slopeDiff, result;
 

@@ -2,49 +2,50 @@ package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.course.Course;
-import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.course.tee.Tee;
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.IncompleteRound;
 import dev.tk2575.golfstats.golfround.Transport;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 
 @Getter
 @ToString
-public class HoleByHoleRound implements GolfRound, HoleByHole {
-	private LocalDate date;
-	private Duration duration;
+public class HoleByHoleRound implements GolfRound {
+	private final LocalDate date;
+	private final Duration duration;
 
-	private Golfer golfer;
-	private Course course;
-	private Tee tee;
-	private Transport transport;
+	private final Golfer golfer;
+	private final Course course;
+	private final Tee tee;
+	private final Transport transport;
 
-	private BigDecimal scoreDifferential;
+	private final BigDecimal scoreDifferential;
 
-	private Integer score;
-	private Integer fairwaysInRegulation;
-	private Integer fairways;
-	private Integer greensInRegulation;
-	private Integer putts;
+	private final Integer score;
+	private final Integer fairwaysInRegulation;
+	private final Integer fairways;
+	private final Integer greensInRegulation;
+	private final Integer putts;
 
-	private boolean nineHoleRound;
+	private final boolean nineHoleRound;
 
 	@Getter(AccessLevel.NONE) @ToString.Exclude
-	private List<Hole> holes;
+	private final Collection<Hole> holes;
 
-	public HoleByHoleRound(HoleByHoleRoundCSVParser factory) {
-		this.date = factory.getDate();
-		this.duration = factory.getDuration();
-		this.golfer = Golfer.newGolfer(factory.getGolfer());
-		this.course = Course.of(factory.getCourse());
-		this.tee = Tee.of(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
-		this.transport = Transport.valueOf(factory.getTransport());
+	public HoleByHoleRound(IncompleteRound round, Collection<Hole> holes) {
+		this.holes = Hole.stream(holes).validate().sortFirstToLast().asList();
 
-		this.holes = Hole.stream(factory.getHoles()).validate().sortFirstToLast().asList();
+		this.date = round.getDate();
+		this.duration = round.getDuration();
+		this.golfer = round.getGolfer();
+		this.course = round.getCourse();
+		this.tee = Tee.of(round.getTeeName(), round.getRating(), round.getSlope(), holes().getPar());
+		this.transport = round.getTransport();
 
 		this.score = holes().totalStrokes();
 		this.fairwaysInRegulation = holes().totalFairwaysInRegulation();
@@ -56,8 +57,9 @@ public class HoleByHoleRound implements GolfRound, HoleByHole {
 		this.scoreDifferential = computeScoreDifferential();
 	}
 
+	@Override
 	public HoleStream getHoles() {
-		return Hole.stream(this.holes);
+		return holes();
 	}
 
 	public Integer getHoleCount() {

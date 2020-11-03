@@ -1,9 +1,11 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.golfstats.golfround.GolfRound;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
@@ -17,21 +19,40 @@ public class HoleStream implements ObjectStream<Hole> {
 
 	private final Stream<Hole> stream;
 
+	private final boolean empty;
+
+	public HoleStream(Collection<Hole> holes) {
+		this.stream = holes.stream();
+		this.empty = holes.isEmpty();
+	}
+
+	public static HoleStream empty() {
+		return new HoleStream(Stream.empty(), true);
+	}
+
 	public HoleStream validate() {
 		List<Hole> holes = this.asList();
+		if (holes == null || holes.isEmpty()) {
+			throw new IllegalArgumentException("holes collection cannot be empty");
+		}
+
 		long count = holes.size();
 		if (count != 9 && count != 18) {
 			throw new IllegalArgumentException("must record 9 or 18 holes");
 		}
-		return new HoleStream(holes.stream());
+		return new HoleStream(holes);
 	}
 
 	public HoleStream sortFirstToLast() {
-		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)));
+		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)), this.empty);
+	}
+
+	public Integer getPar() {
+		return sumInteger(Hole::getPar);
 	}
 
 	public Integer totalStrokes() {
-		return sumInteger(Hole::getScore);
+		return sumInteger(Hole::getStrokes);
 	}
 
 	public Integer totalFairwaysInRegulation() {
@@ -50,11 +71,13 @@ public class HoleStream implements ObjectStream<Hole> {
 		return sumInteger(Hole::getPutts);
 	}
 
+	public Integer totalStablefordPoints() { return sumInteger(Hole::getStablefordPoints); }
+
 	public boolean isNineHoleRound() {
 		return this.stream.count() == 9;
 	}
 
-	public static List<Hole> compositeOf(HoleByHoleRound round1, HoleByHoleRound round2) {
+	public static List<Hole> compositeOf(GolfRound round1, GolfRound round2) {
 		List<Hole> list = new ArrayList<>();
 		if (round1.getDate().isAfter(round2.getDate())) {
 			list.addAll(round2.getHoles().asList());
@@ -65,7 +88,7 @@ public class HoleStream implements ObjectStream<Hole> {
 			list.addAll(round2.getHoles().asList());
 		}
 
-		return new HoleStream(list.stream()).validate().asList();
+		return new HoleStream(list).validate().asList();
 
 	}
 

@@ -6,13 +6,14 @@ import dev.tk2575.golfstats.golfround.GolfRound;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public interface GolferPerformance {
 
 	String getGolfer();
 
-	List<GolfRound> getGolfRounds();
+	Collection<GolfRound> getGolfRounds();
 
 	HandicapIndex getHandicapIndex();
 

@@ -4,6 +4,7 @@ import dev.tk2575.golfstats.golfround.GolfRound;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public interface HandicapIndex {
@@ -21,13 +22,13 @@ public interface HandicapIndex {
 		           .getSimpleName() + "(" + String.join(", ", fields) + ")";
 	}
 
-	static HandicapIndex newIndex(List<GolfRound> rounds) {
+	static HandicapIndex newIndex(Collection<GolfRound> rounds) {
 		return new WHSHandicapIndex(rounds);
 	}
 
-	static HandicapIndex antiHandicapOf(List<GolfRound> rounds) { return new AntiWHSHandicapIndex(rounds); }
+	static HandicapIndex antiHandicapOf(Collection<GolfRound> rounds) { return new AntiWHSHandicapIndex(rounds); }
 
-	static HandicapIndex lastFiveRoundsTrendingHandicap(List<GolfRound> rounds) {
+	static HandicapIndex lastFiveRoundsTrendingHandicap(Collection<GolfRound> rounds) {
 		return new LastNRoundsTrendingHandicap(rounds, 5);
 	}
 

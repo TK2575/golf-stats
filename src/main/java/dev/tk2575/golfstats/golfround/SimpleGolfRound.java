@@ -8,6 +8,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder(toBuilder = true)
@@ -30,15 +32,15 @@ public class SimpleGolfRound implements GolfRound {
 	private final Tee tee;
 	private final Transport transport;
 
-	private final BigDecimal scoreDifferential;
+	private BigDecimal scoreDifferential;
 
-	private final Integer score;
-	private final Integer fairwaysInRegulation;
-	private final Integer fairways;
-	private final Integer greensInRegulation;
-	private final Integer putts;
+	private Integer score;
+	private Integer fairwaysInRegulation;
+	private Integer fairways;
+	private Integer greensInRegulation;
+	private Integer putts;
 
-	private final boolean nineHoleRound;
+	private boolean nineHoleRound;
 
 	public SimpleGolfRound(SimpleGolfRoundCSVParser factory) {
 		this.date = factory.getDate();
@@ -54,5 +56,16 @@ public class SimpleGolfRound implements GolfRound {
 		this.putts = factory.getPutts();
 		this.scoreDifferential = computeScoreDifferential();
 		this.nineHoleRound = factory.getNineHoleRound();
+	}
+
+	public SimpleGolfRound(String[] row, DateTimeFormatter dateFormat, DateTimeFormatter durationFormat) {
+		this.golfer = Golfer.newGolfer(row[1]);
+		this.date = LocalDate.parse(row[2], dateFormat);
+		this.course = Course.of(row[3]);
+		this.tee = Tee.of(row[4], new BigDecimal(row[5]), new BigDecimal(row[6]), Integer.valueOf(row[7]));
+		this.duration = row[8] == null || row[8].isBlank()
+		                ? Duration.ZERO
+		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[8], durationFormat));
+		this.transport = Transport.valueOf(row[9]);
 	}
 }

@@ -28,7 +28,7 @@ public class SimpleTee implements Tee {
 
 	private BigDecimal correctCourseRating(Integer par, BigDecimal rating) {
 		if (rating.subtract(BigDecimal.valueOf(par)).compareTo(BigDecimal.TEN) > 0) {
-			return rating.divide(new BigDecimal("2"), HALF_UP).setScale(2, HALF_UP);
+			return rating.divide(BigDecimal.valueOf(2), 1, HALF_UP);
 		}
 		return rating;
 	}

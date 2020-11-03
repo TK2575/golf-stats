@@ -4,16 +4,16 @@ import dev.tk2575.golfstats.golfround.GolfRound;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Collection;
 
 @Getter
 public class LastNRoundsTrendingHandicap implements HandicapIndex {
 
 	private final String golfer;
 	private final BigDecimal value;
-	private final List<GolfRound> rounds;
+	private final Collection<GolfRound> rounds;
 
-	public LastNRoundsTrendingHandicap(List<GolfRound> rounds, int maxSize) {
+	public LastNRoundsTrendingHandicap(Collection<GolfRound> rounds, int maxSize) {
 		validateArguments(rounds, maxSize);
 
 		this.rounds = GolfRound.stream(rounds).compileTo18HoleRounds().sortNewestToOldest().limit(maxSize).asList();
@@ -22,7 +22,7 @@ public class LastNRoundsTrendingHandicap implements HandicapIndex {
 		this.value = GolfRound.stream(this.rounds).meanDifferential();
 	}
 
-	private void validateArguments(List<GolfRound> rounds, int maxSize) {
+	private void validateArguments(Collection<GolfRound> rounds, int maxSize) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds is a required argument");
 		}

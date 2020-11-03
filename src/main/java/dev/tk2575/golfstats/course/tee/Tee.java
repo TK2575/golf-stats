@@ -4,7 +4,7 @@ import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 public interface Tee {
 
@@ -17,6 +17,14 @@ public interface Tee {
 	Integer getPar();
 
 	Integer getHoleCount();
+
+	default Long getYards() {
+		return 0L;
+	}
+
+	default Map<String, Integer> getHandicapStrokes() {
+		return new HashMap<>();
+	}
 
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par) {
 		return new SimpleTee(teeName, courseRating, slope, par);
@@ -33,11 +41,11 @@ public interface Tee {
 		return new CompositeTee(tee1, tee2);
 	}
 
-	default TeeHandicap handicapOf(Golfer golfer) {
+	default Tee handicapOf(Golfer golfer) {
 		return new TeeWithHandicap(this, List.of(golfer));
 	}
 
-	default TeeHandicap handicapOf(List<Golfer> golfers) {
+	default Tee handicapOf(Collection<Golfer> golfers) {
 		return new TeeWithHandicap(this, golfers);
 	}
 

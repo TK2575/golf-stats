@@ -1,5 +1,7 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.IncompleteRound;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,21 +10,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 @Getter
 public class HoleByHoleRoundCSVParser {
 
 	private static final Logger log = LoggerFactory.getLogger(HoleByHoleRoundCSVParser.class);
-	private static final String EXPECTED_HEADERS_ROUND = "golfer,date,course,tees,rating,slope,par,duration,transport";
-	private static final String EXPECTED_HEADERS_HOLES = "hole,index,par,strokes,fir,gir,putts";
+	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,tees,rating,slope,duration,transport";
+	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,strokes,fir,putts";
 
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
 	private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
@@ -30,27 +27,18 @@ public class HoleByHoleRoundCSVParser {
 	private final File roundFile;
 	private final File holesFile;
 
-	private String golfer;
-	private LocalDate date;
-	private String course;
-	private String tees;
-	private BigDecimal rating;
-	private BigDecimal slope;
-	private Integer par;
-	private Duration duration;
-	private String transport;
-
-	private List<Hole> holes;
+	private Map<Integer, IncompleteRound> roundDetails;
+	private Map<Integer, List<Hole>> holes;
 
 	public HoleByHoleRoundCSVParser(File roundFile, File holesFile) {
 		this.roundFile = roundFile;
 		this.holesFile = holesFile;
 	}
 
-	public HoleByHoleRound parse() {
+	public List<GolfRound> parse() {
 		parseRoundDetails(this.roundFile);
 		parseHolesDetails(this.holesFile);
-		return new HoleByHoleRound(this);
+		return GolfRound.compile(this.roundDetails, this.holes);
 	}
 
 	private void parseRoundDetails(File roundFile) {
@@ -58,19 +46,15 @@ public class HoleByHoleRoundCSVParser {
 			String line;
 			String sep = ",";
 			boolean headersVerified = false;
-			boolean roundDetails = false;
+			this.roundDetails = new HashMap<>();
 
 			while ((line = br.readLine()) != null) {
 				if (!headersVerified) {
 					headersVerified = verifyHeaders(EXPECTED_HEADERS_ROUND, line);
 				}
-				else if (!roundDetails) {
-					roundDetails = recordRoundDetails(line.split(sep));
-				}
 				else {
-					log.warn(String.format("Found multiple rounds' details in %s, skipping all but the first", roundFile
-							.getName()));
-					break;
+					String[] row = line.split(sep);
+					this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, DURATION_FORMAT));
 				}
 			}
 		}
@@ -78,22 +62,6 @@ public class HoleByHoleRoundCSVParser {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-	}
-
-	private boolean recordRoundDetails(String[] row) {
-		//TODO better defend against individual fields being null/empty
-		this.golfer = row[0];
-		this.date = LocalDate.parse(row[1], DATE_FORMAT);
-		this.course = row[2];
-		this.tees = row[3];
-		this.rating = new BigDecimal(row[4]);
-		this.slope = new BigDecimal(row[5]);
-		this.par = Integer.valueOf(row[6]);
-		this.duration = row[7] == null || row[7].isBlank()
-		                ? Duration.ZERO
-		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[7], DURATION_FORMAT));
-		this.transport = row[8];
-		return true;
 	}
 
 	private static boolean verifyHeaders(String expectedHeaders, String line) {
@@ -106,19 +74,30 @@ public class HoleByHoleRoundCSVParser {
 
 	private void parseHolesDetails(File holesFile) {
 		try (BufferedReader br = new BufferedReader(new FileReader(holesFile))) {
-			String line;
+
+			this.holes = new HashMap<>();
 			boolean headersVerified = false;
+			String[] row;
+			String line;
 			String sep = ",";
-			List<Hole> holeList = new ArrayList<>();
+			List<Hole> holeList;
+			Hole hole;
+			Integer roundId;
+
 			while ((line = br.readLine()) != null) {
 				if (!headersVerified) {
 					headersVerified = verifyHeaders(EXPECTED_HEADERS_HOLES, line);
 				}
 				else {
-					holeList.add(recordHole(line.split(sep)));
+					row = line.split(sep);
+					roundId = Integer.valueOf(row[0]);
+					hole = recordHole(row);
+
+					holeList = this.holes.getOrDefault(roundId, new ArrayList<>());
+					holeList.add(hole);
+					this.holes.put(roundId, holeList);
 				}
 			}
-			this.holes = holeList;
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -127,16 +106,14 @@ public class HoleByHoleRoundCSVParser {
 	}
 
 	private Hole recordHole(String[] row) {
-		Integer number = Integer.valueOf(row[0]);
-		Integer index = Integer.valueOf(row[1]);
-		Integer parHole = Integer.valueOf(row[2]);
-		Integer score = Integer.valueOf(row[3]);
-		boolean fairwayPresent = parHole > 4;
-		boolean fairwayInRegulation = Boolean.parseBoolean(row[4]);
-		boolean greenInRegulation = Boolean.parseBoolean(row[5]);
-		Integer putts = Integer.valueOf(row[6]);
-
-		return new SimpleHoleScore(number, index, parHole, score, fairwayPresent, fairwayInRegulation, greenInRegulation, putts);
+		return SimpleHoleScore.builder()
+		                      .number(Integer.valueOf(row[1]))
+		                      .index(Integer.valueOf(row[2]))
+		                      .par(Integer.valueOf(row[3]))
+		                      .strokes(Integer.valueOf(row[4]))
+		                      .fairwayInRegulation(Boolean.parseBoolean(row[5]))
+		                      .putts(Integer.valueOf(row[6]))
+		                      .build();
 	}
 
 }
