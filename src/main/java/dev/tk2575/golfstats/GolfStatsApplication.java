@@ -49,7 +49,7 @@ public class GolfStatsApplication {
 
 	private static void logStatsAndRoundHistory(List<CurrentGolferStats> currentStats) {
 		currentStats.forEach(s -> {
-			log.info(s.getGolfer());
+			log.info(String.format("%s (%s)", s.getGolfer(), s.getHandicapIndex().getValue().toPlainString()));
 			log.info(GolfRound.stream(s.getGolfRounds())
 			                  .compileTo18HoleRounds()
 			                  .sortNewestToOldest()
@@ -59,7 +59,8 @@ public class GolfStatsApplication {
 	}
 
 	private static void logCourseHandicapForNextRound(List<CurrentGolferStats> currentStats) {
-		Tee back = Tee.of("Back", new BigDecimal("70.4"), new BigDecimal("122"), 35, 3189L);
+		Tee blue = Tee.of("Blue", new BigDecimal("31.5"), new BigDecimal("114"), 32, 2383L);
+		Tee white = Tee.of("White", new BigDecimal("30.7"), new BigDecimal("111"), 32, 2167L);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
 
@@ -81,13 +82,21 @@ public class GolfStatsApplication {
 			throw new IllegalArgumentException("could not find all golfer stats");
 		}
 
-		StablefordQuota highQuota = back.stablefordQuota(List.of(tom, will));
-		StablefordQuota trendQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
-		StablefordQuota lowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
+		StablefordQuota blueHighQuota = blue.stablefordQuota(List.of(tom, will));
+		StablefordQuota blueTrendQuota = blue.stablefordQuota(List.of(tomTrend, willTrend));
+		StablefordQuota blueLowQuota = blue.stablefordQuota(List.of(tomAnti, willAnti));
 
-		log.info(String.format("High quota = %s, (%s)", highQuota.getTotalQuota(), highQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("Trend quota = %s, (%s)", trendQuota.getTotalQuota(), trendQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("Low quota = %s, (%s)", lowQuota.getTotalQuota(), lowQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - High quota = %s, (%s)", blueHighQuota.getTee().getName(), blueHighQuota.getTotalQuota(), blueHighQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - Trend quota = %s, (%s)", blueTrendQuota.getTee().getName(), blueTrendQuota.getTotalQuota(), blueTrendQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - Low quota = %s, (%s)", blueLowQuota.getTee().getName(), blueLowQuota.getTotalQuota(), blueLowQuota.getTee().getHandicapStrokes()));
+
+		StablefordQuota whiteHighQuota = white.stablefordQuota(List.of(tom, will));
+		StablefordQuota whiteTrendQuota = white.stablefordQuota(List.of(tomTrend, willTrend));
+		StablefordQuota whiteLowQuota = white.stablefordQuota(List.of(tomAnti, willAnti));
+
+		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee().getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee().getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - Low quota = %s, (%s)", whiteLowQuota.getTee().getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota.getTee().getHandicapStrokes()));
 	}
 
 }
