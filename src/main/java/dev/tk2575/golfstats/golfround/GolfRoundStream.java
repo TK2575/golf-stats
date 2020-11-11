@@ -27,6 +27,8 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public BigDecimal meanDifferential() {
 		List<GolfRound> rounds = asList();
+		if (rounds.isEmpty()) return BigDecimal.ZERO;
+
 		return rounds.stream()
 		             .map(GolfRound::getScoreDifferential)
 		             .reduce(BigDecimal.ZERO, BigDecimal::add)

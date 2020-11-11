@@ -8,6 +8,7 @@ import dev.tk2575.golfstats.golfround.holebyhole.CompositeHoleByHoleRound;
 import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.golfround.holebyhole.HoleByHoleRound;
 import dev.tk2575.golfstats.golfround.holebyhole.HoleStream;
+import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -35,7 +36,9 @@ public interface GolfRound {
 
 	BigDecimal getScoreDifferential();
 
-	Integer getScore();
+	Integer getStrokes();
+
+	Integer getStrokesAdjusted();
 
 	Integer getFairwaysInRegulation();
 
@@ -55,12 +58,20 @@ public interface GolfRound {
 
 	default BigDecimal computeScoreDifferential() {
 		BigDecimal firstTerm = BigDecimal.valueOf(113)
-		                                 .setScale(2, HALF_UP)
-		                                 .divide(getSlope(), HALF_UP);
-		BigDecimal secondTerm = BigDecimal.valueOf(getScore())
+		                                 .divide(getSlope(), 2, HALF_UP);
+		BigDecimal secondTerm = BigDecimal.valueOf(getStrokesAdjusted())
 		                                  .subtract(getRating())
 		                                  .setScale(2, HALF_UP);
-		return firstTerm.multiply(secondTerm).setScale(2, HALF_UP);
+		return firstTerm.multiply(secondTerm);
+	}
+
+	default Integer getHandicapStrokes() {
+		Tee handicap = getTee().handicapOf(getGolfer());
+		return handicap.getHandicapStrokesForGolfer(getGolfer());
+	}
+
+	default Integer getNetScore() {
+		return getStrokes() - getHandicapStrokes();
 	}
 
 	default BigDecimal getPuttsPerHole() {
@@ -93,9 +104,13 @@ public interface GolfRound {
 		return getTee().getPar();
 	}
 
+	default Integer getScore() { return getStrokes() - getPar(); }
+
 	default Integer getScoreToPar() {
-		return getScore() - getPar();
+		return getStrokes() - getPar();
 	}
+
+	default Long getYards() { return getTee().getYards(); }
 
 	static String[] roundHeaders() {
 		return new String[]{
@@ -139,9 +154,21 @@ public interface GolfRound {
 	}
 
 	static List<GolfRound> compile(Map<Integer, IncompleteRound> roundDetails, Map<Integer, List<Hole>> holes) {
-		//TODO one-liner via stream?
 		List<GolfRound> results = new ArrayList<>();
-		roundDetails.forEach((k,v) -> results.add(of(v, holes.get(k))));
+		HandicapIndex index;
+		IncompleteRound incompleteRound;
+
+		//TODO refactor without for loop?
+		for (Map.Entry<Integer, IncompleteRound> each : roundDetails.entrySet()) {
+			incompleteRound = each.getValue();
+			if (!results.isEmpty()) {
+				index = HandicapIndex.newIndex(results);
+				incompleteRound = new IncompleteRound(incompleteRound, index);
+			}
+
+			results.add(of(incompleteRound, holes.get(each.getKey())));
+		}
+
 		return results;
 	}
 

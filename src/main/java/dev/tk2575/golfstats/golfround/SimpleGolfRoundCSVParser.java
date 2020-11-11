@@ -115,6 +115,7 @@ public class SimpleGolfRoundCSVParser {
 		this.putts = Integer.valueOf(row[12]);
 		this.nineHoleRound = Boolean.parseBoolean(row[13]);
 
+		//TODO update index on each round
 		return new SimpleGolfRound(this);
 	}
 

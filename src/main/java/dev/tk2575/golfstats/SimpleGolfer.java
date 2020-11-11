@@ -13,14 +13,22 @@ public class SimpleGolfer implements Golfer {
 	private final String gender;
 
 	public SimpleGolfer(String golferName) {
-		this.name = golferName;
-		this.handicapIndex = HandicapIndex.emptyIndex();
-		this.gender = UNKNOWN;
+		this(golferName, null);
 	}
 
 	public SimpleGolfer(String golferName, HandicapIndex index) {
 		this.name = golferName;
-		this.handicapIndex = index;
+		this.handicapIndex = assignIndex(index);
 		this.gender = UNKNOWN;
+	}
+
+	public SimpleGolfer(Golfer golfer, HandicapIndex index) {
+		this.name = golfer.getName();
+		this.handicapIndex = assignIndex(index);
+		this.gender = golfer.getGender();
+	}
+
+	private HandicapIndex assignIndex(HandicapIndex index) {
+		return index == null ? HandicapIndex.emptyIndex() : index;
 	}
 }

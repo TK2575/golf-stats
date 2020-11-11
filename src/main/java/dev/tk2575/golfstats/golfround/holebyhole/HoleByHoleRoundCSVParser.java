@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.IncompleteRound;
+import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +28,19 @@ public class HoleByHoleRoundCSVParser {
 	private final File roundFile;
 	private final File holesFile;
 
+	private final HandicapIndex index;
+
 	private Map<Integer, IncompleteRound> roundDetails;
 	private Map<Integer, List<Hole>> holes;
 
 	public HoleByHoleRoundCSVParser(File roundFile, File holesFile) {
+		this(roundFile, holesFile, null);
+	}
+
+	public HoleByHoleRoundCSVParser(File roundFile, File holesFile, HandicapIndex index) {
 		this.roundFile = roundFile;
 		this.holesFile = holesFile;
+		this.index = index;
 	}
 
 	public List<GolfRound> parse() {
@@ -54,7 +62,7 @@ public class HoleByHoleRoundCSVParser {
 				}
 				else {
 					String[] row = line.split(sep);
-					this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, DURATION_FORMAT));
+					this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, DURATION_FORMAT, index));
 				}
 			}
 		}

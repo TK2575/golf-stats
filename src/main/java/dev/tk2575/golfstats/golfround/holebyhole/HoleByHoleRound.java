@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @ToString
@@ -26,11 +27,13 @@ public class HoleByHoleRound implements GolfRound {
 
 	private final BigDecimal scoreDifferential;
 
-	private final Integer score;
+	private final Integer strokes;
+	private final Integer strokesAdjusted;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;
 	private final Integer putts;
+	private final Integer netScore;
 
 	private final boolean nineHoleRound;
 
@@ -38,16 +41,19 @@ public class HoleByHoleRound implements GolfRound {
 	private final Collection<Hole> holes;
 
 	public HoleByHoleRound(IncompleteRound round, Collection<Hole> holes) {
-		this.holes = Hole.stream(holes).validate().sortFirstToLast().asList();
-
 		this.date = round.getDate();
 		this.duration = round.getDuration();
 		this.golfer = round.getGolfer();
 		this.course = round.getCourse();
-		this.tee = Tee.of(round.getTeeName(), round.getRating(), round.getSlope(), holes().getPar());
 		this.transport = round.getTransport();
 
-		this.score = holes().totalStrokes();
+		List<Hole> validatedHoles = Hole.stream(holes).validate().asList();
+		this.tee = Tee.of(this.golfer, round.getTeeName(), round.getRating(), round.getSlope(), Hole.stream(validatedHoles).getPar());
+		this.holes = Hole.stream(validatedHoles).applyNetDoubleBogey(this.tee, this.golfer).sortFirstToLast().asList();
+
+		this.strokes = holes().totalStrokes();
+		this.strokesAdjusted = holes().totalStrokesAdjusted();
+		this.netScore = holes().totalNetStrokes();
 		this.fairwaysInRegulation = holes().totalFairwaysInRegulation();
 		this.fairways = holes().totalFairways();
 		this.greensInRegulation = holes().totalGreensInRegulation();
