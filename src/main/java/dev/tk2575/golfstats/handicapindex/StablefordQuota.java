@@ -12,7 +12,6 @@ import java.util.Map;
 @Getter
 public class StablefordQuota {
 
-	//TODO move to generic Collection or Set where possible/appropriate
 	private final Collection<Golfer> golfers;
 	private final Tee tee;
 	private final Map<String, Integer> quotaPerGolfer;
@@ -20,16 +19,13 @@ public class StablefordQuota {
 
 	public StablefordQuota(Collection<Golfer> golfers, Tee tee) {
 		this.golfers = golfers;
-
 		this.tee = tee.handicapOf(golfers);
-
 		this.quotaPerGolfer = computeQuotaPerGolfer();
 		this.totalQuota = this.quotaPerGolfer.values().stream().reduce(0, Integer::sum);
 	}
 
 	private Map<String, Integer> computeQuotaPerGolfer() {
 		Map<String, Integer> results = new HashMap<>();
-		//TODO encapsulate potentially varying stableford values?
 		Integer scratch = this.tee.getHoleCount() * 2;
 		for (Map.Entry<String, Integer> each : this.tee.getHandicapStrokes().entrySet()) {
 			results.put(each.getKey(), Math.max(0,scratch - each.getValue()));

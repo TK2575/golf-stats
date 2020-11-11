@@ -34,7 +34,8 @@ public class SimpleGolfRound implements GolfRound {
 
 	private BigDecimal scoreDifferential;
 
-	private Integer score;
+	private Integer strokes;
+	private Integer strokesAdjusted;
 	private Integer fairwaysInRegulation;
 	private Integer fairways;
 	private Integer greensInRegulation;
@@ -49,7 +50,8 @@ public class SimpleGolfRound implements GolfRound {
 		this.tee = Tee.of(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
 		this.duration = factory.getDuration();
 		this.transport = factory.getTransport();
-		this.score = factory.getScore();
+		this.strokes = factory.getScore();
+		this.strokesAdjusted = this.strokes;
 		this.fairwaysInRegulation = factory.getFairwaysInRegulation();
 		this.fairways = factory.getFairways();
 		this.greensInRegulation = factory.getGreensInRegulation();

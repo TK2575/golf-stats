@@ -1,6 +1,9 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
+import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.golfstats.course.tee.Tee;
+import dev.tk2575.golfstats.golfround.games.Game;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import lombok.*;
 
@@ -10,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,12 +51,25 @@ public class HoleStream implements ObjectStream<Hole> {
 		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)), this.empty);
 	}
 
+	public HoleStream applyNetDoubleBogey(Tee tee, Golfer golfer) {
+		Integer handicapStrokes = tee.handicapOf(golfer).getHandicapStrokesForGolfer(golfer);
+		return new HoleStream(this.stream.map(h -> h.applyNetDoubleBogey(handicapStrokes)), this.empty);
+	}
+
 	public Integer getPar() {
 		return sumInteger(Hole::getPar);
 	}
 
 	public Integer totalStrokes() {
 		return sumInteger(Hole::getStrokes);
+	}
+
+	public Integer totalStrokesAdjusted() {
+		return sumInteger(Hole::getStrokesAdjusted);
+	}
+
+	public Integer totalNetStrokes() {
+		return sumInteger(Hole::getNetStrokes);
 	}
 
 	public Integer totalFairwaysInRegulation() {
@@ -71,7 +88,9 @@ public class HoleStream implements ObjectStream<Hole> {
 		return sumInteger(Hole::getPutts);
 	}
 
-	public Integer totalStablefordPoints() { return sumInteger(Hole::getStablefordPoints); }
+	public Integer totalScore(ToIntFunction<Hole> rules) {
+		return sumInteger(rules::applyAsInt);
+	}
 
 	public boolean isNineHoleRound() {
 		return this.stream.count() == 9;

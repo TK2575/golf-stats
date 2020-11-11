@@ -1,13 +1,13 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.games.Game;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,8 +42,9 @@ class HoleByHoleRoundCSVParserTest {
 		assertEquals(1, rounds.size());
 
 		GolfRound round = rounds.get(0);
-		assertEquals(83, round.getScore());
+		assertEquals(83, round.getStrokes());
 		assertEquals(31, round.getPutts());
+		assertEquals(30, Game.stablefordAllPositive(round).getScore());
 	}
 
 	@Test
@@ -81,15 +82,5 @@ class HoleByHoleRoundCSVParserTest {
 		assertEquals(7, firstRound.getFairways());
 		assertEquals(4, firstRound.getFairwaysInRegulation());
 		assertEquals(0, firstRound.getGreensInRegulation());
-		assertEquals(9, firstRound.getHoles().totalStablefordPoints());
-
-
-		for (GolfRound round : rounds) {
-
-			System.out.printf("%s\t%s\t%s\t%s\t%s\t%s\t%s%n", round.getDate(), round.getCourse().getName(), round.getTee().getRating(), round.getTee().getSlope(), round.getHoleCount(), round.getScoreToPar(), round
-					.getHoles()
-					.totalStablefordPoints());
-		}
-
 	}
 }

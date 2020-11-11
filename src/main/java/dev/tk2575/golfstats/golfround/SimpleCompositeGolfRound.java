@@ -47,7 +47,8 @@ public class SimpleCompositeGolfRound implements GolfRound {
 	private final BigDecimal scoreDifferential;
 
 	private final Integer par;
-	private final Integer score;
+	private final Integer strokes;
+	private final Integer strokesAdjusted;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;
@@ -72,7 +73,8 @@ public class SimpleCompositeGolfRound implements GolfRound {
 		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
 
 		this.par = firstRound.getPar() + secondRound.getPar();
-		this.score = firstRound.getScore() + secondRound.getScore();
+		this.strokes = firstRound.getStrokes() + secondRound.getStrokes();
+		this.strokesAdjusted = this.strokes;
 		this.fairwaysInRegulation = firstRound.getFairwaysInRegulation() + secondRound.getFairwaysInRegulation();
 		this.fairways = firstRound.getFairways() + secondRound.getFairways();
 		this.greensInRegulation = firstRound.getGreensInRegulation() + secondRound.getGreensInRegulation();

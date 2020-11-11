@@ -12,6 +12,10 @@ public interface Golfer {
 
 	static Golfer of(String golferName, HandicapIndex index) { return new SimpleGolfer(golferName, index); }
 
+	static Golfer of(Golfer golfer, HandicapIndex index) {
+		 return new SimpleGolfer(golfer, index);
+	}
+
 	String getName();
 
 	HandicapIndex getHandicapIndex();

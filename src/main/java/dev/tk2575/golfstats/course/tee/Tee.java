@@ -22,6 +22,10 @@ public interface Tee {
 		return 0L;
 	}
 
+	default Integer getHandicapStrokesForGolfer(Golfer golfer) {
+		return getHandicapStrokes().get(golfer.getKey());
+	}
+
 	default Map<String, Integer> getHandicapStrokes() {
 		return new HashMap<>();
 	}
@@ -32,6 +36,14 @@ public interface Tee {
 
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par, Long yards) {
 		return new TeeWithYardage(teeName, courseRating, slope, par, yards);
+	}
+
+	static Tee of(Golfer golfer, String teeName, BigDecimal courseRating, BigDecimal slope, Integer par) {
+		return of(teeName, courseRating, slope, par).handicapOf(golfer);
+	}
+
+	static Tee of(Golfer golfer, String teeName, BigDecimal courseRating, BigDecimal slope, Integer par, Long yards) {
+		return of(teeName, courseRating, slope, par, yards).handicapOf(golfer);
 	}
 
 	static Tee compositeOf(Tee tee1, Tee tee2) {
