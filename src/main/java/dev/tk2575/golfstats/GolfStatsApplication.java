@@ -30,7 +30,7 @@ public class GolfStatsApplication {
 		List<CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
 
 		logStatsAndRoundHistory(currentStats);
-		logCourseHandicapForNextRound(currentStats);
+//		logCourseHandicapForNextRound(currentStats);
 
 		System.exit(0);
 	}
