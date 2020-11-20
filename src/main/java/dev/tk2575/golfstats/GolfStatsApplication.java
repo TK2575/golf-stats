@@ -30,7 +30,7 @@ public class GolfStatsApplication {
 		List<CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
 
 		logStatsAndRoundHistory(currentStats);
-//		logCourseHandicapForNextRound(currentStats);
+		logCourseHandicapForNextRound(currentStats);
 
 		System.exit(0);
 	}
@@ -59,8 +59,7 @@ public class GolfStatsApplication {
 	}
 
 	private static void logCourseHandicapForNextRound(List<CurrentGolferStats> currentStats) {
-		Tee blue = Tee.of("Blue", new BigDecimal("31.5"), new BigDecimal("114"), 32, 2383L);
-		Tee white = Tee.of("White", new BigDecimal("30.7"), new BigDecimal("111"), 32, 2167L);
+		Tee white = Tee.of("White", new BigDecimal("68.2"), new BigDecimal("123"), 35, 2853L);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
 
@@ -81,14 +80,6 @@ public class GolfStatsApplication {
 		if (tom == null || will == null) {
 			throw new IllegalArgumentException("could not find all golfer stats");
 		}
-
-		StablefordQuota blueHighQuota = blue.stablefordQuota(List.of(tom, will));
-		StablefordQuota blueTrendQuota = blue.stablefordQuota(List.of(tomTrend, willTrend));
-		StablefordQuota blueLowQuota = blue.stablefordQuota(List.of(tomAnti, willAnti));
-
-		log.info(String.format("%s - High quota = %s, (%s)", blueHighQuota.getTee().getName(), blueHighQuota.getTotalQuota(), blueHighQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("%s - Trend quota = %s, (%s)", blueTrendQuota.getTee().getName(), blueTrendQuota.getTotalQuota(), blueTrendQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("%s - Low quota = %s, (%s)", blueLowQuota.getTee().getName(), blueLowQuota.getTotalQuota(), blueLowQuota.getTee().getHandicapStrokes()));
 
 		StablefordQuota whiteHighQuota = white.stablefordQuota(List.of(tom, will));
 		StablefordQuota whiteTrendQuota = white.stablefordQuota(List.of(tomTrend, willTrend));
