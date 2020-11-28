@@ -59,7 +59,7 @@ public class GolfStatsApplication {
 	}
 
 	private static void logCourseHandicapForNextRound(List<CurrentGolferStats> currentStats) {
-		Tee white = Tee.of("White", new BigDecimal("68.2"), new BigDecimal("123"), 35, 2853L);
+		Tee back = Tee.of("White", new BigDecimal("70.4"), new BigDecimal("122"), 35);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
 
@@ -81,9 +81,9 @@ public class GolfStatsApplication {
 			throw new IllegalArgumentException("could not find all golfer stats");
 		}
 
-		StablefordQuota whiteHighQuota = white.stablefordQuota(List.of(tom, will));
-		StablefordQuota whiteTrendQuota = white.stablefordQuota(List.of(tomTrend, willTrend));
-		StablefordQuota whiteLowQuota = white.stablefordQuota(List.of(tomAnti, willAnti));
+		StablefordQuota whiteHighQuota = back.stablefordQuota(List.of(tom, will));
+		StablefordQuota whiteTrendQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
+		StablefordQuota whiteLowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
 
 		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee().getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota.getTee().getHandicapStrokes()));
 		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee().getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota.getTee().getHandicapStrokes()));
