@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.golfround;
+package dev.tk2575.golfstats.course;
 
 import dev.tk2575.golfstats.Utils;
 import dev.tk2575.golfstats.course.Course;

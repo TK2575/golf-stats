@@ -17,16 +17,7 @@ public class SimpleHoleScore implements Hole {
 
 	@Override
 	public Hole applyNetDoubleBogey(Integer handicapStrokes) {
-		int strokesOnAllHoles = handicapStrokes / 18;
-		int strokeOnThisHole = 0;
-		if (handicapStrokes >= 0 && handicapStrokes % 18 >= this.index) {
-			strokeOnThisHole = 1;
-		}
-		else if (handicapStrokes < 0 && handicapStrokes % 18 <= this.index) {
-			strokeOnThisHole = -1;
-		}
-
-		return new SimpleHoleScore(this, strokesOnAllHoles + strokeOnThisHole);
+		return new SimpleHoleScore(this, computeNetDoubleBogey(handicapStrokes));
 	}
 
 	private SimpleHoleScore(Hole hole, Integer handicapStrokes) {

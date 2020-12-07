@@ -1,9 +1,6 @@
 package dev.tk2575.golfstats;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -49,4 +46,8 @@ public interface ObjectStream<T> extends Stream<T> {
 	default Stream<T> unordered() { return this.getStream().unordered(); }
 	default Stream<T> onClose(Runnable closeHandler) { return this.getStream().onClose(closeHandler); }
 	default void close() { this.getStream().close(); }
+
+	default List<T> asList() { return getStream().collect(Collectors.toList()); }
+	default Integer sumInteger(Function<T, Integer> field) { return getStream().map(field).reduce(0, Integer::sum); }
+	default Integer sumBoolean(Predicate<T> field) { return Math.toIntExact(getStream().filter(field).count()); }
 }

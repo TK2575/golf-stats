@@ -3,6 +3,7 @@ package dev.tk2575.golfstats;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,14 @@ import static java.math.RoundingMode.HALF_UP;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class Utils {
+
+	public static boolean isNullOrBlank(String string) {
+		return (string == null || string.isBlank());
+	}
+
+	public static <T> boolean isNullOrEmpty(Collection<T> collection) {
+		return (collection == null || collection.isEmpty());
+	}
 
 	public static BigDecimal divideInts(Integer value, Integer divisor) {
 		return BigDecimal.valueOf((float) value / divisor).setScale(2, HALF_UP);

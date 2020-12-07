@@ -1,5 +1,8 @@
-package dev.tk2575.golfstats.golfround;
+package dev.tk2575.golfstats.parsers;
 
+import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.SimpleGolfRound;
+import dev.tk2575.golfstats.golfround.Transport;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.NONE)
-public class SimpleGolfRoundCSVParser {
+public class SimpleGolfRoundCSVParser implements CSVParser {
 
 	private static final Logger log = LoggerFactory.getLogger(SimpleGolfRoundCSVParser.class);
 	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round";
@@ -50,27 +53,14 @@ public class SimpleGolfRoundCSVParser {
 
 	public Map<String, List<GolfRound>> readCsvData() {
 		final List<File> csvs = getCSVFiles(directory);
-
 		Map<String, List<GolfRound>> results = new HashMap<>();
-		List<GolfRound> rounds;
-		String golfer;
-		String line;
-		String sep = ",";
 
 		for (File csv : csvs) {
-			rounds = new ArrayList<>();
-			boolean headersVerified = false;
-			golfer = parseGolferName(csv.getName());
-
-			try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
-				while ((line = br.readLine()) != null) {
-					if (!headersVerified) {
-						headersVerified = verifyHeaders(line);
-					}
-					else {
-						rounds.add(recordSimpleRound(golfer, line.split(sep)));
-					}
-				}
+			try {
+				List<GolfRound> rounds = new ArrayList<>();
+				String golfer = parseGolferName(csv.getName());
+				List<String[]> rows = parseFile(csv, EXPECTED_HEADERS);
+				rows.forEach(row -> rounds.add(recordSimpleRound(golfer, row)));
 				results.put(golfer, combinePrior(rounds, results.get(golfer)));
 			}
 			catch (IOException e) {
@@ -78,14 +68,6 @@ public class SimpleGolfRoundCSVParser {
 			}
 		}
 		return results;
-	}
-
-	private static boolean verifyHeaders(String line) {
-		if (!line.equalsIgnoreCase(EXPECTED_HEADERS)) {
-			log.error(String.format("found headers = %s", line));
-			throw new IllegalArgumentException("incorrect headers");
-		}
-		return true;
 	}
 
 	private static List<GolfRound> combinePrior(List<GolfRound> rounds, List<GolfRound> prior) {

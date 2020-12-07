@@ -2,7 +2,6 @@ package dev.tk2575.golfstats.course;
 
 import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.course.tee.Tee;
-import dev.tk2575.golfstats.golfround.CompositeCourse;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +17,14 @@ public interface Course {
 
 	static Course of(String courseName) {
 		return new SimpleCourse(courseName);
+	}
+
+	static Course of(String name, String city, String stateAbbrev) {
+		return new CityStateCourse(name, city, stateAbbrev);
+	}
+
+	static Course of(String name, List<Tee> tees, String city, String stateAbbrev) {
+		return new CityStateCourse(name, tees, city, stateAbbrev);
 	}
 
 	static Course of(String courseName, List<Tee> tees) {

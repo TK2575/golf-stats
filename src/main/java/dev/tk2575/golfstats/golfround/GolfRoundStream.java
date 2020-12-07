@@ -152,10 +152,6 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return this.stream.mapToLong(GolfRound::getHoleCount).sum();
 	}
 
-	public List<GolfRound> asList() {
-		return this.stream.collect(Collectors.toList());
-	}
-
 	//FIXME how do I get get away from needing this on this child class?
 	@Override
 	public GolfRoundStream limit(long maxSize) {

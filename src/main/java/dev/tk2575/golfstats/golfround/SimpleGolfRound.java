@@ -3,6 +3,7 @@ package dev.tk2575.golfstats.golfround;
 import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.course.Course;
 import dev.tk2575.golfstats.course.tee.Tee;
+import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import lombok.*;
 
 import java.math.BigDecimal;

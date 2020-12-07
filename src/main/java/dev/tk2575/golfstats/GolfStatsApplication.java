@@ -3,7 +3,7 @@ package dev.tk2575.golfstats;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
 import dev.tk2575.golfstats.golfround.GolfRound;
-import dev.tk2575.golfstats.golfround.SimpleGolfRoundCSVParser;
+import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

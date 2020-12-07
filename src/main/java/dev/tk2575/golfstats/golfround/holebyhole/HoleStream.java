@@ -3,7 +3,6 @@ package dev.tk2575.golfstats.golfround.holebyhole;
 import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.ObjectStream;
 import dev.tk2575.golfstats.course.tee.Tee;
-import dev.tk2575.golfstats.golfround.games.Game;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import lombok.*;
 
@@ -11,10 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -108,18 +104,5 @@ public class HoleStream implements ObjectStream<Hole> {
 		}
 
 		return new HoleStream(list).validate().asList();
-
-	}
-
-	public List<Hole> asList() {
-		return this.stream.collect(Collectors.toList());
-	}
-
-	private Integer sumInteger(Function<Hole, Integer> field) {
-		return this.stream.map(field).reduce(0, Integer::sum);
-	}
-
-	private Integer sumBoolean(Predicate<Hole> field) {
-		return Math.toIntExact(this.stream.filter(field).count());
 	}
 }

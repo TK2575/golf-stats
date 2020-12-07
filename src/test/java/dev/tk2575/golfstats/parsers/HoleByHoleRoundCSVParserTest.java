@@ -1,7 +1,8 @@
-package dev.tk2575.golfstats.golfround.holebyhole;
+package dev.tk2575.golfstats.parsers;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.games.Game;
+import dev.tk2575.golfstats.parsers.HoleByHoleRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
