@@ -8,29 +8,25 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Getter
-public class WHSHandicapIndex implements HandicapIndex {
+public class MedianHandicap implements HandicapIndex {
 
 	private final BigDecimal value;
 	private final Collection<GolfRound> rounds;
 
-	public WHSHandicapIndex(Collection<GolfRound> rounds) {
+	public MedianHandicap(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}
 
-		this.rounds = GolfRound.stream(rounds)
-		                       .compileTo18HoleRounds()
-		                       .sortNewestToOldest()
-		                       .limit(20)
-		                       .asList();
-
-		this.value = rounds().getBestDifferentials().meanDifferential();
+		this.rounds = GolfRound.stream(rounds).compileTo18HoleRounds().asList();
+		this.value = rounds().getMedianDifferential();
 	}
 
 	private GolfRoundStream rounds() {
 		return GolfRound.stream(this.rounds);
 	}
 
+	@Override
 	public long getRoundCount() {
 		return this.rounds.size();
 	}

@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface HandicapIndex {
 
@@ -37,9 +36,17 @@ public interface HandicapIndex {
 		return new LastNRoundsTrendingHandicap(rounds, 5);
 	}
 
+	static HandicapIndex overallHandicap(Collection<GolfRound> rounds) {
+		return new LastNRoundsTrendingHandicap(rounds, rounds.size());
+	}
+
 	static HandicapIndex emptyIndex() {
 		return new EmptyHandicapIndex();
 	}
 
 	static HandicapIndex of(BigDecimal value) { return new EmptyHandicapIndex(value); }
+
+	static HandicapIndex medianHandicap(Collection<GolfRound> rounds) {
+		return new MedianHandicap(rounds);
+	}
 }

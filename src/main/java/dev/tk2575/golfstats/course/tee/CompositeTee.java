@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Getter
+@ToString
 public class CompositeTee implements Tee {
 
 	private final String name;

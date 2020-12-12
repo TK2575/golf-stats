@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.course;
 
 import dev.tk2575.golfstats.Utils;
-import dev.tk2575.golfstats.course.Course;
 import dev.tk2575.golfstats.course.tee.Tee;
 import lombok.*;
 
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
+@ToString
 public class CompositeCourse implements Course {
 	private final String name;
 	private final String location;

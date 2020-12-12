@@ -1,10 +1,9 @@
 package dev.tk2575.golfstats;
 
 import dev.tk2575.golfstats.course.tee.Tee;
-import dev.tk2575.golfstats.golferperformance.CurrentGolferStats;
 import dev.tk2575.golfstats.golfround.GolfRound;
-import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
+import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class GolfStatsApplication {
@@ -27,10 +27,10 @@ public class GolfStatsApplication {
 		SpringApplication.run(GolfStatsApplication.class, args);
 
 		Map<String, List<GolfRound>> rounds = getCSVData();
-		List<CurrentGolferStats> currentStats = computeStatsByGolfer(rounds);
+		List<PerformanceSummary> currentStats = computeStatsByGolfer(rounds);
 
 		logStatsAndRoundHistory(currentStats);
-		logCourseHandicapForNextRound(currentStats);
+		//		logCourseHandicapForNextRound(currentStats);
 
 		System.exit(0);
 	}
@@ -40,30 +40,32 @@ public class GolfStatsApplication {
 		return new SimpleGolfRoundCSVParser(dataDirectory).readCsvData();
 	}
 
-	private static List<CurrentGolferStats> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
+	private static List<PerformanceSummary> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		//TODO one-liner via stream?
-		List<CurrentGolferStats> results = new ArrayList<>();
-		rounds.forEach((k, v) -> results.add(new CurrentGolferStats(v)));
+		List<PerformanceSummary> results = new ArrayList<>();
+		rounds.forEach((k, v) -> results.add(new PerformanceSummary(v)));
 		return results;
 	}
 
-	private static void logStatsAndRoundHistory(List<CurrentGolferStats> currentStats) {
+	private static void logStatsAndRoundHistory(List<PerformanceSummary> currentStats) {
 		currentStats.forEach(s -> {
 			log.info(String.format("%s (%s)", s.getGolfer(), s.getHandicapIndex().getValue().toPlainString()));
-			log.info(GolfRound.stream(s.getGolfRounds())
-			                  .compileTo18HoleRounds()
-			                  .sortNewestToOldest()
-			                  .limit(20)
-			                  .toTSV());
+			Map<String, Long> roundsByCourse = s.getGolfRounds()
+			                                    .stream()
+			                                    .filter(round -> round.getDate().getYear() == 2020)
+			                                    .collect(Collectors.groupingBy(round -> round.getCourse()
+			                                                                                 .getName(), Collectors.counting()));
+
+			log.info(roundsByCourse.toString());
 		});
 	}
 
-	private static void logCourseHandicapForNextRound(List<CurrentGolferStats> currentStats) {
+	private static void logCourseHandicapForNextRound(List<PerformanceSummary> currentStats) {
 		Tee back = Tee.of("White", new BigDecimal("70.4"), new BigDecimal("122"), 35);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
 
-		for (CurrentGolferStats stats : currentStats) {
+		for (PerformanceSummary stats : currentStats) {
 			if (stats.getGolfer().equalsIgnoreCase("tom")) {
 				tom = Golfer.of(stats.getGolfer(), stats.getHandicapIndex());
 				tomTrend = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
@@ -85,9 +87,18 @@ public class GolfStatsApplication {
 		StablefordQuota whiteTrendQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
 		StablefordQuota whiteLowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
 
-		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee().getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee().getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota.getTee().getHandicapStrokes()));
-		log.info(String.format("%s - Low quota = %s, (%s)", whiteLowQuota.getTee().getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota.getTee().getHandicapStrokes()));
+		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee()
+		                                                                   .getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota
+				.getTee()
+				.getHandicapStrokes()));
+		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee()
+		                                                                     .getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota
+				.getTee()
+				.getHandicapStrokes()));
+		log.info(String.format("%s - Low quota = %s, (%s)", whiteLowQuota.getTee()
+		                                                                 .getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota
+				.getTee()
+				.getHandicapStrokes()));
 	}
 
 }

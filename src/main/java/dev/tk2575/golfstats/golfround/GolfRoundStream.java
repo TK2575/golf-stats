@@ -20,14 +20,12 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	private final Stream<GolfRound> stream;
 
 	public String golferNames() {
-		return this.stream.map(r -> r.getGolfer().getName())
-		                  .distinct()
-		                  .collect(Collectors.joining(", "));
+		return this.stream.map(r -> r.getGolfer().getName()).distinct().collect(Collectors.joining(", "));
 	}
 
 	public BigDecimal meanDifferential() {
 		List<GolfRound> rounds = asList();
-		if (rounds.isEmpty()) return BigDecimal.ZERO;
+		if (rounds.isEmpty()) { return BigDecimal.ZERO; }
 
 		return rounds.stream()
 		             .map(GolfRound::getScoreDifferential)
@@ -36,8 +34,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRoundStream compileTo18HoleRounds() {
-		List<GolfRound> roundsList = this.sortOldestToNewest()
-		                                 .asList();
+		List<GolfRound> roundsList = this.sortOldestToNewest().asList();
 
 		List<GolfRound> compiledRounds = new ArrayList<>();
 		GolfRound pendingNineHoleRound = null;
@@ -71,8 +68,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRoundStream sortNewestToOldest() {
-		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate)
-		                                                        .reversed()));
+		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate).reversed()));
 	}
 
 	public GolfRound getMostRecentRound() {
@@ -80,12 +76,9 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public String toTSV() {
-		final List<String[]> datalines = this.stream.map(GolfRound::roundToArray)
-		                                            .collect(Collectors.toList());
+		final List<String[]> datalines = this.stream.map(GolfRound::roundToArray).collect(Collectors.toList());
 
-		String rowsOfRounds = datalines.stream()
-		                               .map(Utils::convertToTSV)
-		                               .collect(Collectors.joining("\n"));
+		String rowsOfRounds = datalines.stream().map(Utils::convertToTSV).collect(Collectors.joining("\n"));
 
 		return String.format("%n%s%n%s", Utils.convertToTSV(GolfRound.roundHeaders()), rowsOfRounds);
 	}
@@ -111,18 +104,14 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public BigDecimal getFairwaysInRegulation() {
 		final List<GolfRound> rounds = this.asList();
-		long fairwaysInRegulation = rounds.stream()
-		                                  .mapToLong(GolfRound::getFairwaysInRegulation)
-		                                  .sum();
+		long fairwaysInRegulation = rounds.stream().mapToLong(GolfRound::getFairwaysInRegulation).sum();
 		long fairways = rounds.stream().mapToLong(GolfRound::getFairways).sum();
 		return BigDecimal.valueOf(fairwaysInRegulation).divide(BigDecimal.valueOf(fairways), 2, RoundingMode.HALF_UP);
 	}
 
 	public BigDecimal getGreensInRegulation() {
 		final List<GolfRound> rounds = this.asList();
-		final long greensInRegulation = rounds.stream()
-		                                      .mapToLong(GolfRound::getGreensInRegulation)
-		                                      .sum();
+		final long greensInRegulation = rounds.stream().mapToLong(GolfRound::getGreensInRegulation).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
@@ -131,8 +120,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		final List<GolfRound> rounds = this.asList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
-		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes),
-				2, RoundingMode.HALF_UP);
+		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
 	public Long getMinutesPerRound() {
@@ -143,9 +131,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		                                .reduce(Duration::plus)
 		                                .orElse(Duration.ZERO);
 
-		return duration.equals(Duration.ZERO)
-		       ? 0L
-		       : duration.toMinutes() / rounds.size();
+		return duration.equals(Duration.ZERO) ? 0L : duration.toMinutes() / rounds.size();
 	}
 
 	private long getHoles() {
@@ -156,5 +142,41 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	@Override
 	public GolfRoundStream limit(long maxSize) {
 		return new GolfRoundStream(this.stream.limit(maxSize));
+	}
+
+	public BigDecimal getMedianDifferential() {
+		return Utils.median(this.stream.map(GolfRound::getScoreDifferential).collect(Collectors.toList()));
+	}
+
+	public GolfRound getBestDifferential() {
+		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b)
+		                  .orElseThrow();
+	}
+
+	public GolfRound getWorstDifferential() {
+		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b)
+		                  .orElseThrow();
+	}
+
+	public GolfRound getLowestScoreRound() {
+		return this.stream.reduce((a, b) -> {
+			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
+				return a.getScoreToPar() < b.getScoreToPar() ? a : b;
+			}
+			else {
+				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b;
+			}
+		}).orElseThrow();
+	}
+
+	public GolfRound getHighestScoreRound() {
+		return this.stream.reduce((a, b) -> {
+			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
+				return a.getScoreToPar() > b.getScoreToPar() ? a : b;
+			}
+			else {
+				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b;
+			}
+		}).orElseThrow();
 	}
 }

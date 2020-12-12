@@ -72,7 +72,7 @@ public class Transport {
 		StringBuilder sb = new StringBuilder();
 
 		if (this.isSupersetOf(ride())) {
-			sb.append("Cart").append(" ");
+			sb.append("Cart").append(", ");
 		}
 
 		if (this.isSupersetOf(walk())) {
