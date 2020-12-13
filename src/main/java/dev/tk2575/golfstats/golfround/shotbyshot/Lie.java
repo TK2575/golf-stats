@@ -57,4 +57,6 @@ public interface Lie {
 	}
 
 	default boolean isFairway() { return false; }
+
+	//TODO shot category/types: Tee, Appraoch, Around Green, Green, Sand, Recovery
 }
