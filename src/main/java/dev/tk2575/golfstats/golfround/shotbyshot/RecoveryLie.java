@@ -10,4 +10,9 @@ public class RecoveryLie implements Lie {
 	public String getLabel() {
 		return "Recovery";
 	}
+
+	@Override
+	public String getAbbrev() {
+		return "y";
+	}
 }

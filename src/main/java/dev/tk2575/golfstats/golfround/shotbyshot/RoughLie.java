@@ -10,4 +10,9 @@ public class RoughLie implements Lie {
 	public String getLabel() {
 		return "Rough";
 	}
+
+	@Override
+	public String getAbbrev() {
+		return "r";
+	}
 }

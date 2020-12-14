@@ -12,5 +12,10 @@ public class FairwayLie implements Lie {
 	}
 
 	@Override
+	public String getAbbrev() {
+		return "f";
+	}
+
+	@Override
 	public boolean isFairway() { return true; }
 }

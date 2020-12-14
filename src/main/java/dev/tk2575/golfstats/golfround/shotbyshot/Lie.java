@@ -28,6 +28,8 @@ public interface Lie {
 
 	String getLabel();
 
+	String getAbbrev();
+
 	static Lie tee() {
 		return new TeeLie();
 	}

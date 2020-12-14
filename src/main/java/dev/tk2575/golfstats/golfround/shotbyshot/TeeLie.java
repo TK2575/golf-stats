@@ -10,4 +10,9 @@ public class TeeLie implements Lie {
 	public String getLabel() {
 		return "Tee";
 	}
+
+	@Override
+	public String getAbbrev() {
+		return "t";
+	}
 }

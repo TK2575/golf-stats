@@ -10,4 +10,9 @@ public class SandLie implements Lie {
 	public String getLabel() {
 		return "Sand";
 	}
+
+	@Override
+	public String getAbbrev() {
+		return "s";
+	}
 }

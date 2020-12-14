@@ -15,4 +15,9 @@ public class GreenLie implements Lie {
 	public String getLabel() {
 		return "Green";
 	}
+
+	@Override
+	public String getAbbrev() {
+		return "g";
+	}
 }
