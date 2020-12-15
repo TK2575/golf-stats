@@ -4,5 +4,5 @@ import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
 public interface ShotsGainedComputation {
 
-	ShotsGained getShotsGained(Shot shot);
+	ShotsGained getShotsGained(Shot shot, Shot result);
 }

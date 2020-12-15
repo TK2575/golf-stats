@@ -1,16 +1,16 @@
 package dev.tk2575.golfstats.strokesgained;
 
+import dev.tk2575.golfstats.Utils;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+
+import static dev.tk2575.golfstats.Utils.roundToTwoDecimalPlaces;
 
 public class BroadieImputed implements ShotsGainedComputation {
-
-	//TODO singleton that calculates/stores all strokes gained values by shot (lie & distance)
 
 	private static SortedMap<Integer, BigDecimal> teeMap;
 	private static SortedMap<Integer, BigDecimal> fairwayMap;
@@ -19,7 +19,11 @@ public class BroadieImputed implements ShotsGainedComputation {
 	private static SortedMap<Integer, BigDecimal> recoveryMap;
 	private static SortedMap<Integer, BigDecimal> greenMap;
 
-	private static Map<String, BigDecimal> strokesGainedMap;
+	private Map<String, BigDecimal> strokesGainedMap;
+
+	public Map<String, BigDecimal> getStrokesGainedMap() {
+		return Collections.unmodifiableMap(this.strokesGainedMap);
+	}
 
 	private static class SingletonHelper {
 
@@ -31,34 +35,39 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	@Override
-	public ShotsGained getShotsGained(Shot shot) {
-		String key = shot.getLie().getAbbrev() + shot.getDistance().getValue();
-		return ShotsGained.of(shot, strokesGainedMap.get(key));
+	public ShotsGained getShotsGained(Shot shot, Shot result) {
+		//TODO handling holed shot as result
+		return ShotsGained.of(shot, strokesGainedMap.get(shotKey(shot)), result, strokesGainedMap.get(shotKey(result)));
+	}
+
+	public String shotKey(Shot shot) {
+		return shot.getLie().getAbbrev() + shot.getDistance().getValue();
 	}
 
 	private BroadieImputed() {
-		initTeeMap();
+		initGreenMap();
+
 		initFairwayMap();
 		initRoughMap();
 		initSandMap();
+
+		initTeeMap();
 		initRecoveryMap();
-		initGreenMap();
 
 		initStrokesGainedMap();
 	}
 
 	private void initStrokesGainedMap() {
-		add100YardsAndUp("t", teeMap);
-		add100YardsAndUp("f", fairwayMap);
-		add100YardsAndUp("r", roughMap);
-		add100YardsAndUp("s", sandMap);
-		add100YardsAndUp("y", recoveryMap);
-
-		addGreen();
-		addUnder100Yards();
+		strokesGainedMap = new HashMap<>();
+		addGreenToStrokesGainedMap();
+		addToStrokesGainedMapByYardage("t", teeMap);
+		addToStrokesGainedMapByYardage("f", fairwayMap);
+		addToStrokesGainedMapByYardage("r", roughMap);
+		addToStrokesGainedMapByYardage("s", sandMap);
+		addToStrokesGainedMapByYardage("y", recoveryMap);
 	}
 
-	private void addGreen() {
+	private void addGreenToStrokesGainedMap() {
 		BigDecimal lowValue = greenMap.get(3);
 		BigDecimal highValue = greenMap.get(4);
 
@@ -73,8 +82,8 @@ public class BroadieImputed implements ShotsGainedComputation {
 		int increments = 5;
 
 		for (int i = 3; i <= 90; i++) {
-			if (i >= 20) { increments = 10; }
-			if (i >= 60) { increments = 30; }
+			if (i == 20) { increments = 10; }
+			if (i == 60) { increments = 30; }
 
 			currentValue = greenMap.get(i);
 			if (currentValue == null) {
@@ -85,36 +94,43 @@ public class BroadieImputed implements ShotsGainedComputation {
 				highValue = greenMap.get(i+increments);
 			}
 
-			strokesGainedMap.put("g"+i, currentValue);
+			strokesGainedMap.put("g"+i, roundToTwoDecimalPlaces(currentValue));
 		}
 	}
 
-	private void add100YardsAndUp(String abbrev, SortedMap<Integer, BigDecimal> sourceMap) {
-		BigDecimal lowValue = sourceMap.get(100);
-		BigDecimal highValue = sourceMap.get(120);
+	private void addToStrokesGainedMapByYardage(String abbrev, SortedMap<Integer, BigDecimal> sourceMap) {
+		int lowYardage = 1;
+		int nextYardage = 10;
+
+		BigDecimal lowValue = sourceMap.get(lowYardage);
+		BigDecimal highValue = sourceMap.get(nextYardage);
 
 		if (lowValue == null || highValue == null) {
 			throw new IllegalStateException("unable to initialize strokes gained map");
 		}
 
+		strokesGainedMap.put(abbrev+lowYardage, lowValue);
+
 		BigDecimal currentValue;
-		for (int i = 100; i <= 600; i++) {
-			currentValue = teeMap.get(i);
+		for (int yards = 2; yards <= 600; yards++) {
+			currentValue = sourceMap.get(yards);
 			if (currentValue == null) {
-				currentValue = computeCurrentValue(i, 20, lowValue, highValue);
+				currentValue = computeCurrentValue(yards, nextYardage - lowYardage, lowValue, highValue);
 			}
 			else {
 				lowValue = currentValue;
-				highValue = sourceMap.get(i+20);
+				lowYardage = yards;
+				nextYardage = lowYardage + (yards < 20 ? 10 : 20);
+				highValue = sourceMap.get(nextYardage);
 			}
 
-			strokesGainedMap.put(abbrev+i, currentValue);
+			strokesGainedMap.put(abbrev+yards, roundToTwoDecimalPlaces(currentValue));
 		}
 	}
 
-	private BigDecimal computeCurrentValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
+	private static BigDecimal computeCurrentValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
 		BigDecimal diff = highValue.subtract(lowValue).abs();
-		BigDecimal stepValue = diff.divide(BigDecimal.valueOf(increments), 2, RoundingMode.HALF_UP);
+		BigDecimal stepValue = diff.divide(BigDecimal.valueOf(increments), 4, RoundingMode.HALF_UP);
 		int steps = distance % increments;
 		BigDecimal totalStepValue = stepValue.multiply(BigDecimal.valueOf(steps));
 
@@ -123,6 +139,14 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private static void initTeeMap() {
 		teeMap = new TreeMap<>();
+
+		teeMap.put(1, fairwayMap.get(1));
+		teeMap.put(10, fairwayMap.get(10));
+		teeMap.put(20, fairwayMap.get(20));
+		teeMap.put(40, fairwayMap.get(40));
+		teeMap.put(60, fairwayMap.get(60));
+		teeMap.put(80, fairwayMap.get(80));
+
 		teeMap.put(100, new BigDecimal("2.92"));
 		teeMap.put(120, new BigDecimal("2.99"));
 		teeMap.put(140, new BigDecimal("2.97"));
@@ -153,6 +177,10 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private static void initFairwayMap() {
 		fairwayMap = new TreeMap<>();
+
+		fairwayMap.put(1, greenMap.get(3));
+		fairwayMap.put(10, greenMap.get(30));
+
 		fairwayMap.put(20, new BigDecimal("2.40"));
 		fairwayMap.put(40, new BigDecimal("2.60"));
 		fairwayMap.put(60, new BigDecimal("2.70"));
@@ -187,6 +215,10 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private static void initRoughMap() {
 		roughMap = new TreeMap<>();
+
+		roughMap.put(1, greenMap.get(3));
+		roughMap.put(10, greenMap.get(30));
+
 		roughMap.put(20, new BigDecimal("2.59"));
 		roughMap.put(40, new BigDecimal("2.78"));
 		roughMap.put(60, new BigDecimal("2.91"));
@@ -221,6 +253,10 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private static void initSandMap() {
 		sandMap = new TreeMap<>();
+
+		sandMap.put(1, greenMap.get(3));
+		sandMap.put(10, greenMap.get(30));
+
 		sandMap.put(20, new BigDecimal("2.53"));
 		sandMap.put(40, new BigDecimal("2.82"));
 		sandMap.put(60, new BigDecimal("3.15"));
@@ -255,6 +291,14 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private static void initRecoveryMap() {
 		recoveryMap = new TreeMap<>();
+
+		recoveryMap.put(1, roughMap.get(1));
+		recoveryMap.put(10, roughMap.get(10));
+		recoveryMap.put(20, roughMap.get(20));
+		recoveryMap.put(40, roughMap.get(40));
+		recoveryMap.put(60, roughMap.get(60));
+		recoveryMap.put(80, roughMap.get(80));
+
 		recoveryMap.put(100, new BigDecimal("3.80"));
 		recoveryMap.put(120, new BigDecimal("3.78"));
 		recoveryMap.put(140, new BigDecimal("3.80"));
