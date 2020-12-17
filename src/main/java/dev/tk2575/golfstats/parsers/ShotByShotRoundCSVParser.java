@@ -23,11 +23,13 @@ import java.util.stream.Collectors;
 @Getter
 public class ShotByShotRoundCSVParser implements CSVParser {
 
+	//TODO golf round, by hole, and by shot category analysis (strokes gained)
+
 	private static final Logger log = LoggerFactory.getLogger(ShotByShotRoundCSVParser.class);
 	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,start,end,transport";
 	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,shots";
 
-	private static final List<DateTimeFormatter> timeFormats = List.of(DateTimeFormatter.ofPattern("h:m a"), DateTimeFormatter.ofPattern("k:m"));
+	private static final List<DateTimeFormatter> TIME_FORMATS = List.of(DateTimeFormatter.ofPattern("h:m a"), DateTimeFormatter.ofPattern("k:m"));
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
 
 	private final File roundFile;
@@ -56,13 +58,12 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	private void parseRoundDetails(File roundFile) {
 		try {
 			List<String[]> rows = parseFile(roundFile, EXPECTED_HEADERS_ROUND);
-			rows.forEach(row -> this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, timeFormats, index)));
+			rows.forEach(row -> this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, TIME_FORMATS, index)));
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
 
 	private void parseHolesDetails(File holesFile) {
