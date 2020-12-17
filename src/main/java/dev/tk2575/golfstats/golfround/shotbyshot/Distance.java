@@ -20,4 +20,8 @@ public interface Distance {
 	static Distance yards(long value) {
 		return new YardsDistance(value);
 	}
+
+	static Distance zero() {
+		return new ZeroDistance();
+	}
 }

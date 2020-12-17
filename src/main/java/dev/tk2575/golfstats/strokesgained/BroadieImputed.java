@@ -1,8 +1,6 @@
 package dev.tk2575.golfstats.strokesgained;
 
-import dev.tk2575.golfstats.Utils;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
-import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,7 +24,6 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	private static class SingletonHelper {
-
 		private static final BroadieImputed INSTANCE = new BroadieImputed();
 	}
 
@@ -35,9 +32,8 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	@Override
-	public ShotsGained getShotsGained(Shot shot, Shot result) {
-		//TODO handling holed shot as result
-		return ShotsGained.of(shot, strokesGainedMap.get(shotKey(shot)), result, strokesGainedMap.get(shotKey(result)));
+	public ShotAnalysis analyzeShot(Shot shot, Shot result) {
+		return ShotAnalysis.of(Shot.addBaseline(shot, strokesGainedMap.get(shotKey(shot))), Shot.addBaseline(result, strokesGainedMap.get(shotKey(result))));
 	}
 
 	public String shotKey(Shot shot) {
@@ -46,19 +42,17 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private BroadieImputed() {
 		initGreenMap();
-
 		initFairwayMap();
 		initRoughMap();
 		initSandMap();
-
 		initTeeMap();
 		initRecoveryMap();
-
 		initStrokesGainedMap();
 	}
 
 	private void initStrokesGainedMap() {
 		strokesGainedMap = new HashMap<>();
+		strokesGainedMap.put("h0", BigDecimal.ZERO);
 		addGreenToStrokesGainedMap();
 		addToStrokesGainedMapByYardage("t", teeMap);
 		addToStrokesGainedMapByYardage("f", fairwayMap);
@@ -87,7 +81,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 			currentValue = greenMap.get(i);
 			if (currentValue == null) {
-				currentValue = computeCurrentValue(i, increments, lowValue, highValue);
+				currentValue = computeImputedValue(i, increments, lowValue, highValue);
 			}
 			else {
 				lowValue = currentValue;
@@ -115,7 +109,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		for (int yards = 2; yards <= 600; yards++) {
 			currentValue = sourceMap.get(yards);
 			if (currentValue == null) {
-				currentValue = computeCurrentValue(yards, nextYardage - lowYardage, lowValue, highValue);
+				currentValue = computeImputedValue(yards, nextYardage - lowYardage, lowValue, highValue);
 			}
 			else {
 				lowValue = currentValue;
@@ -128,7 +122,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		}
 	}
 
-	private static BigDecimal computeCurrentValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
+	private static BigDecimal computeImputedValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
 		BigDecimal diff = highValue.subtract(lowValue).abs();
 		BigDecimal stepValue = diff.divide(BigDecimal.valueOf(increments), 4, RoundingMode.HALF_UP);
 		int steps = distance % increments;

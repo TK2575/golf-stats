@@ -54,11 +54,13 @@ public interface Lie {
 		return new SandLie();
 	}
 
+	static Lie hole() {
+		return new HoleLie();
+	}
+
 	default boolean isGreen() {
 		return false;
 	}
 
 	default boolean isFairway() { return false; }
-
-	//TODO shot category/types: Tee, Appraoch, Around Green, Green, Sand, Recovery
 }
