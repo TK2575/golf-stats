@@ -22,70 +22,71 @@ class ShotTest {
 
 	@Test
 	void testShorthandEntry() {
-		assertEquals(SimpleShot.builder()
+		SimpleShot shot = SimpleShot.builder().shotCategory(ShotCategory.unknown()).build();
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.tee())
 		                       .distance(Distance.yards(455))
 		                       .missAngle(MissAngle.center())
 		                       .count(1)
 		                       .build(), Shot.parse("T455"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.tee())
 		                       .distance(Distance.yards(455))
 		                       .missAngle(MissAngle.center())
 		                       .count(3)
 		                       .build(), Shot.parse("T455x3"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.recovery())
 		                       .distance(Distance.yards(186))
 		                       .missAngle(MissAngle.center())
 		                       .count(1)
 		                       .build(), Shot.parse("Y186"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.recovery())
 		                       .distance(Distance.yards(186))
 		                       .missAngle(MissAngle.center())
 		                       .count(2)
 		                       .build(), Shot.parse("Y186x2"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.rough())
 		                       .distance(Distance.yards(122))
 		                       .missAngle(MissAngle.missLeft())
 		                       .count(1)
 		                       .build(), Shot.parse("R122L"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.rough())
 		                       .distance(Distance.yards(122))
 		                       .missAngle(MissAngle.missLeft())
 		                       .count(1)
 		                       .build(), Shot.parse("R122-L"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.fairway())
 		                       .distance(Distance.yards(6))
 		                       .missAngle(MissAngle.missDegrees(12))
 		                       .count(1)
 		                       .build(), Shot.parse("F6-12"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.green())
 		                       .distance(Distance.feet(27))
 		                       .missAngle(MissAngle.missDegrees(4))
 		                       .count(1)
 		                       .build(), Shot.parse("G27-4"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.green())
 		                       .distance(Distance.feet(13))
 		                       .missAngle(MissAngle.missDegrees(7))
 		                       .count(3)
 		                       .build(), Shot.parse("G13-7x3"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(shot.toBuilder()
 		                       .lie(Lie.sand())
 		                       .distance(Distance.yards(18))
 		                       .missAngle(MissAngle.missDegrees(4))

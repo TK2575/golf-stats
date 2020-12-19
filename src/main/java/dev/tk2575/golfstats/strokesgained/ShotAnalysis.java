@@ -14,5 +14,5 @@ public interface ShotAnalysis {
 
 	BigDecimal getStrokesGained();
 
-	//TODO result analysis i.e. miss angle
+	//TODO remove, save this for later: result analysis i.e. miss angle
 }

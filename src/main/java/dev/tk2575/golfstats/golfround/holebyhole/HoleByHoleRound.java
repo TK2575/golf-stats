@@ -6,7 +6,6 @@ import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.IncompleteRound;
 import dev.tk2575.golfstats.golfround.Transport;
-import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -65,12 +64,10 @@ public class HoleByHoleRound implements GolfRound {
 		this.putts = holes().totalPutts();
 		this.nineHoleRound = holes().isNineHoleRound();
 
-		this.strokesGainedByHole = holes().computeStrokesGainedByHole(ShotsGainedComputation.broadie());
-		this.strokesGainedByShotType = holes().computeStrokesGainedByShotType(ShotsGainedComputation.broadie());
+		this.strokesGainedByHole = holes().strokesGainedByHole();
+		this.strokesGainedByShotType = holes().strokesGainedByShotType();
 
 		this.scoreDifferential = computeScoreDifferential();
-
-
 	}
 
 	@Override

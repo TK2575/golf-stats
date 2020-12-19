@@ -110,11 +110,11 @@ public interface GolfRound {
 	default Long getYards() { return getTee().getYards(); }
 
 	default Map<String, BigDecimal> getStrokesGainedByShotType() {
-		return new HashMap<>();
+		return Collections.emptyMap();
 	}
 
 	default Map<Integer, BigDecimal> getStrokesGainedByHole() {
-		return new HashMap<>();
+		return Collections.emptyMap();
 	}
 
 	static String[] roundHeaders() {

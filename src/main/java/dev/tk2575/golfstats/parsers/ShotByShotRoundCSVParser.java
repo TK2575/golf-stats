@@ -3,7 +3,6 @@ package dev.tk2575.golfstats.parsers;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.IncompleteRound;
 import dev.tk2575.golfstats.golfround.holebyhole.Hole;
-import dev.tk2575.golfstats.golfround.holebyhole.ShotByShotHole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 import lombok.*;
@@ -76,12 +75,11 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	}
 
 	private Hole recordHole(String[] row) {
-		return ShotByShotHole.builder()
-		                     .number(Integer.valueOf(row[1]))
-		                     .index(Integer.valueOf(row[2]))
-		                     .par(Integer.valueOf(row[3]))
-		                     .shots(parseShots(row[4]))
-		                     .build();
+		Integer number = Integer.valueOf(row[1]);
+		Integer holeIndex = Integer.valueOf(row[2]);
+		Integer par = Integer.valueOf(row[3]);
+		List<Shot> shots = parseShots(row[4]);
+		return Hole.of(number, holeIndex, par, shots);
 	}
 
 	private List<Shot> parseShots(String shotsString) {

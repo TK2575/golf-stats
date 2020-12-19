@@ -63,4 +63,6 @@ public interface Lie {
 	}
 
 	default boolean isFairway() { return false; }
+
+	default boolean isTee() { return false; }
 }

@@ -7,11 +7,14 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
 public class ShotStream implements ObjectStream<Shot> {
+
 	private final Stream<Shot> stream;
 	private final boolean empty;
 
@@ -23,7 +26,7 @@ public class ShotStream implements ObjectStream<Shot> {
 	public static ShotStream empty() { return new ShotStream(Stream.empty(), true); }
 
 	public Integer totalStrokesAdjusted(Integer par, Integer handicapStrokes) {
-		return Math.min(totalStrokes(), par+2+handicapStrokes);
+		return Math.min(totalStrokes(), par + 2 + handicapStrokes);
 	}
 
 	public Integer totalNetStrokes(Integer par, Integer handicapStrokes) {
@@ -43,11 +46,11 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	private boolean isSecondStrokeFairway() {
-		if (isEmpty()) return false;
+		if (isEmpty()) { return false; }
 
 		//TODO refactor without collecting to List?
 		List<Shot> shotList = this.asList();
-		if (shotList.get(0).getCount() > 1) return false;
+		if (shotList.get(0).getCount() > 1) { return false; }
 		return shotList.get(1).getLie().isFairway();
 	}
 
@@ -55,16 +58,19 @@ public class ShotStream implements ObjectStream<Shot> {
 		return sumInteger(Shot::getCount);
 	}
 
-	public BigDecimal computeStrokesGained(ShotsGainedComputation computer) {
-		BigDecimal result = BigDecimal.ZERO;
-		Shot previous = null;
-		for (Shot shot : asList()) {
-			if (previous != null) {
-				result = result.add(computer.analyzeShot(previous, shot));
-			}
-			previous = shot;
-		}
-		result = result.add(computer.analyzeHoledShot(previous));
-		return result;
+	public Map<String, BigDecimal> strokesGainedByShotType() {
+		return this.stream.collect(Collectors.toUnmodifiableMap(shot -> shot.getShotCategory()
+		                                                                    .getLabel(), Shot::getStrokesGained, BigDecimal::add));
+	}
+
+	public BigDecimal teeShotStrokesGainedBaseline() {
+		return this.stream.filter(shot -> shot.getLie().isTee())
+		                  .findFirst()
+		                  .map(Shot::getStrokesGainedBaseline)
+		                  .orElse(BigDecimal.ZERO);
+	}
+
+	public BigDecimal totalStrokesGained() {
+		return this.stream.map(Shot::getStrokesGained).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
 	}
 }

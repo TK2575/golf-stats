@@ -10,9 +10,9 @@ public interface ShotsGainedComputation {
 		return BroadieImputed.getInstance();
 	}
 
-	BigDecimal analyzeShot(Shot shot, Shot result);
+	Shot analyzeShot(Shot shot, Shot result);
 
-	default BigDecimal analyzeHoledShot(Shot shot) {
+	default Shot analyzeHoledShot(Shot shot) {
 		return analyzeShot(shot, Shot.holed());
 	}
 }

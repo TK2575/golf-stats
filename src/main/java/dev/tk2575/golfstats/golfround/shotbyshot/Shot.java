@@ -1,12 +1,12 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
 public interface Shot {
-
-	//TODO shot category - tees for par4s5s, approaches and tees for par3, off green inside 30 yards, on the green
 
 	static ShotStream stream(Collection<Shot> shots) { return new ShotStream(shots); }
 
@@ -18,7 +18,13 @@ public interface Shot {
 
 	Integer getCount();
 
+	ShotCategory getShotCategory();
+
 	default BigDecimal getStrokesGainedBaseline() {
+		return BigDecimal.ZERO;
+	}
+
+	default BigDecimal getStrokesGained() {
 		return BigDecimal.ZERO;
 	}
 
@@ -27,8 +33,8 @@ public interface Shot {
 		return new SimpleShot(lie, Distance.parse(lie, distance), MissAngle.parse(missDirection, missAngle), count);
 	}
 
-	static Shot addBaseline(Shot shot, BigDecimal strokesGainedBaseline) {
-		return new StrokesGainedShot(shot, strokesGainedBaseline);
+	static Shot strokesGained(Shot shot, BigDecimal strokesGainedBaseline, BigDecimal strokesGained) {
+		return new StrokesGainedShot(shot, strokesGainedBaseline, strokesGained);
 	}
 
 	static Shot holed() {

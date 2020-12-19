@@ -4,6 +4,8 @@ import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.ObjectStream;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
+import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
 import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
@@ -106,18 +108,17 @@ public class HoleStream implements ObjectStream<Hole> {
 		return new HoleStream(list).validate().asList();
 	}
 
-	public Map<Integer, BigDecimal> computeStrokesGainedByHole(ShotsGainedComputation computer) {
-		return empty
-		       ? new HashMap<>()
-		       : this.stream.collect(Collectors.toUnmodifiableMap(Hole::getNumber, hole -> hole.getShots().computeStrokesGained(computer)));
+	public ShotStream allShots() {
+		return Shot.stream(this.stream.flatMap(Hole::getShots).collect(Collectors.toList()));
 	}
 
-	public Map<String, BigDecimal> computeStrokesGainedByShotType(ShotsGainedComputation computer) {
-		if (empty) return new HashMap<>();
+	public Map<Integer, BigDecimal> strokesGainedByHole() {
+		return empty
+		       ? Collections.emptyMap()
+		       : this.stream.collect(Collectors.toUnmodifiableMap(Hole::getNumber, Hole::getStrokesGained));
+	}
 
-		//TODO
-		//get shots across all holes into single shot stream
-		//collect to map grouped by shot type (need shot type at shot level defined by hole attributes)
-		//summing big decimal along the way
+	public Map<String, BigDecimal> strokesGainedByShotType() {
+		return empty ? Collections.emptyMap() : allShots().strokesGainedByShotType();
 	}
 }

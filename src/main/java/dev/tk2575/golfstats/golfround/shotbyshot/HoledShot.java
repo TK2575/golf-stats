@@ -18,6 +18,9 @@ public class HoledShot implements Shot {
 	}
 
 	@Override
+	public ShotCategory getShotCategory() { return ShotCategory.unknown(); }
+
+	@Override
 	public Integer getCount() {
 		return 0;
 	}

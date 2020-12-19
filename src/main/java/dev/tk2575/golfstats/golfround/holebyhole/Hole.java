@@ -1,13 +1,22 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
+import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface Hole {
 
 	static HoleStream stream(Collection<Hole> holes) {
 		return new HoleStream(holes);
+	}
+
+	static Hole of(Integer number, Integer index, Integer par, List<Shot> shots) {
+		return new ShotByShotHole(number, index, par, shots, ShotsGainedComputation.broadie());
 	}
 
 	Integer getNumber();
@@ -36,6 +45,29 @@ public interface Hole {
 
 	default boolean isGreenInRegulation() {
 		return getPar() - 2 >= getStrokes() - getPutts();
+	}
+
+	default BigDecimal getStrokesGainedBaseline() {
+		return getShots().teeShotStrokesGainedBaseline();
+	}
+
+	default BigDecimal getStrokesGained() {
+		return getShots().totalStrokesGained();
+	}
+
+	//TODO shotstream operation(s)?
+	default Collection<Shot> computeStrokesGained(Collection<Shot> prior, ShotsGainedComputation computer) {
+		List<Shot> shots = new ArrayList<>();
+		Shot shot = null;
+
+		for (Shot result : prior) {
+			if (shot != null) {
+				shots.add(computer.analyzeShot(shot, result));
+			}
+			shot = result;
+		}
+		shots.add(computer.analyzeHoledShot(shot));
+		return shots;
 	}
 
 	default Integer computeNetDoubleBogey(Integer handicapStrokes) {
