@@ -2,11 +2,17 @@ package dev.tk2575.golfstats.strokesgained;
 
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
+import java.math.BigDecimal;
+
 public interface ShotsGainedComputation {
 
-	ShotAnalysis analyzeShot(Shot shot, Shot result);
+	static ShotsGainedComputation broadie() {
+		return BroadieImputed.getInstance();
+	}
 
-	default ShotAnalysis analyzeHoledShot(Shot shot) {
+	BigDecimal analyzeShot(Shot shot, Shot result);
+
+	default BigDecimal analyzeHoledShot(Shot shot) {
 		return analyzeShot(shot, Shot.holed());
 	}
 }

@@ -6,6 +6,7 @@ import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.IncompleteRound;
 import dev.tk2575.golfstats.golfround.Transport;
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @ToString
@@ -37,6 +39,9 @@ public class HoleByHoleRound implements GolfRound {
 
 	private final boolean nineHoleRound;
 
+	private final Map<String, BigDecimal> strokesGainedByShotType;
+	private final Map<Integer, BigDecimal> strokesGainedByHole;
+
 	@Getter(AccessLevel.NONE) @ToString.Exclude
 	private final Collection<Hole> holes;
 
@@ -60,7 +65,12 @@ public class HoleByHoleRound implements GolfRound {
 		this.putts = holes().totalPutts();
 		this.nineHoleRound = holes().isNineHoleRound();
 
+		this.strokesGainedByHole = holes().computeStrokesGainedByHole(ShotsGainedComputation.broadie());
+		this.strokesGainedByShotType = holes().computeStrokesGainedByShotType(ShotsGainedComputation.broadie());
+
 		this.scoreDifferential = computeScoreDifferential();
+
+
 	}
 
 	@Override

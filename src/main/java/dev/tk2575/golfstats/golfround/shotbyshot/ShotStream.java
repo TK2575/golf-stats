@@ -1,8 +1,10 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
 import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -51,5 +53,18 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public Integer totalStrokes() {
 		return sumInteger(Shot::getCount);
+	}
+
+	public BigDecimal computeStrokesGained(ShotsGainedComputation computer) {
+		BigDecimal result = BigDecimal.ZERO;
+		Shot previous = null;
+		for (Shot shot : asList()) {
+			if (previous != null) {
+				result = result.add(computer.analyzeShot(previous, shot));
+			}
+			previous = shot;
+		}
+		result = result.add(computer.analyzeHoledShot(previous));
+		return result;
 	}
 }

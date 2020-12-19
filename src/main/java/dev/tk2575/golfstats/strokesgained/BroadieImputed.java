@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.strokesgained;
 
+import dev.tk2575.golfstats.Utils;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	private static class SingletonHelper {
+
 		private static final BroadieImputed INSTANCE = new BroadieImputed();
 	}
 
@@ -32,8 +34,10 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	@Override
-	public ShotAnalysis analyzeShot(Shot shot, Shot result) {
-		return ShotAnalysis.of(Shot.addBaseline(shot, strokesGainedMap.get(shotKey(shot))), Shot.addBaseline(result, strokesGainedMap.get(shotKey(result))));
+	public BigDecimal analyzeShot(Shot shot, Shot result) {
+		return Utils.roundToTwoDecimalPlaces(strokesGainedMap.get(shotKey(shot))
+		                                                     .subtract(strokesGainedMap.get(shotKey(result)))
+		                                                     .subtract(BigDecimal.valueOf(shot.getCount())));
 	}
 
 	public String shotKey(Shot shot) {
@@ -85,10 +89,10 @@ public class BroadieImputed implements ShotsGainedComputation {
 			}
 			else {
 				lowValue = currentValue;
-				highValue = greenMap.get(i+increments);
+				highValue = greenMap.get(i + increments);
 			}
 
-			strokesGainedMap.put("g"+i, roundToTwoDecimalPlaces(currentValue));
+			strokesGainedMap.put("g" + i, roundToTwoDecimalPlaces(currentValue));
 		}
 	}
 
@@ -103,7 +107,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 			throw new IllegalStateException("unable to initialize strokes gained map");
 		}
 
-		strokesGainedMap.put(abbrev+lowYardage, lowValue);
+		strokesGainedMap.put(abbrev + lowYardage, lowValue);
 
 		BigDecimal currentValue;
 		for (int yards = 2; yards <= 600; yards++) {
@@ -118,7 +122,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 				highValue = sourceMap.get(nextYardage);
 			}
 
-			strokesGainedMap.put(abbrev+yards, roundToTwoDecimalPlaces(currentValue));
+			strokesGainedMap.put(abbrev + yards, roundToTwoDecimalPlaces(currentValue));
 		}
 	}
 

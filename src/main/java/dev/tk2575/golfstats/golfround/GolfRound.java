@@ -13,10 +13,7 @@ import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -112,6 +109,14 @@ public interface GolfRound {
 
 	default Long getYards() { return getTee().getYards(); }
 
+	default Map<String, BigDecimal> getStrokesGainedByShotType() {
+		return new HashMap<>();
+	}
+
+	default Map<Integer, BigDecimal> getStrokesGainedByHole() {
+		return new HashMap<>();
+	}
+
 	static String[] roundHeaders() {
 		return new String[]{
 				"Round Type",
@@ -165,10 +170,8 @@ public interface GolfRound {
 				index = HandicapIndex.newIndex(results);
 				incompleteRound = new IncompleteRound(incompleteRound, index);
 			}
-
 			results.add(of(incompleteRound, holes.get(each.getKey())));
 		}
-
 		return results;
 	}
 

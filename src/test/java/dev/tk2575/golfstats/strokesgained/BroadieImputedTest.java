@@ -61,9 +61,9 @@ class BroadieImputedTest {
 		SimpleShot third = SimpleShot.builder().lie(Lie.green()).distance(Distance.feet(8)).count(2).build();
 
 		BroadieImputed svc = BroadieImputed.getInstance();
-		assertEquals(new BigDecimal("0.12"), svc.analyzeShot(first, second).getStrokesGained());
-		assertEquals(new BigDecimal("0.21"), svc.analyzeShot(second, third).getStrokesGained());
-		assertEquals(new BigDecimal("-0.50"), svc.analyzeHoledShot(third).getStrokesGained());
+		assertEquals(new BigDecimal("0.12"), svc.analyzeShot(first, second));
+		assertEquals(new BigDecimal("0.21"), svc.analyzeShot(second, third));
+		assertEquals(new BigDecimal("-0.50"), svc.analyzeHoledShot(third));
 	}
 
 }

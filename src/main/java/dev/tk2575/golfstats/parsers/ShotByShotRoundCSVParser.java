@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 @Getter
 public class ShotByShotRoundCSVParser implements CSVParser {
 
-	//TODO golf round, by hole, and by shot category analysis (strokes gained)
-
 	private static final Logger log = LoggerFactory.getLogger(ShotByShotRoundCSVParser.class);
 	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,start,end,transport";
 	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,shots";

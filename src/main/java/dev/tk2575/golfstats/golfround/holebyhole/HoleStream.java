@@ -4,13 +4,13 @@ import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.ObjectStream;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -104,5 +104,20 @@ public class HoleStream implements ObjectStream<Hole> {
 		}
 
 		return new HoleStream(list).validate().asList();
+	}
+
+	public Map<Integer, BigDecimal> computeStrokesGainedByHole(ShotsGainedComputation computer) {
+		return empty
+		       ? new HashMap<>()
+		       : this.stream.collect(Collectors.toUnmodifiableMap(Hole::getNumber, hole -> hole.getShots().computeStrokesGained(computer)));
+	}
+
+	public Map<String, BigDecimal> computeStrokesGainedByShotType(ShotsGainedComputation computer) {
+		if (empty) return new HashMap<>();
+
+		//TODO
+		//get shots across all holes into single shot stream
+		//collect to map grouped by shot type (need shot type at shot level defined by hole attributes)
+		//summing big decimal along the way
 	}
 }
