@@ -6,7 +6,6 @@ import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
-import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -120,5 +119,9 @@ public class HoleStream implements ObjectStream<Hole> {
 
 	public Map<String, BigDecimal> strokesGainedByShotType() {
 		return empty ? Collections.emptyMap() : allShots().strokesGainedByShotType();
+	}
+
+	public BigDecimal totalStrokesGained() {
+		return empty ? BigDecimal.ZERO : allShots().totalStrokesGained();
 	}
 }

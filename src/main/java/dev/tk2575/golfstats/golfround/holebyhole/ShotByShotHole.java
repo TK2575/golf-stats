@@ -8,6 +8,7 @@ import lombok.*;
 import java.util.Collection;
 
 @AllArgsConstructor
+@Builder
 @Getter
 public class ShotByShotHole implements Hole {
 	private final Integer number;
@@ -30,8 +31,8 @@ public class ShotByShotHole implements Hole {
 		this.number = number;
 		this.index = index;
 		this.par = par;
-		this.shots = computeStrokesGained(shots, computer);
 		this.handicapStrokes = 0;
+		this.shots = Shot.stream(shots).categorize(this).computeStrokesGained(computer).asList();
 	}
 
 	@Override

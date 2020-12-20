@@ -13,13 +13,4 @@ public class SimpleShot implements Shot {
 	private final Distance distance;
 	private final MissAngle missAngle;
 	private final Integer count;
-	private final ShotCategory shotCategory;
-
-	public SimpleShot(Lie lie, Distance distance, MissAngle missAngle, Integer count) {
-		this.lie = lie;
-		this.distance = distance;
-		this.missAngle = missAngle;
-		this.count = count;
-		this.shotCategory = ShotCategory.compute(this);
-	}
 }

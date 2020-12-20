@@ -1,11 +1,13 @@
 package dev.tk2575.golfstats.strokesgained;
 
+import dev.tk2575.golfstats.golfround.holebyhole.ShotByShotHole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Distance;
 import dev.tk2575.golfstats.golfround.shotbyshot.Lie;
 import dev.tk2575.golfstats.golfround.shotbyshot.SimpleShot;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,12 +19,12 @@ class BroadieImputedTest {
 		BroadieImputed svc = BroadieImputed.getInstance();
 		assertEquals(BigDecimal.ZERO, svc.getStrokesGainedMap().get("h0"));
 		for (int i = 1; i <= 600; i++) {
-			assertNotNull(svc.getStrokesGainedMap().get("t"+i));
-			assertNotNull(svc.getStrokesGainedMap().get("f"+i));
-			assertNotNull(svc.getStrokesGainedMap().get("r"+i));
-			assertNotNull(svc.getStrokesGainedMap().get("s"+i));
-			assertNotNull(svc.getStrokesGainedMap().get("y"+i));
-			if (i <= 90) { assertNotNull(svc.getStrokesGainedMap().get("g"+i)); }
+			assertNotNull(svc.getStrokesGainedMap().get("t" + i));
+			assertNotNull(svc.getStrokesGainedMap().get("f" + i));
+			assertNotNull(svc.getStrokesGainedMap().get("r" + i));
+			assertNotNull(svc.getStrokesGainedMap().get("s" + i));
+			assertNotNull(svc.getStrokesGainedMap().get("y" + i));
+			if (i <= 90) { assertNotNull(svc.getStrokesGainedMap().get("g" + i)); }
 		}
 	}
 

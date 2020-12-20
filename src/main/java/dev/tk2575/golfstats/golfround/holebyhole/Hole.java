@@ -5,7 +5,6 @@ import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
 import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -53,21 +52,6 @@ public interface Hole {
 
 	default BigDecimal getStrokesGained() {
 		return getShots().totalStrokesGained();
-	}
-
-	//TODO shotstream operation(s)?
-	default Collection<Shot> computeStrokesGained(Collection<Shot> prior, ShotsGainedComputation computer) {
-		List<Shot> shots = new ArrayList<>();
-		Shot shot = null;
-
-		for (Shot result : prior) {
-			if (shot != null) {
-				shots.add(computer.analyzeShot(shot, result));
-			}
-			shot = result;
-		}
-		shots.add(computer.analyzeHoledShot(shot));
-		return shots;
 	}
 
 	default Integer computeNetDoubleBogey(Integer handicapStrokes) {

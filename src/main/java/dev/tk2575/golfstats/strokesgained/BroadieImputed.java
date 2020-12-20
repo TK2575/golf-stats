@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.strokesgained;
 
 import dev.tk2575.golfstats.Utils;
+import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
 import java.math.BigDecimal;

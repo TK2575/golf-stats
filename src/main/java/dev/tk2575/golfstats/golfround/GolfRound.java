@@ -109,6 +109,8 @@ public interface GolfRound {
 
 	default Long getYards() { return getTee().getYards(); }
 
+	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
+
 	default Map<String, BigDecimal> getStrokesGainedByShotType() {
 		return Collections.emptyMap();
 	}

@@ -6,6 +6,7 @@ import dev.tk2575.golfstats.parsers.ShotByShotRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,6 +83,19 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(3, round.getFairwaysInRegulation());
 		assertEquals(4, round.getGreensInRegulation());
 		assertEquals(12, Game.stablefordAllPositive(round).getScore());
+
+		round = rounds.get(4);
+		assertTrue(round.getCourse().getName().startsWith("Red Tail"));
+		assertEquals(new BigDecimal("-12.69"), round.getStrokesGained());
+		assertEquals(new BigDecimal("-2.40"), round.getStrokesGainedByHole().get(8));
+		assertEquals(new BigDecimal("0.91"), round.getStrokesGainedByHole().get(14));
+
+		//FIXME values not aligning with excel, output table of all shots (shorthand), baseline, strokes gained, and category
+		System.out.println(round.getStrokesGainedByShotType());
+
+		//TODO additional tests for strokes gained shots in some other test:
+		//strokes gained baseline for hole - strokes = strokes gained in some other test
+		//strokes gained by x sums up to total strokes gained
 	}
 
 }

@@ -1,10 +1,12 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
 import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -72,5 +74,25 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public BigDecimal totalStrokesGained() {
 		return this.stream.map(Shot::getStrokesGained).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+	}
+
+	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
+		List<Shot> shots = new ArrayList<>();
+		Shot shot = null;
+
+		//TODO refactor without collecting to List?
+		for (Shot result : asList()) {
+			if (shot != null) {
+				shots.add(computer.analyzeShot(shot, result));
+			}
+			shot = result;
+		}
+		shots.add(computer.analyzeHoledShot(shot));
+		return new ShotStream(shots);
+
+	}
+
+	public ShotStream categorize(Hole hole) {
+		return new ShotStream(this.stream.map(shot -> Shot.categorize(hole, shot)), this.empty);
 	}
 }

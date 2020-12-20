@@ -38,6 +38,7 @@ public class HoleByHoleRound implements GolfRound {
 
 	private final boolean nineHoleRound;
 
+	private final BigDecimal strokesGained;
 	private final Map<String, BigDecimal> strokesGainedByShotType;
 	private final Map<Integer, BigDecimal> strokesGainedByHole;
 
@@ -64,6 +65,7 @@ public class HoleByHoleRound implements GolfRound {
 		this.putts = holes().totalPutts();
 		this.nineHoleRound = holes().isNineHoleRound();
 
+		this.strokesGained = holes().totalStrokesGained();
 		this.strokesGainedByHole = holes().strokesGainedByHole();
 		this.strokesGainedByShotType = holes().strokesGainedByShotType();
 
