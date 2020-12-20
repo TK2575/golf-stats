@@ -2,12 +2,12 @@ package dev.tk2575.golfstats.parsers;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.games.Game;
-import dev.tk2575.golfstats.parsers.ShotByShotRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,9 +90,12 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(new BigDecimal("-2.40"), round.getStrokesGainedByHole().get(8));
 		assertEquals(new BigDecimal("0.91"), round.getStrokesGainedByHole().get(14));
 
-		//FIXME values not aligning with excel, output table of all shots (shorthand), baseline, strokes gained, and category
-		System.out.println(round.getStrokesGainedByShotType());
-
+		Map<String, BigDecimal> strokesGainedByShotType = round.getStrokesGainedByShotType();
+		assertEquals(new BigDecimal("-1.18"), strokesGainedByShotType.get("Approach"));
+		assertEquals(new BigDecimal("-3.93"), strokesGainedByShotType.get("Around Green"));
+		assertEquals(new BigDecimal("-5.96"), strokesGainedByShotType.get("Green"));
+		assertEquals(new BigDecimal("-1.62"), strokesGainedByShotType.get("Tee"));
+		
 		//TODO additional tests for strokes gained shots in some other test:
 		//strokes gained baseline for hole - strokes = strokes gained in some other test
 		//strokes gained by x sums up to total strokes gained

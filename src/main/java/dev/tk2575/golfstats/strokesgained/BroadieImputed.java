@@ -120,12 +120,18 @@ public class BroadieImputed implements ShotsGainedComputation {
 			else {
 				lowValue = currentValue;
 				lowYardage = yards;
-				nextYardage = lowYardage + (yards < 20 ? 10 : 20);
+				nextYardage = lowYardage + getYardIncrements(yards);
 				highValue = sourceMap.get(nextYardage);
 			}
 
 			strokesGainedMap.put(abbrev + yards, roundToTwoDecimalPlaces(currentValue));
 		}
+	}
+
+	private static int getYardIncrements(int yards) {
+		if (yards < 10) return 5;
+		if (yards < 20) return 10;
+		return 20;
 	}
 
 	private static BigDecimal computeImputedValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
@@ -179,6 +185,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		fairwayMap = new TreeMap<>();
 
 		fairwayMap.put(1, greenMap.get(3));
+		fairwayMap.put(5, greenMap.get(15));
 		fairwayMap.put(10, greenMap.get(30));
 
 		fairwayMap.put(20, new BigDecimal("2.40"));
@@ -217,6 +224,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		roughMap = new TreeMap<>();
 
 		roughMap.put(1, greenMap.get(3));
+		roughMap.put(5, greenMap.get(15));
 		roughMap.put(10, greenMap.get(30));
 
 		roughMap.put(20, new BigDecimal("2.59"));
@@ -255,6 +263,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		sandMap = new TreeMap<>();
 
 		sandMap.put(1, greenMap.get(3));
+		sandMap.put(5, greenMap.get(15));
 		sandMap.put(10, greenMap.get(30));
 
 		sandMap.put(20, new BigDecimal("2.53"));

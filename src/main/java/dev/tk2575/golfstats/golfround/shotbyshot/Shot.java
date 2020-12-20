@@ -112,4 +112,7 @@ public interface Shot {
 		return of(lie, distance, missDirection, missAngle, count);
 	}
 
+	default String getShorthand() {
+		return getLie().getAbbrev().toUpperCase() + getDistance().getValue() + (getCount() > 1 ? "x" + getCount() :  "");
+	}
 }

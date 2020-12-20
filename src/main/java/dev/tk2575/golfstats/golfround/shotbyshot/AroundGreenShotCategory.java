@@ -4,6 +4,6 @@ public class AroundGreenShotCategory implements ShotCategory {
 
 	@Override
 	public String getLabel() {
-		return "Around the Green";
+		return "Around Green";
 	}
 }

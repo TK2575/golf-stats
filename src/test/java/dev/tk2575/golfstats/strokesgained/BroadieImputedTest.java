@@ -1,13 +1,11 @@
 package dev.tk2575.golfstats.strokesgained;
 
-import dev.tk2575.golfstats.golfround.holebyhole.ShotByShotHole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Distance;
 import dev.tk2575.golfstats.golfround.shotbyshot.Lie;
 import dev.tk2575.golfstats.golfround.shotbyshot.SimpleShot;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -54,6 +52,14 @@ class BroadieImputedTest {
 		assertEquals(new BigDecimal("1.61"), svc.getStrokesGainedMap().get("g10"));
 		assertEquals(new BigDecimal("1.78"), svc.getStrokesGainedMap().get("g15"));
 		assertEquals(new BigDecimal("1.71"), svc.getStrokesGainedMap().get("g13"));
+
+		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("r9"));
+		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("f9"));
+		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("s9"));
+
+		assertEquals(new BigDecimal("2.16"), svc.getStrokesGainedMap().get("r13"));
+		assertEquals(new BigDecimal("2.11"), svc.getStrokesGainedMap().get("f13"));
+		assertEquals(new BigDecimal("2.15"), svc.getStrokesGainedMap().get("s13"));
 	}
 
 	@Test
