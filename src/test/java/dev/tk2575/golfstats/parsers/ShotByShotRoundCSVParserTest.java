@@ -2,10 +2,13 @@ package dev.tk2575.golfstats.parsers;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.games.Game;
+import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -95,10 +98,25 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(new BigDecimal("-3.93"), strokesGainedByShotType.get("Around Green"));
 		assertEquals(new BigDecimal("-5.96"), strokesGainedByShotType.get("Green"));
 		assertEquals(new BigDecimal("-1.62"), strokesGainedByShotType.get("Tee"));
-		
+
+//		@formatter:off
+		rounds.forEach(each -> each.getHoles().forEach(hole -> hole.getShots().forEach(
+				shot -> System.out.println(String.join("\t",
+						shot.getShotCategory().getLabel(),
+						shot.getLie().getAbbrev(),
+						shot.getDistance().getValue().toString(),
+						shot.getCount().toString(),
+						shot.getStrokesGained().toPlainString(),
+						each.getDate().format(DateTimeFormatter.ISO_DATE)))
+		)));
+
+//		@formatter:on
+
 		//TODO additional tests for strokes gained shots in some other test:
 		//strokes gained baseline for hole - strokes = strokes gained in some other test
 		//strokes gained by x sums up to total strokes gained
+
+		//TODO review baseline for inside 20 yards (non-green), might be a bit lower than realistic
 	}
 
 }
