@@ -48,6 +48,10 @@ public class HoleStream implements ObjectStream<Hole> {
 		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)), this.empty);
 	}
 
+	public Hole byNumber(Integer number) {
+		return this.stream.filter(hole -> hole.getNumber().equals(number)).findAny().orElseThrow(NoSuchElementException::new);
+	}
+
 	public HoleStream applyNetDoubleBogey(Tee tee, Golfer golfer) {
 		Integer handicapStrokes = tee.handicapOf(golfer).getHandicapStrokesForGolfer(golfer);
 		return new HoleStream(this.stream.map(h -> h.applyNetDoubleBogey(handicapStrokes)), this.empty);
@@ -121,7 +125,7 @@ public class HoleStream implements ObjectStream<Hole> {
 		return empty ? Collections.emptyMap() : allShots().strokesGainedByShotType();
 	}
 
-	public BigDecimal totalStrokesGained() {
+	public BigDecimal strokesGainedTotal() {
 		return empty ? BigDecimal.ZERO : allShots().totalStrokesGained();
 	}
 }

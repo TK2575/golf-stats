@@ -90,10 +90,10 @@ class ShotByShotRoundCSVParserTest {
 		round = rounds.get(4);
 		assertTrue(round.getCourse().getName().startsWith("Red Tail"));
 		assertEquals(new BigDecimal("-12.69"), round.getStrokesGained());
-		assertEquals(new BigDecimal("-2.40"), round.getStrokesGainedByHole().get(8));
-		assertEquals(new BigDecimal("0.91"), round.getStrokesGainedByHole().get(14));
+		assertEquals(new BigDecimal("-2.40"), round.getHoles().byNumber(8).getStrokesGained());
+		assertEquals(new BigDecimal("0.91"), round.getHoles().byNumber(14).getStrokesGained());
 
-		Map<String, BigDecimal> strokesGainedByShotType = round.getStrokesGainedByShotType();
+		Map<String, BigDecimal> strokesGainedByShotType = round.getHoles().strokesGainedByShotType();
 		assertEquals(new BigDecimal("-1.18"), strokesGainedByShotType.get("Approach"));
 		assertEquals(new BigDecimal("-3.93"), strokesGainedByShotType.get("Around Green"));
 		assertEquals(new BigDecimal("-5.96"), strokesGainedByShotType.get("Green"));
@@ -117,6 +117,7 @@ class ShotByShotRoundCSVParserTest {
 		//strokes gained by x sums up to total strokes gained
 
 		//TODO review baseline for inside 20 yards (non-green), might be a bit lower than realistic
+		//TODO 10/2/2020 1 putt 40' < 0 strokes gained?
 	}
 
 }

@@ -111,14 +111,6 @@ public interface GolfRound {
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
 
-	default Map<String, BigDecimal> getStrokesGainedByShotType() {
-		return Collections.emptyMap();
-	}
-
-	default Map<Integer, BigDecimal> getStrokesGainedByHole() {
-		return Collections.emptyMap();
-	}
-
 	static String[] roundHeaders() {
 		return new String[]{
 				"Round Type",
