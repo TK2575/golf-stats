@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.strokesgained;
 
 import dev.tk2575.golfstats.Utils;
-import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
 import java.math.BigDecimal;
@@ -80,21 +79,25 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 		BigDecimal currentValue;
 		int increments = 5;
+		int lowDistance = 3;
+		int nextDistance = 15;
 
-		for (int i = 3; i <= 90; i++) {
-			if (i == 20) { increments = 10; }
-			if (i == 60) { increments = 30; }
+		for (int distance = 3; distance <= 90; distance++) {
+			if (distance == 20) { increments = 10; }
+			if (distance == 60) { increments = 30; }
 
-			currentValue = greenMap.get(i);
+			currentValue = greenMap.get(distance);
 			if (currentValue == null) {
-				currentValue = computeImputedValue(i, increments, lowValue, highValue);
+				currentValue = computeImputedValue(distance, lowDistance, nextDistance, lowValue, highValue);
 			}
 			else {
 				lowValue = currentValue;
-				highValue = greenMap.get(i + increments);
+				lowDistance = distance;
+				nextDistance = distance + increments;
+				highValue = greenMap.get(nextDistance);
 			}
 
-			strokesGainedMap.put("g" + i, roundToTwoDecimalPlaces(currentValue));
+			strokesGainedMap.put("g" + distance, roundToTwoDecimalPlaces(currentValue));
 		}
 	}
 
@@ -115,7 +118,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		for (int yards = 2; yards <= 600; yards++) {
 			currentValue = sourceMap.get(yards);
 			if (currentValue == null) {
-				currentValue = computeImputedValue(yards, nextYardage - lowYardage, lowValue, highValue);
+				currentValue = computeImputedValue(yards, lowYardage, nextYardage, lowValue, highValue);
 			}
 			else {
 				lowValue = currentValue;
@@ -129,18 +132,17 @@ public class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	private static int getYardIncrements(int yards) {
-		if (yards < 10) return 5;
-		if (yards < 20) return 10;
-		return 20;
+		return yards < 100 ? 10 : 20;
 	}
 
-	private static BigDecimal computeImputedValue(int distance, int increments, BigDecimal lowValue, BigDecimal highValue) {
-		BigDecimal diff = highValue.subtract(lowValue).abs();
+	private static BigDecimal computeImputedValue(int distance, int lowDistance, int nextDistance, BigDecimal lowValue, BigDecimal nextValue) {
+		int increments = nextDistance - lowDistance;
+		int steps = (distance - lowDistance) % increments;
+		BigDecimal diff = nextValue.subtract(lowValue).abs();
 		BigDecimal stepValue = diff.divide(BigDecimal.valueOf(increments), 4, RoundingMode.HALF_UP);
-		int steps = distance % increments;
 		BigDecimal totalStepValue = stepValue.multiply(BigDecimal.valueOf(steps));
 
-		return totalStepValue.add(lowValue.compareTo(highValue) <= 0 ? lowValue : highValue);
+		return totalStepValue.add(lowValue.compareTo(nextValue) <= 0 ? lowValue : nextValue);
 	}
 
 	private static void initTeeMap() {
@@ -149,9 +151,13 @@ public class BroadieImputed implements ShotsGainedComputation {
 		teeMap.put(1, fairwayMap.get(1));
 		teeMap.put(10, fairwayMap.get(10));
 		teeMap.put(20, fairwayMap.get(20));
+		teeMap.put(30, fairwayMap.get(30));
 		teeMap.put(40, fairwayMap.get(40));
+		teeMap.put(50, fairwayMap.get(50));
 		teeMap.put(60, fairwayMap.get(60));
+		teeMap.put(70, fairwayMap.get(70));
 		teeMap.put(80, fairwayMap.get(80));
+		teeMap.put(90, fairwayMap.get(90));
 
 		teeMap.put(100, new BigDecimal("2.92"));
 		teeMap.put(120, new BigDecimal("2.99"));
@@ -185,13 +191,16 @@ public class BroadieImputed implements ShotsGainedComputation {
 		fairwayMap = new TreeMap<>();
 
 		fairwayMap.put(1, greenMap.get(3));
-		fairwayMap.put(5, greenMap.get(15));
-		fairwayMap.put(10, greenMap.get(30));
 
+		fairwayMap.put(10, new BigDecimal("2.18"));
 		fairwayMap.put(20, new BigDecimal("2.40"));
+		fairwayMap.put(30, new BigDecimal("2.52"));
 		fairwayMap.put(40, new BigDecimal("2.60"));
+		fairwayMap.put(50, new BigDecimal("2.66"));
 		fairwayMap.put(60, new BigDecimal("2.70"));
+		fairwayMap.put(70, new BigDecimal("2.72"));
 		fairwayMap.put(80, new BigDecimal("2.75"));
+		fairwayMap.put(90, new BigDecimal("2.77"));
 		fairwayMap.put(100, new BigDecimal("2.80"));
 		fairwayMap.put(120, new BigDecimal("2.85"));
 		fairwayMap.put(140, new BigDecimal("2.91"));
@@ -224,13 +233,16 @@ public class BroadieImputed implements ShotsGainedComputation {
 		roughMap = new TreeMap<>();
 
 		roughMap.put(1, greenMap.get(3));
-		roughMap.put(5, greenMap.get(15));
-		roughMap.put(10, greenMap.get(30));
 
+		roughMap.put(10, new BigDecimal("2.34"));
 		roughMap.put(20, new BigDecimal("2.59"));
+		roughMap.put(30, new BigDecimal("2.70"));
 		roughMap.put(40, new BigDecimal("2.78"));
+		roughMap.put(50, new BigDecimal("2.87"));
 		roughMap.put(60, new BigDecimal("2.91"));
+		roughMap.put(70, new BigDecimal("2.93"));
 		roughMap.put(80, new BigDecimal("2.96"));
+		roughMap.put(90, new BigDecimal("2.99"));
 		roughMap.put(100, new BigDecimal("3.02"));
 		roughMap.put(120, new BigDecimal("3.08"));
 		roughMap.put(140, new BigDecimal("3.15"));
@@ -263,13 +275,16 @@ public class BroadieImputed implements ShotsGainedComputation {
 		sandMap = new TreeMap<>();
 
 		sandMap.put(1, greenMap.get(3));
-		sandMap.put(5, greenMap.get(15));
-		sandMap.put(10, greenMap.get(30));
 
+		sandMap.put(10, new BigDecimal("2.43"));
 		sandMap.put(20, new BigDecimal("2.53"));
+		sandMap.put(30, new BigDecimal("2.66"));
 		sandMap.put(40, new BigDecimal("2.82"));
+		sandMap.put(50, new BigDecimal("2.92"));
 		sandMap.put(60, new BigDecimal("3.15"));
+		sandMap.put(70, new BigDecimal("3.21"));
 		sandMap.put(80, new BigDecimal("3.24"));
+		sandMap.put(90, new BigDecimal("3.24"));
 		sandMap.put(100, new BigDecimal("3.23"));
 		sandMap.put(120, new BigDecimal("3.21"));
 		sandMap.put(140, new BigDecimal("3.22"));
@@ -302,12 +317,16 @@ public class BroadieImputed implements ShotsGainedComputation {
 		recoveryMap = new TreeMap<>();
 
 		recoveryMap.put(1, roughMap.get(1));
-		recoveryMap.put(10, roughMap.get(10));
-		recoveryMap.put(20, roughMap.get(20));
-		recoveryMap.put(40, roughMap.get(40));
-		recoveryMap.put(60, roughMap.get(60));
-		recoveryMap.put(80, roughMap.get(80));
 
+		recoveryMap.put(10, new BigDecimal("3.45"));
+		recoveryMap.put(20, new BigDecimal("3.51"));
+		recoveryMap.put(30, new BigDecimal("3.57"));
+		recoveryMap.put(40, new BigDecimal("3.71"));
+		recoveryMap.put(50, new BigDecimal("3.79"));
+		recoveryMap.put(60, new BigDecimal("3.83"));
+		recoveryMap.put(70, new BigDecimal("3.84"));
+		recoveryMap.put(80, new BigDecimal("3.84"));
+		recoveryMap.put(90, new BigDecimal("3.82"));
 		recoveryMap.put(100, new BigDecimal("3.80"));
 		recoveryMap.put(120, new BigDecimal("3.78"));
 		recoveryMap.put(140, new BigDecimal("3.80"));

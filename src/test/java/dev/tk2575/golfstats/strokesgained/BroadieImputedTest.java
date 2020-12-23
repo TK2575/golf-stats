@@ -43,7 +43,7 @@ class BroadieImputedTest {
 
 		assertEquals(new BigDecimal("2.53"), svc.getStrokesGainedMap().get("s20"));
 		assertEquals(new BigDecimal("2.82"), svc.getStrokesGainedMap().get("s40"));
-		assertEquals(new BigDecimal("2.63"), svc.getStrokesGainedMap().get("s27"));
+		assertEquals(new BigDecimal("2.62"), svc.getStrokesGainedMap().get("s27"));
 
 		assertEquals(new BigDecimal("3.97"), svc.getStrokesGainedMap().get("y240"));
 		assertEquals(new BigDecimal("4.03"), svc.getStrokesGainedMap().get("y260"));
@@ -53,13 +53,13 @@ class BroadieImputedTest {
 		assertEquals(new BigDecimal("1.78"), svc.getStrokesGainedMap().get("g15"));
 		assertEquals(new BigDecimal("1.71"), svc.getStrokesGainedMap().get("g13"));
 
-		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("r9"));
-		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("f9"));
-		assertEquals(new BigDecimal("1.94"), svc.getStrokesGainedMap().get("s9"));
+		assertEquals(new BigDecimal("2.34"), svc.getStrokesGainedMap().get("r10"));
+		assertEquals(new BigDecimal("2.18"), svc.getStrokesGainedMap().get("f10"));
+		assertEquals(new BigDecimal("2.43"), svc.getStrokesGainedMap().get("s10"));
+		assertEquals(new BigDecimal("3.45"), svc.getStrokesGainedMap().get("y10"));
 
-		assertEquals(new BigDecimal("2.16"), svc.getStrokesGainedMap().get("r13"));
-		assertEquals(new BigDecimal("2.11"), svc.getStrokesGainedMap().get("f13"));
-		assertEquals(new BigDecimal("2.15"), svc.getStrokesGainedMap().get("s13"));
+		assertEquals(new BigDecimal("2.05"), svc.getStrokesGainedMap().get("r8"));
+
 	}
 
 	@Test
