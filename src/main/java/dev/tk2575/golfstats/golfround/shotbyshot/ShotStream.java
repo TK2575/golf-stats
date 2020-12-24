@@ -6,10 +6,7 @@ import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,8 +36,12 @@ public class ShotStream implements ObjectStream<Shot> {
 		return greenShots().sumInteger(Shot::getCount);
 	}
 
+	private Optional<Shot> teeShot() {
+		return this.stream.filter(shot -> shot.getLie().isTee()).findFirst();
+	}
+
 	private ShotStream greenShots() {
-		return new ShotStream(this.stream.filter(s -> s.getLie().isGreen()), this.empty);
+		return new ShotStream(this.stream.filter(shot -> shot.getLie().isGreen()), this.empty);
 	}
 
 	public boolean isFairwayInRegulation(boolean fairwayPresent) {
@@ -66,10 +67,7 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	public BigDecimal teeShotStrokesGainedBaseline() {
-		return this.stream.filter(shot -> shot.getLie().isTee())
-		                  .findFirst()
-		                  .map(Shot::getStrokesGainedBaseline)
-		                  .orElse(BigDecimal.ZERO);
+		return teeShot().map(Shot::getStrokesGainedBaseline).orElse(BigDecimal.ZERO);
 	}
 
 	public BigDecimal totalStrokesGained() {
@@ -94,5 +92,9 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public ShotStream categorize(Hole hole) {
 		return new ShotStream(this.stream.map(shot -> Shot.categorize(hole, shot)), this.empty);
+	}
+
+	public Long yardsFromTee() {
+		return teeShot().map(shot -> shot.getDistance().getValue()).orElse(0L);
 	}
 }

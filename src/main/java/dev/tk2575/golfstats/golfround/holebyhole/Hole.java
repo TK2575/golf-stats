@@ -66,4 +66,8 @@ public interface Hole {
 
 		return strokesOnAllHoles + strokeOnThisHole;
 	}
+
+	default Long getYards() {
+		return getShots().yardsFromTee();
+	}
 }

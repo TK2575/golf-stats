@@ -130,6 +130,10 @@ public class HoleStream implements ObjectStream<Hole> {
 	}
 
 	public BigDecimal totalStrokesGainedBaseline() {
-		return this.stream.map(Hole::getStrokesGainedBaseline).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return sumBigDecimal(Hole::getStrokesGainedBaseline);
+	}
+
+	public Long totalYards() {
+		return sumLong(Hole::getYards);
 	}
 }

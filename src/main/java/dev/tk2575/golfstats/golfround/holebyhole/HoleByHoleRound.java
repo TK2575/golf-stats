@@ -73,6 +73,12 @@ public class HoleByHoleRound implements GolfRound {
 	}
 
 	@Override
+	public Long getYards() {
+		Long yards = holes().totalYards();
+		return yards > 0 ? yards : GolfRound.super.getYards();
+	}
+
+	@Override
 	public HoleStream getHoles() {
 		return holes();
 	}
