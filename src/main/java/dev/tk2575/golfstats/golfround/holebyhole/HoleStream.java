@@ -125,7 +125,11 @@ public class HoleStream implements ObjectStream<Hole> {
 		return empty ? Collections.emptyMap() : allShots().strokesGainedByShotType();
 	}
 
-	public BigDecimal strokesGainedTotal() {
+	public BigDecimal totalStrokesGained() {
 		return empty ? BigDecimal.ZERO : allShots().totalStrokesGained();
+	}
+
+	public BigDecimal totalStrokesGainedBaseline() {
+		return this.stream.map(Hole::getStrokesGainedBaseline).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 }

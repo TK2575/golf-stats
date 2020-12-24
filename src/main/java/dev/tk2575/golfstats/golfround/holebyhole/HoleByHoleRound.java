@@ -65,7 +65,7 @@ public class HoleByHoleRound implements GolfRound {
 		this.putts = holes().totalPutts();
 		this.nineHoleRound = holes().isNineHoleRound();
 
-		this.strokesGained = holes().strokesGainedTotal();
+		this.strokesGained = holes().totalStrokesGained();
 		this.strokesGainedByHole = holes().strokesGainedByHole();
 		this.strokesGainedByShotType = holes().strokesGainedByShotType();
 
