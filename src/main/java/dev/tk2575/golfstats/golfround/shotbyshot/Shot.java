@@ -1,5 +1,8 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
+import dev.tk2575.golfstats.golfround.holebyhole.Hole;
+
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
@@ -15,9 +18,33 @@ public interface Shot {
 
 	Integer getCount();
 
+	default ShotCategory getShotCategory() {
+		return ShotCategory.unknown();
+	}
+
+	default BigDecimal getStrokesGainedBaseline() {
+		return BigDecimal.ZERO;
+	}
+
+	default BigDecimal getStrokesGained() {
+		return BigDecimal.ZERO;
+	}
+
 	static Shot of(char lieChar, long distance, char missDirection, int missAngle, int count) {
 		Lie lie = Lie.parse(lieChar);
 		return new SimpleShot(lie, Distance.parse(lie, distance), MissAngle.parse(missDirection, missAngle), count);
+	}
+
+	static Shot categorize(Hole hole, Shot shot) {
+		return new CategorizedShot(hole, shot);
+	}
+
+	static Shot strokesGained(Shot shot, BigDecimal strokesGainedBaseline, BigDecimal strokesGained) {
+		return new StrokesGainedShot(shot, strokesGainedBaseline, strokesGained);
+	}
+
+	static Shot holed() {
+		return new HoledShot();
 	}
 
 	static boolean validate(String shorthand) {
@@ -85,4 +112,7 @@ public interface Shot {
 		return of(lie, distance, missDirection, missAngle, count);
 	}
 
+	default String getShorthand() {
+		return getLie().getAbbrev().toUpperCase() + getDistance().getValue() + (getCount() > 1 ? "x" + getCount() :  "");
+	}
 }

@@ -2,11 +2,12 @@ package dev.tk2575.golfstats.parsers;
 
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.games.Game;
-import dev.tk2575.golfstats.parsers.ShotByShotRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,6 +47,8 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(5, round.getFairwaysInRegulation());
 		assertEquals(3, round.getGreensInRegulation());
 		assertEquals(18, Game.stablefordAllPositive(round).getScore());
+		assertEquals(5078L, round.getYards());
+
 
 	}
 
@@ -82,6 +85,26 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(3, round.getFairwaysInRegulation());
 		assertEquals(4, round.getGreensInRegulation());
 		assertEquals(12, Game.stablefordAllPositive(round).getScore());
+
+		round = rounds.get(4);
+		assertTrue(round.getCourse().getName().startsWith("Red Tail"));
+		assertEquals(new BigDecimal("-12.69"), round.getStrokesGained());
+		assertEquals(new BigDecimal("-2.40"), round.getHoles().byNumber(8).getStrokesGained());
+		assertEquals(new BigDecimal("0.91"), round.getHoles().byNumber(14).getStrokesGained());
+
+		assertEquals(round.getStrokesGained(), round.getHoles()
+		                                            .totalStrokesGainedBaseline()
+		                                            .subtract(BigDecimal.valueOf(round.getStrokes())));
+
+		Map<String, BigDecimal> strokesGainedByShotType = round.getHoles().strokesGainedByShotType();
+		assertEquals(new BigDecimal("-1.62"), strokesGainedByShotType.get("Tee"));
+		assertEquals(new BigDecimal("-2.15"), strokesGainedByShotType.get("Approach"));
+		assertEquals(new BigDecimal("-2.96"), strokesGainedByShotType.get("Around Green"));
+		assertEquals(new BigDecimal("-5.96"), strokesGainedByShotType.get("Green"));
+
+		assertEquals(round.getStrokesGained(), strokesGainedByShotType.values()
+		                                                              .stream()
+		                                                              .reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 
 }

@@ -54,6 +54,14 @@ public class Utils {
 		}
 	}
 
+	public static BigDecimal roundToTwoDecimalPlaces(BigDecimal value) {
+		return value.setScale(2, HALF_UP);
+	}
+
+	public static BigDecimal roundToOneDecimalPlace(BigDecimal value) {
+		return value.setScale(1, HALF_UP);
+	}
+
 	public static String convertToTSV(String[] data) {
 		return printAsDelimitedValues(data, "\t");
 	}

@@ -3,8 +3,8 @@ package dev.tk2575.golfstats.golfround.shotbyshot;
 import lombok.*;
 
 @Getter
+@Builder(toBuilder = true)
 @AllArgsConstructor
-@Builder
 @EqualsAndHashCode
 @ToString
 public class SimpleShot implements Shot {

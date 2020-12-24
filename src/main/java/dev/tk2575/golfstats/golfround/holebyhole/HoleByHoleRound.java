@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @ToString
@@ -37,6 +38,10 @@ public class HoleByHoleRound implements GolfRound {
 
 	private final boolean nineHoleRound;
 
+	private final BigDecimal strokesGained;
+	private final Map<String, BigDecimal> strokesGainedByShotType;
+	private final Map<Integer, BigDecimal> strokesGainedByHole;
+
 	@Getter(AccessLevel.NONE) @ToString.Exclude
 	private final Collection<Hole> holes;
 
@@ -60,7 +65,17 @@ public class HoleByHoleRound implements GolfRound {
 		this.putts = holes().totalPutts();
 		this.nineHoleRound = holes().isNineHoleRound();
 
+		this.strokesGained = holes().totalStrokesGained();
+		this.strokesGainedByHole = holes().strokesGainedByHole();
+		this.strokesGainedByShotType = holes().strokesGainedByShotType();
+
 		this.scoreDifferential = computeScoreDifferential();
+	}
+
+	@Override
+	public Long getYards() {
+		Long yards = holes().totalYards();
+		return yards > 0 ? yards : GolfRound.super.getYards();
 	}
 
 	@Override

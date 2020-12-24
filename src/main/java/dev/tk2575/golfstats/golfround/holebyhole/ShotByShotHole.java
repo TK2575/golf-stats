@@ -2,12 +2,13 @@ package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
+import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;
 
 import java.util.Collection;
 
 @AllArgsConstructor
-@Builder(toBuilder = true)
+@Builder
 @Getter
 public class ShotByShotHole implements Hole {
 	private final Integer number;
@@ -24,6 +25,14 @@ public class ShotByShotHole implements Hole {
 		this.par = hole.getPar();
 		this.handicapStrokes = handicapStrokes;
 		this.shots = hole.getShots().asList();
+	}
+
+	public ShotByShotHole(Integer number, Integer index, Integer par, Collection<Shot> shots, ShotsGainedComputation computer) {
+		this.number = number;
+		this.index = index;
+		this.par = par;
+		this.handicapStrokes = 0;
+		this.shots = Shot.stream(shots).categorize(this).computeStrokesGained(computer).asList();
 	}
 
 	@Override

@@ -1,18 +1,14 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
-import lombok.*;
-
-@ToString
-@EqualsAndHashCode
-public class RoughLie implements Lie {
+public class HoleLie implements Lie {
 
 	@Override
 	public String getLabel() {
-		return "Rough";
+		return "Hole";
 	}
 
 	@Override
 	public String getAbbrev() {
-		return "r";
+		return "h";
 	}
 }

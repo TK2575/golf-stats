@@ -4,13 +4,14 @@ import dev.tk2575.golfstats.Golfer;
 import dev.tk2575.golfstats.ObjectStream;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
+import dev.tk2575.golfstats.golfround.shotbyshot.ShotStream;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
@@ -45,6 +46,10 @@ public class HoleStream implements ObjectStream<Hole> {
 
 	public HoleStream sortFirstToLast() {
 		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)), this.empty);
+	}
+
+	public Hole byNumber(Integer number) {
+		return this.stream.filter(hole -> hole.getNumber().equals(number)).findAny().orElseThrow(NoSuchElementException::new);
 	}
 
 	public HoleStream applyNetDoubleBogey(Tee tee, Golfer golfer) {
@@ -104,5 +109,31 @@ public class HoleStream implements ObjectStream<Hole> {
 		}
 
 		return new HoleStream(list).validate().asList();
+	}
+
+	public ShotStream allShots() {
+		return Shot.stream(this.stream.flatMap(Hole::getShots).collect(Collectors.toList()));
+	}
+
+	public Map<Integer, BigDecimal> strokesGainedByHole() {
+		return empty
+		       ? Collections.emptyMap()
+		       : this.stream.collect(Collectors.toUnmodifiableMap(Hole::getNumber, Hole::getStrokesGained));
+	}
+
+	public Map<String, BigDecimal> strokesGainedByShotType() {
+		return empty ? Collections.emptyMap() : allShots().strokesGainedByShotType();
+	}
+
+	public BigDecimal totalStrokesGained() {
+		return empty ? BigDecimal.ZERO : allShots().totalStrokesGained();
+	}
+
+	public BigDecimal totalStrokesGainedBaseline() {
+		return sumBigDecimal(Hole::getStrokesGainedBaseline);
+	}
+
+	public Long totalYards() {
+		return sumLong(Hole::getYards);
 	}
 }

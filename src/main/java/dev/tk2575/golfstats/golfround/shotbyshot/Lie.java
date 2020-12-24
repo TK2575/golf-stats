@@ -28,6 +28,8 @@ public interface Lie {
 
 	String getLabel();
 
+	String getAbbrev();
+
 	static Lie tee() {
 		return new TeeLie();
 	}
@@ -52,9 +54,15 @@ public interface Lie {
 		return new SandLie();
 	}
 
+	static Lie hole() {
+		return new HoleLie();
+	}
+
 	default boolean isGreen() {
 		return false;
 	}
 
 	default boolean isFairway() { return false; }
+
+	default boolean isTee() { return false; }
 }
