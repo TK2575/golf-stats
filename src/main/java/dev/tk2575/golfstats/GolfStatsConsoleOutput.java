@@ -6,8 +6,6 @@ import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -16,23 +14,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@SpringBootApplication
-public class GolfStatsApplication {
-
-	private static final Logger log = LoggerFactory.getLogger(GolfStatsApplication.class);
+public class GolfStatsConsoleOutput implements Runnable {
 
 	//TODO set scale, rounding mode globally (2s for internals, 1 for output)
 
-	public static void main(String[] args) {
-		SpringApplication.run(GolfStatsApplication.class, args);
+	private static final Logger log = LoggerFactory.getLogger(GolfStatsConsoleOutput.class);
 
+	@Override
+	public void run() {
 		Map<String, List<GolfRound>> rounds = getCSVData();
 		List<PerformanceSummary> currentStats = computeStatsByGolfer(rounds);
 
 		logStatsAndRoundHistory(currentStats);
-		//		logCourseHandicapForNextRound(currentStats);
-
-		System.exit(0);
+//		logCourseHandicapForNextRound(currentStats);
 	}
 
 	private static Map<String, List<GolfRound>> getCSVData() {
@@ -100,5 +94,4 @@ public class GolfStatsApplication {
 				.getTee()
 				.getHandicapStrokes()));
 	}
-
 }

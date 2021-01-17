@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats;
+package dev.tk2575;
 
 import lombok.*;
 
