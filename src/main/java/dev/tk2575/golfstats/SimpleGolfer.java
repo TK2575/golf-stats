@@ -17,18 +17,16 @@ public class SimpleGolfer implements Golfer {
 	}
 
 	public SimpleGolfer(String golferName, HandicapIndex index) {
-		this.name = golferName;
-		this.handicapIndex = assignIndex(index);
-		this.gender = UNKNOWN;
+		this(golferName, index, UNKNOWN);
 	}
 
 	public SimpleGolfer(Golfer golfer, HandicapIndex index) {
-		this.name = golfer.getName();
-		this.handicapIndex = assignIndex(index);
-		this.gender = golfer.getGender();
+		this(golfer.getName(), index, golfer.getGender());
 	}
 
-	private HandicapIndex assignIndex(HandicapIndex index) {
-		return index == null ? HandicapIndex.emptyIndex() : index;
+	public SimpleGolfer(String name, HandicapIndex index, String gender) {
+		this.name = name;
+		this.handicapIndex = index == null ? HandicapIndex.emptyIndex() : index;
+		this.gender = gender;
 	}
 }

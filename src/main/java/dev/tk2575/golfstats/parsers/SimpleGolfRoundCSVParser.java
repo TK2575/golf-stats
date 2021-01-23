@@ -4,12 +4,9 @@ import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.SimpleGolfRound;
 import dev.tk2575.golfstats.golfround.Transport;
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -21,9 +18,9 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.NONE)
+@Log4j2
 public class SimpleGolfRoundCSVParser implements CSVParser {
 
-	private static final Logger log = LoggerFactory.getLogger(SimpleGolfRoundCSVParser.class);
 	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round";
 
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");

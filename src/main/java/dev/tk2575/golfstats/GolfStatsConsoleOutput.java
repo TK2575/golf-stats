@@ -4,8 +4,7 @@ import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -14,11 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class GolfStatsConsoleOutput implements Runnable {
 
 	//TODO set scale, rounding mode globally (2s for internals, 1 for output)
-
-	private static final Logger log = LoggerFactory.getLogger(GolfStatsConsoleOutput.class);
 
 	@Override
 	public void run() {

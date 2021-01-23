@@ -6,8 +6,7 @@ import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.handicapindex.HandicapIndex;
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +19,9 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 @Getter
+@Log4j2
 public class ShotByShotRoundCSVParser implements CSVParser {
 
-	private static final Logger log = LoggerFactory.getLogger(ShotByShotRoundCSVParser.class);
 	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,start,end,transport";
 	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,shots";
 

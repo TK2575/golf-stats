@@ -25,4 +25,8 @@ public interface Golfer {
 	default String getKey() {
 		return String.join("-", getName(), getHandicapIndex().getValue().toPlainString());
 	}
+
+	default Long getId() {
+		return 0L;
+	}
 }
