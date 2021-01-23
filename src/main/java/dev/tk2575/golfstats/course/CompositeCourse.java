@@ -1,6 +1,6 @@
 package dev.tk2575.golfstats.course;
 
-import dev.tk2575.golfstats.Utils;
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.course.tee.Tee;
 import lombok.*;
 

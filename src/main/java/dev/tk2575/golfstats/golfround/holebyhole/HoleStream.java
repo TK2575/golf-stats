@@ -1,7 +1,7 @@
 package dev.tk2575.golfstats.golfround.holebyhole;
 
 import dev.tk2575.golfstats.Golfer;
-import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.ObjectStream;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;

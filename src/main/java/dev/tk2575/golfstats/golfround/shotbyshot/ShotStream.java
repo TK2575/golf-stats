@@ -1,6 +1,6 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
-import dev.tk2575.golfstats.ObjectStream;
+import dev.tk2575.ObjectStream;
 import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import dev.tk2575.golfstats.strokesgained.ShotsGainedComputation;
 import lombok.*;

@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.tk2575.golfstats.Utils.isNullOrBlank;
+import static dev.tk2575.Utils.isNullOrBlank;
 
 public class CityStateCourse implements Course {
 

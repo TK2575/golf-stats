@@ -1,13 +1,13 @@
 package dev.tk2575.golfstats.strokesgained;
 
-import dev.tk2575.golfstats.Utils;
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static dev.tk2575.golfstats.Utils.roundToTwoDecimalPlaces;
+import static dev.tk2575.Utils.roundToTwoDecimalPlaces;
 
 public class BroadieImputed implements ShotsGainedComputation {
 

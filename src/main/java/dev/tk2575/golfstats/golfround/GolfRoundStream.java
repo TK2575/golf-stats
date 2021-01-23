@@ -1,7 +1,7 @@
 package dev.tk2575.golfstats.golfround;
 
-import dev.tk2575.golfstats.ObjectStream;
-import dev.tk2575.golfstats.Utils;
+import dev.tk2575.ObjectStream;
+import dev.tk2575.Utils;
 import lombok.*;
 
 import java.math.BigDecimal;
