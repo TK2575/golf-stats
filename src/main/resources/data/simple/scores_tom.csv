@@ -139,22 +139,3 @@ date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways
 8/26/2020,Wayland Country Club,Blue,68.5,118,70,4:00,Walk (Push),81,3,14,6,33,FALSE
 8/30/2020,Lyman Orchard GC (Apple Nine),Back,28.2,87,29,2:00,Walk,37,1,2,7,20,TRUE
 8/31/2020,Sandy Burr CC, White,68.3,124,72,4:05,Walk (Push),83,8,14,5,31,FALSE
-9/18/2020,Newton Commonwealth Golf Course,Blue,67,119,70,4:35,Walk (Push),91,6,12,3,30,FALSE
-9/26/2020,Quail Ridge Country Club,White-Blue,68.6,128,70,4:47,Walk (Push),94,6,14,5,34,FALSE
-10/2/2020,Westborough CC,White,34.3,119,36,2:30,Walk (Push),42,4,7,5,18,TRUE
-10/10/2020,Norwood CC,Gold,67.1,113,71,4:55,Walk (Push),92,2,14,4,35,FALSE
-10/16/2020,Red Tail GC,Gold,68.5,126,72,4:10,Cart,80,13,14,9,34,FALSE
-10/18/2020,Butter Brook GC,White,68.6,120,72,4:41,Walk (Push),86,6,13,7,36,FALSE
-10/24/2020,Sassamon Trace GC,White,30.7,111,32,2:25,Walk (Push),40,0,4,4,20,TRUE
-11/6/2020,Pine Meadows GC,Blue,67.0,105,35,1:50,Walk (Push),40,4,6,4,18,TRUE
-11/8/2020,Sassamon Trace GC,Blue,31.5,114,32,2:15,Walk (Push),43,3,4,1,17,TRUE
-11/13/2020,Patriot Golf Course,White,66.4,125,35,1:40,Walk (Push),40,2,7,4,16,TRUE
-11/14/2020,Leo J Martin GC,White,68.1,113,72,5:05,Walk (Push),84,6,13,5,34,FALSE
-11/20/2020,Pine Meadows GC,Blue,67.0,105,35,1:53,Walk (Push),41,3,6,4,19,TRUE
-11/21/2020,Maynard GC,White,68.2,123,35,2:25,Walk (Push),39,0,7,3,16,TRUE
-11/28/2020,Unicorn GC,Back,70.4,122,35,2:15,Walk (Push),40,3,7,3,16,TRUE
-4/20/2021,Patriot Golf Course,White,66.4,125,35,1:50,Walk,46,2,7,3,17,TRUE
-4/24/2021,Berlin CC,Men,62.9,108,33,2:25,Walk,49,1,6,0,18,TRUE
-4/28/2021,Pine Meadows GC,Blue,67,105,35,2:00,Walk,46,2,6,2,14,TRUE
-5/1/2021,Patriot Golf Course,White,66.4,125,35,1:40,Walk,45,4,7,4,18,TRUE
-5/7/2021,Pine Meadows GC,Blue,67,105,35,1:57,Walk,45,1,6,2,17,TRUE

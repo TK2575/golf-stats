@@ -1,4 +1,18 @@
 id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
+1,Tom,9/18/2020,Newton Commonwealth GC,Newton,MA,Blue,67,119,11:00,3:35 PM,Walk (Push)
+2,Tom,9/26/2020,Quail Ridge CC,Acton,MA,White-Blue,68.6,128,10:03,2:50 PM,Walk (Push)
+3,Tom,10/2/2020,Westborough GC,Westborough,MA,White,34.3,119,10:00,12:30 PM,Walk (Push)
+4,Tom,10/10/2020,Norwood CC,Norwood,MA,Gold,67.1,113,10:53,3:47 PM,Walk (Push)
+5,Tom,10/16/2020,Red Tail GC,Devens,MA,Gold,68.5,126,8:45,12:55 PM,Cart
+6,Tom,10/18/2020,Butter Brook GC,Westford,MA,White,68.6,120,10:00,2:41 PM,Walk (Push)
+7,Tom,10/24/2020,Sassamon Trace GC,Natick,MA,White,30.7,111,12:15 PM,2:40 PM,Walk (Push)
+8,Tom,11/6/2020,Pine Meadows GC,Lexington,MA,Blue,67,105,7:10,9:00,Walk (Push)
+9,Tom,11/8/2020,Sassamon Trace GC,Natick,MA,Blue,31.5,114,10:23,12:38 PM,Walk (Push)
+10,Tom,11/13/2020,Patriot GC,Bedord,MA,White,66.4,125,7:40,9:20,Walk (Push)
+11,Tom,11/20/2020,Pine Meadows GC,Lexington,MA,Blue,67,105,7:12,9:05,Walk (Push)
+12,Tom,11/14/2020,Leo J Martin GC,Weston,MA,White,68.1,113,10:25,3:30 PM,Walk (Push)
+13,Tom,11/21/2020,Maynard GC,Maynard,MA,Blue-White,68.2,123,12:15 PM,2:40 PM,Walk (Push)
+14,Tom,11/28/2020,Unicorn GC,Stoneham,MA,Back,70.4,122,10:10,12:25 PM,Walk (Push)
 15,Tom,4/20/2021,Patriot GC,Bedord,MA,White,66.4,125,7:10,9:00,Walk
 16,Tom,4/24/2021,Berlin CC,Berlin,MA,Men,62.9,108,13:35,16:00,Walk
 17,Tom,4/28/2021,Pine Meadows GC,Lexington,MA,Blue,67,105,6:40,8:40,Walk
