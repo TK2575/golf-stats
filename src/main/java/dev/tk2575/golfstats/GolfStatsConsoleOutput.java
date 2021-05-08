@@ -3,12 +3,15 @@ package dev.tk2575.golfstats;
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
+import dev.tk2575.golfstats.parsers.HoleByHoleRoundCSVParser;
+import dev.tk2575.golfstats.parsers.ShotByShotRoundCSVParser;
 import dev.tk2575.golfstats.parsers.SimpleGolfRoundCSVParser;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,20 +23,54 @@ public class GolfStatsConsoleOutput implements Runnable {
 
 	@Override
 	public void run() {
-		Map<String, List<GolfRound>> rounds = getCSVData();
-		List<PerformanceSummary> currentStats = computeStatsByGolfer(rounds);
+		Map<String, List<GolfRound>> roundsByGolfer = parseCsvResources();
+		List<PerformanceSummary> currentStats = computeStatsByGolfer(roundsByGolfer);
 
 		logStatsAndRoundHistory(currentStats);
 //		logCourseHandicapForNextRound(currentStats);
 	}
 
-	private static Map<String, List<GolfRound>> getCSVData() {
+	private static Map<String, List<GolfRound>> parseCsvResources() {
+		//TODO stream as resources
+		//TODO cleanup CSV parser method accessibility, parse() vs parseFile() approach
 		final File dataDirectory = new File(System.getProperty("user.dir"), "src\\main\\resources\\data");
-		return new SimpleGolfRoundCSVParser(dataDirectory).readCsvData();
+		Map<String, List<GolfRound>> simpleRounds = new SimpleGolfRoundCSVParser(new File(dataDirectory, "simple")).readCsvData();
+
+		List<GolfRound> holeByHoleRounds = new ArrayList<>();
+		File holeByHoleDirectory = new File(dataDirectory, "hole-by-hole");
+		if (holeByHoleDirectory != null && holeByHoleDirectory.list().length > 0) {
+			File rounds = new File(holeByHoleDirectory, "rounds.csv");
+			File holes = new File(holeByHoleDirectory, "holes.csv");
+
+			if (rounds.exists() && holes.exists()) {
+				holeByHoleRounds = new HoleByHoleRoundCSVParser(rounds, holes).parse();
+			}
+		}
+
+		List<GolfRound> shotByShotRounds = new ArrayList<>();
+		File shotByShotDirectory = new File(dataDirectory, "shot-by-shot");
+		if (shotByShotDirectory != null && shotByShotDirectory.list().length > 0) {
+			File rounds = new File(shotByShotDirectory, "rounds.csv");
+			File shots = new File(shotByShotDirectory, "shots.csv");
+
+			if (rounds.exists() && shots.exists()) {
+				shotByShotRounds = new ShotByShotRoundCSVParser(rounds, shots).parse();
+			}
+		}
+
+		List<GolfRound> allRounds = new ArrayList<>();
+		for (List<GolfRound> list : simpleRounds.values()) {
+			allRounds.addAll(list);
+		}
+		allRounds.addAll(holeByHoleRounds);
+		allRounds.addAll(shotByShotRounds);
+
+		return allRounds.stream().collect(Collectors.groupingBy(each -> each.getGolfer().getName()));
 	}
 
 	private static List<PerformanceSummary> computeStatsByGolfer(Map<String, List<GolfRound>> rounds) {
 		//TODO one-liner via stream?
+		//TODO add shots gained results to Performance Summary?
 		List<PerformanceSummary> results = new ArrayList<>();
 		rounds.forEach((k, v) -> results.add(new PerformanceSummary(v)));
 		return results;

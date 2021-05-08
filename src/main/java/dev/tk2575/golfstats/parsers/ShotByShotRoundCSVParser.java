@@ -43,7 +43,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 		this.index = index;
 	}
 
-	List<GolfRound> parse() {
+	public List<GolfRound> parse() {
 		this.roundDetails = new HashMap<>();
 		this.holes = new HashMap<>();
 		parseRoundDetails(this.roundFile);
