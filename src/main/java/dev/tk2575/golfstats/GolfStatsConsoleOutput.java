@@ -33,6 +33,8 @@ public class GolfStatsConsoleOutput implements Runnable {
 	private static Map<String, List<GolfRound>> parseCsvResources() {
 		//TODO stream as resources
 		//TODO cleanup CSV parser method accessibility, parse() vs parseFile() approach
+		//TODO separate golf round results from applying net double bogey
+		// then take list of rounds and apply double bogey to them from first to last
 		final File dataDirectory = new File(System.getProperty("user.dir"), "src\\main\\resources\\data");
 		Map<String, List<GolfRound>> simpleRounds = new SimpleGolfRoundCSVParser(new File(dataDirectory, "simple")).readCsvData();
 
