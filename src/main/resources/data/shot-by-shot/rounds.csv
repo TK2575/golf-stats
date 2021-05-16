@@ -19,3 +19,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 18,Tom,5/1/2021,Patriot GC,Bedord,MA,White,66.4,125,7:35,9:15,Walk
 19,Tom,5/7/2021,Pine Meadows GC,Lexington,MA,Blue,67,105,7:00,8:57,Walk
 20,Tom,5/14/2021,Patriot GC,Bedord,MA,White,66.4,125,7:23,8:58,Walk
+21,Tom,5/16/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,12:30,2:28,Walk
