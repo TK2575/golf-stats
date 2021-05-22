@@ -2,6 +2,8 @@ package dev.tk2575.golfstats;
 
 import dev.tk2575.golfstats.course.tee.Tee;
 import dev.tk2575.golfstats.golfround.GolfRound;
+import dev.tk2575.golfstats.golfround.shotbyshot.Shot;
+import dev.tk2575.golfstats.golfround.shotbyshot.ShotCategory;
 import dev.tk2575.golfstats.handicapindex.StablefordQuota;
 import dev.tk2575.golfstats.parsers.HoleByHoleRoundCSVParser;
 import dev.tk2575.golfstats.parsers.ShotByShotRoundCSVParser;
@@ -10,10 +12,8 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -24,10 +24,30 @@ public class GolfStatsConsoleOutput implements Runnable {
 	@Override
 	public void run() {
 		Map<String, List<GolfRound>> roundsByGolfer = parseCsvResources();
-		List<PerformanceSummary> currentStats = computeStatsByGolfer(roundsByGolfer);
 
-		logStatsAndRoundHistory(currentStats);
+		logShotsGainedInfo(roundsByGolfer.get("Tom"));
+
+//		List<PerformanceSummary> currentStats = computeStatsByGolfer(roundsByGolfer);
+//		logStatsAndRoundHistory(currentStats);
 //		logCourseHandicapForNextRound(currentStats);
+	}
+
+	private void logShotsGainedInfo(List<GolfRound> rounds) {
+		SortedMap<LocalDate, List<Shot>> shotsByDate = new TreeMap<>();
+		rounds.forEach(each -> shotsByDate.put(each.getDate(), each.getHoles().allShots().categorized().asList()));
+
+		log.info(String.join("\t", "Date", "Lie", "Category", "Distance Value", "Distance Unit", "Strokes Gained"));
+		shotsByDate.forEach((k, v) -> {
+			if (v != null && !v.isEmpty()) {
+				v.forEach(shot -> log.info(String.join("\t",
+						k.toString(),
+						shot.getLie().getLabel(),
+						shot.getShotCategory().getLabel(),
+						Long.toString(shot.getDistance().getValue()),
+						shot.getDistance().getLengthUnit(),
+						shot.getStrokesGained().toPlainString())));
+			}
+		});
 	}
 
 	private static Map<String, List<GolfRound>> parseCsvResources() {
@@ -61,10 +81,10 @@ public class GolfStatsConsoleOutput implements Runnable {
 		}
 
 		List<GolfRound> allRounds = new ArrayList<>();
-		for (List<GolfRound> list : simpleRounds.values()) {
+		/*for (List<GolfRound> list : simpleRounds.values()) {
 			allRounds.addAll(list);
 		}
-		allRounds.addAll(holeByHoleRounds);
+		allRounds.addAll(holeByHoleRounds);*/
 		allRounds.addAll(shotByShotRounds);
 
 		return allRounds.stream().collect(Collectors.groupingBy(each -> each.getGolfer().getName()));

@@ -1,11 +1,11 @@
 package dev.tk2575.golfstats.golfround.shotbyshot;
 
-import dev.tk2575.golfstats.golfround.holebyhole.Hole;
 import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
+@ToString
 public class StrokesGainedShot implements Shot {
 
 	private final Lie lie;

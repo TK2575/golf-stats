@@ -97,4 +97,8 @@ public class ShotStream implements ObjectStream<Shot> {
 	public Long yardsFromTee() {
 		return teeShot().map(shot -> shot.getDistance().getValue()).orElse(0L);
 	}
+
+	public ShotStream categorized() {
+		return new ShotStream(this.stream.filter(shot -> !shot.getShotCategory().equals(ShotCategory.unknown())), this.empty);
+	}
 }
