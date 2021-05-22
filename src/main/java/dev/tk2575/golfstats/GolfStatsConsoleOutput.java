@@ -36,18 +36,23 @@ public class GolfStatsConsoleOutput implements Runnable {
 		SortedMap<LocalDate, List<Shot>> shotsByDate = new TreeMap<>();
 		rounds.forEach(each -> shotsByDate.put(each.getDate(), each.getHoles().allShots().categorized().asList()));
 
-		log.info(String.join("\t", "Date", "Lie", "Category", "Distance Value", "Distance Unit", "Strokes Gained"));
-		shotsByDate.forEach((k, v) -> {
-			if (v != null && !v.isEmpty()) {
-				v.forEach(shot -> log.info(String.join("\t",
-						k.toString(),
-						shot.getLie().getLabel(),
-						shot.getShotCategory().getLabel(),
-						Long.toString(shot.getDistance().getValue()),
-						shot.getDistance().getLengthUnit(),
-						shot.getStrokesGained().toPlainString())));
+		log.info(String.join("\t", "Index", "Date", "Lie", "Category", "Distance Value", "Distance Unit", "Strokes Gained"));
+		int i = 0;
+		for (Map.Entry<LocalDate, List<Shot>> entry : shotsByDate.entrySet()) {
+			if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+				i++;
+				for (Shot shot : entry.getValue()) {
+					log.info(String.join("\t",
+							Integer.toString(i),
+							entry.getKey().toString(),
+							shot.getLie().getLabel(),
+							shot.getShotCategory().getLabel(),
+							Long.toString(shot.getDistance().getValue()),
+							shot.getDistance().getLengthUnit(),
+							shot.getStrokesGained().toPlainString()));
+				}
 			}
-		});
+		}
 	}
 
 	private static Map<String, List<GolfRound>> parseCsvResources() {
