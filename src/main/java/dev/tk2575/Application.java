@@ -1,6 +1,6 @@
 package dev.tk2575;
 
-import dev.tk2575.golfstats.GolfStatsConsoleOutput;
+import dev.tk2575.golfstats.details.GolfStatsConsoleOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
