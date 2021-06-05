@@ -1,9 +1,8 @@
-package dev.tk2575.golfstats.core.golfround.holebyhole;
+package dev.tk2575.golfstats.core.golfround;
 
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.ObjectStream;
 import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import lombok.*;

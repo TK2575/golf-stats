@@ -75,14 +75,6 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return this.sortNewestToOldest().asList().get(0);
 	}
 
-	public String toTSV() {
-		final List<String[]> datalines = this.stream.map(GolfRound::roundToArray).collect(Collectors.toList());
-
-		String rowsOfRounds = datalines.stream().map(Utils::convertToTSV).collect(Collectors.joining("\n"));
-
-		return String.format("%n%s%n%s", Utils.convertToTSV(GolfRound.roundHeaders()), rowsOfRounds);
-	}
-
 	//TODO can methods that re-collect the stream to list be refactored to
 	// pure stream operations? perhaps some functional interface to avoid
 	// code duplication?

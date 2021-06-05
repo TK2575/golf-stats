@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.core.golfround.holebyhole;
+package dev.tk2575.golfstats.core.golfround;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
@@ -10,7 +10,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ShotByShotHole implements Hole {
+class ShotByShotHole implements Hole {
 	private final Integer number;
 	private final Integer index;
 	private final Integer par;
@@ -19,7 +19,7 @@ public class ShotByShotHole implements Hole {
 	@Getter(AccessLevel.NONE) @ToString.Exclude
 	private final Collection<Shot> shots;
 
-	public ShotByShotHole(ShotByShotHole hole, Integer handicapStrokes) {
+	ShotByShotHole(ShotByShotHole hole, Integer handicapStrokes) {
 		this.number = hole.getNumber();
 		this.index = hole.getIndex();
 		this.par = hole.getPar();
@@ -27,7 +27,7 @@ public class ShotByShotHole implements Hole {
 		this.shots = hole.getShots().asList();
 	}
 
-	public ShotByShotHole(Integer number, Integer index, Integer par, Collection<Shot> shots, ShotsGainedComputation computer) {
+	ShotByShotHole(Integer number, Integer index, Integer par, Collection<Shot> shots, ShotsGainedComputation computer) {
 		this.number = number;
 		this.index = index;
 		this.par = par;

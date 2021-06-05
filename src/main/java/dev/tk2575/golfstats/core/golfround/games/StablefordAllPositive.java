@@ -1,7 +1,7 @@
 package dev.tk2575.golfstats.core.golfround.games;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
+import dev.tk2575.golfstats.core.golfround.Hole;
 import lombok.*;
 
 import java.util.function.ToIntFunction;

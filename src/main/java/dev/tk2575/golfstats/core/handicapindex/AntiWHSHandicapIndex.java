@@ -8,14 +8,14 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Getter
-public class AntiWHSHandicapIndex implements HandicapIndex {
+class AntiWHSHandicapIndex implements HandicapIndex {
 
 	private final BigDecimal value;
 
 	@ToString.Exclude
 	private final Collection<GolfRound> rounds;
 
-	public AntiWHSHandicapIndex(Collection<GolfRound> rounds) {
+	AntiWHSHandicapIndex(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}

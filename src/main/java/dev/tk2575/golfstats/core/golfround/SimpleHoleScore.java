@@ -1,11 +1,11 @@
-package dev.tk2575.golfstats.core.golfround.holebyhole;
+package dev.tk2575.golfstats.core.golfround;
 
 import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class SimpleHoleScore implements Hole {
+class SimpleHoleScore implements Hole {
 	private final Integer number;
 	private final Integer index;
 	private final Integer par;

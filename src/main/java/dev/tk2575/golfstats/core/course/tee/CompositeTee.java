@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @ToString
-public class CompositeTee implements Tee {
+class CompositeTee implements Tee {
 
 	private final String name;
 	private final BigDecimal rating;
@@ -15,7 +15,7 @@ public class CompositeTee implements Tee {
 	private final Integer par;
 	private final Integer holeCount;
 
-	public CompositeTee(Tee tee1, Tee tee2) {
+	CompositeTee(Tee tee1, Tee tee2) {
 		this.name = Utils.joinByHyphenIfUnequal(tee1.getName(), tee2.getName());
 		this.rating = tee1.getRating().add(tee2.getRating());
 		this.slope = Utils.mean(tee1.getSlope(), tee2.getSlope());

@@ -1,19 +1,18 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.core.golfround.holebyhole.CompositeHoleByHoleRound;
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
-import dev.tk2575.golfstats.core.golfround.holebyhole.HoleByHoleRound;
-import dev.tk2575.golfstats.core.golfround.holebyhole.HoleStream;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -111,36 +110,6 @@ public interface GolfRound {
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
 
-	static String[] roundHeaders() {
-		return new String[]{
-				"Round Type",
-				"Date",
-				"Course",
-				"Score to Par",
-				"Score Differential",
-				"Fairways in Reg",
-				"Fairways",
-				"Greens in Reg",
-				"Putts",
-				"Holes"
-		};
-	}
-
-	default String[] roundToArray() {
-		return new String[]{
-				this.getClass().getSimpleName(),
-				String.valueOf(getDate()),
-				getCourse().getName(),
-				String.valueOf(getScoreToPar()),
-				String.valueOf(getScoreDifferential()),
-				String.valueOf(getFairwaysInRegulation()),
-				String.valueOf(getFairways()),
-				String.valueOf(getGreensInRegulation()),
-				String.valueOf(getPutts()),
-				String.valueOf(getHoleCount())
-		};
-	}
-
 	static GolfRound compositeOf(GolfRound round1, GolfRound round2) {
 		if (round1.getHoles().isEmpty() || round2.getHoles().isEmpty()) {
 			return new SimpleCompositeGolfRound(round1, round2);
@@ -171,6 +140,10 @@ public interface GolfRound {
 
 	static GolfRound of(IncompleteRound round, List<Hole> holes) {
 		return new HoleByHoleRound(round, holes);
+	}
+
+	static GolfRound of(LocalDate date, Duration duration, Golfer golfer, Course course, Tee tee, Transport transport, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		return new SimpleGolfRound(date, duration, golfer, course, tee, transport, strokes, strokesAdjusted, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

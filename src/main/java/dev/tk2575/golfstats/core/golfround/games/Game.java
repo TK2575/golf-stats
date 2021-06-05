@@ -5,7 +5,7 @@ import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Transport;
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
+import dev.tk2575.golfstats.core.golfround.Hole;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public abstract class Game implements GolfRound {
 	private final GolfRound round;
 
-	public Game(GolfRound round) {
+	protected Game(GolfRound round) {
 		if (round == null) {
 			throw new IllegalArgumentException("round cannot be null");
 		}

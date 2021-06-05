@@ -2,8 +2,8 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.IncompleteRound;
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
-import dev.tk2575.golfstats.core.golfround.holebyhole.SimpleHoleScore;
+import dev.tk2575.golfstats.core.golfround.Hole;
+import dev.tk2575.golfstats.core.golfround.SimpleHoleScore;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;

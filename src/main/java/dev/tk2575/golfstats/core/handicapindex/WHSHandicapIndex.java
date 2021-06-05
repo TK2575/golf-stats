@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Getter
-public class WHSHandicapIndex implements HandicapIndex {
+class WHSHandicapIndex implements HandicapIndex {
 
 	private final BigDecimal value;
 	private final Collection<GolfRound> rounds;
 
-	public WHSHandicapIndex(Collection<GolfRound> rounds) {
+	WHSHandicapIndex(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}
@@ -31,6 +31,7 @@ public class WHSHandicapIndex implements HandicapIndex {
 		return GolfRound.stream(this.rounds);
 	}
 
+	@Override
 	public long getRoundCount() {
 		return this.rounds.size();
 	}

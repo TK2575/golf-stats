@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Getter
-public class LastNRoundsTrendingHandicap implements HandicapIndex {
+class LastNRoundsTrendingHandicap implements HandicapIndex {
 
 	private final String golfer;
 	private final BigDecimal value;
 	private final Collection<GolfRound> rounds;
 
-	public LastNRoundsTrendingHandicap(Collection<GolfRound> rounds, int maxSize) {
+	LastNRoundsTrendingHandicap(Collection<GolfRound> rounds, int maxSize) {
 		validateArguments(rounds, maxSize);
 
 		this.rounds = GolfRound.stream(rounds).compileTo18HoleRounds().sortNewestToOldest().limit(maxSize).asList();
@@ -32,6 +32,7 @@ public class LastNRoundsTrendingHandicap implements HandicapIndex {
 		}
 	}
 
+	@Override
 	public long getRoundCount() {
 		return rounds.size();
 	}

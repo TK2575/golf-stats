@@ -1,9 +1,9 @@
 package dev.tk2575.golfstats.core.golfround.games;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
+import dev.tk2575.golfstats.core.golfround.Hole;
 
-public class EmptyScore extends Game {
+class EmptyScore extends Game {
 
 	public EmptyScore(GolfRound round) {
 		super(round);

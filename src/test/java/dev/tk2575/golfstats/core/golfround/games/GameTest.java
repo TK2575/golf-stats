@@ -1,7 +1,7 @@
 package dev.tk2575.golfstats.core.golfround.games;
 
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
-import dev.tk2575.golfstats.core.golfround.holebyhole.SimpleHoleScore;
+import dev.tk2575.golfstats.core.golfround.Hole;
+import dev.tk2575.golfstats.core.golfround.SimpleHoleScore;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.ToIntFunction;

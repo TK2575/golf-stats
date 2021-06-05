@@ -1,11 +1,8 @@
-package dev.tk2575.golfstats.core.golfround.holebyhole;
+package dev.tk2575.golfstats.core.golfround;
 
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.IncompleteRound;
-import dev.tk2575.golfstats.core.golfround.Transport;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,7 +14,7 @@ import java.util.Map;
 
 @Getter
 @ToString
-public class HoleByHoleRound implements GolfRound {
+class HoleByHoleRound implements GolfRound {
 	private final LocalDate date;
 	private final Duration duration;
 
@@ -45,7 +42,7 @@ public class HoleByHoleRound implements GolfRound {
 	@Getter(AccessLevel.NONE) @ToString.Exclude
 	private final Collection<Hole> holes;
 
-	public HoleByHoleRound(IncompleteRound round, Collection<Hole> holes) {
+	HoleByHoleRound(IncompleteRound round, Collection<Hole> holes) {
 		this.date = round.getDate();
 		this.duration = round.getDuration();
 		this.golfer = round.getGolfer();

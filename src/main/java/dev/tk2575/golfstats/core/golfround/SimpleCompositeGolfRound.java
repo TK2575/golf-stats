@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-public class SimpleCompositeGolfRound implements GolfRound {
+class SimpleCompositeGolfRound implements GolfRound {
 
 	private static final String DELIMITER = " - ";
 
@@ -59,7 +59,7 @@ public class SimpleCompositeGolfRound implements GolfRound {
 	@ToString.Exclude
 	private GolfRound secondRound;
 
-	public SimpleCompositeGolfRound(GolfRound round1, GolfRound round2) {
+	SimpleCompositeGolfRound(GolfRound round1, GolfRound round2) {
 		validateArguments(round1, round2);
 		assignFirstAndSecondRound(round1, round2);
 

@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @ToString
 @AllArgsConstructor
-public class SimpleCourse implements Course {
+class SimpleCourse implements Course {
 
 	private static final String UNKNOWN = "UNKNOWN";
 
@@ -17,13 +17,13 @@ public class SimpleCourse implements Course {
 	private final String location;
 	private final List<Tee> tees;
 
-	public SimpleCourse(String name) {
+	SimpleCourse(String name) {
 		this.name = name;
 		this.location = UNKNOWN;
 		this.tees = new ArrayList<>();
 	}
 
-	public SimpleCourse(String name, List<Tee> tees) {
+	SimpleCourse(String name, List<Tee> tees) {
 		this.name = name;
 		this.location = UNKNOWN;
 		this.tees = tees;

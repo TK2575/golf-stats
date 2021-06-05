@@ -8,18 +8,18 @@ import java.util.List;
 
 import static dev.tk2575.Utils.isNullOrBlank;
 
-public class CityStateCourse implements Course {
+class CityStateCourse implements Course {
 
 	@Getter private final String name;
 	@Getter private final List<Tee> tees;
 	private final String city;
 	private final String stateAbbrev;
 
-	public CityStateCourse(String name, String city, String stateAbbrev) {
+	CityStateCourse(String name, String city, String stateAbbrev) {
 		this(name, new ArrayList<>(), city, stateAbbrev);
 	}
 
-	public CityStateCourse(String name, List<Tee> tees, String city, String stateAbbrev) {
+	CityStateCourse(String name, List<Tee> tees, String city, String stateAbbrev) {
 		if (isNullOrBlank(name) || tees == null || isNullOrBlank(city) || isNullOrBlank(stateAbbrev)) {
 			throw new IllegalArgumentException("name, tees, city, and stateAbbrev are required arguments");
 		}

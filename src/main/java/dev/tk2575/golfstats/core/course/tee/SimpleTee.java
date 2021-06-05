@@ -9,7 +9,7 @@ import static java.math.RoundingMode.HALF_UP;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.NONE)
-public class SimpleTee implements Tee {
+class SimpleTee implements Tee {
 
 	private final String name;
 	private final BigDecimal rating;
@@ -17,7 +17,7 @@ public class SimpleTee implements Tee {
 	private final Integer par;
 	private final Integer holeCount;
 
-	public SimpleTee(String name, BigDecimal rating, BigDecimal slope,
+	SimpleTee(String name, BigDecimal rating, BigDecimal slope,
 	                 Integer par) {
 		this.name = name;
 		this.slope = slope;

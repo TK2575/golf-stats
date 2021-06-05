@@ -1,6 +1,6 @@
 package dev.tk2575.golfstats.core.golfround.shotbyshot;
 
-import dev.tk2575.golfstats.core.golfround.holebyhole.Hole;
+import dev.tk2575.golfstats.core.golfround.Hole;
 import lombok.*;
 
 @Getter

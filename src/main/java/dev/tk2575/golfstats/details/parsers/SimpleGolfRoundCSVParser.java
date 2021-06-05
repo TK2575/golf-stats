@@ -1,7 +1,9 @@
 package dev.tk2575.golfstats.details.parsers;
 
+import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.SimpleGolfRound;
 import dev.tk2575.golfstats.core.golfround.Transport;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -32,22 +34,6 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		this.directory = directory;
 	}
 
-	private LocalDate date;
-	private String golferName;
-	private String courseName;
-	private String tees;
-	private Duration duration;
-	private Transport transport;
-	private BigDecimal rating;
-	private BigDecimal slope;
-	private Integer par;
-	private Integer score;
-	private Integer fairwaysInRegulation;
-	private Integer fairways;
-	private Integer greensInRegulation;
-	private Integer putts;
-	private Boolean nineHoleRound;
-
 	public Map<String, List<GolfRound>> readCsvData() {
 		final List<File> csvs = getCSVFiles(directory);
 		Map<String, List<GolfRound>> results = new HashMap<>();
@@ -75,27 +61,29 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 	}
 
 	private GolfRound recordSimpleRound(String golferName, String[] row) {
-		//TODO better defend against individual fields being null
-		this.golferName = golferName;
-		this.date = LocalDate.parse(row[0], DATE_FORMAT);
-		this.courseName = row[1];
-		this.tees = row[2];
-		this.rating = new BigDecimal(row[3]);
-		this.slope = new BigDecimal(row[4]);
-		this.par = Integer.valueOf(row[5]);
-		this.duration = row[6] == null || row[6].isBlank()
+		var golfer = Golfer.newGolfer(golferName);
+		var date = LocalDate.parse(row[0], DATE_FORMAT);
+		var course = Course.of(row[1]);
+
+		var teeName = row[2];
+		var rating = new BigDecimal(row[3]);
+		var slope = new BigDecimal(row[4]);
+		var par = Integer.valueOf(row[5]);
+		var tee = Tee.of(teeName, rating, slope, par);
+
+		var duration = row[6] == null || row[6].isBlank()
 		                ? Duration.ZERO
 		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
-		this.transport = Transport.valueOf(row[7]);
-		this.score = Integer.valueOf(row[8]);
-		this.fairwaysInRegulation = Integer.valueOf(row[9]);
-		this.fairways = Integer.valueOf(row[10]);
-		this.greensInRegulation = Integer.valueOf(row[11]);
-		this.putts = Integer.valueOf(row[12]);
-		this.nineHoleRound = Boolean.parseBoolean(row[13]);
+		var transport = Transport.valueOf(row[7]);
+		var score = Integer.valueOf(row[8]);
+		var fairwaysInRegulation = Integer.valueOf(row[9]);
+		var fairways = Integer.valueOf(row[10]);
+		var greensInRegulation = Integer.valueOf(row[11]);
+		var putts = Integer.valueOf(row[12]);
+		var nineHoleRound = Boolean.parseBoolean(row[13]);
 
 		//TODO update index on each round
-		return new SimpleGolfRound(this);
+		return GolfRound.of(date, duration, golfer, course, tee, transport, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 	private static List<File> getCSVFiles(File directory) {

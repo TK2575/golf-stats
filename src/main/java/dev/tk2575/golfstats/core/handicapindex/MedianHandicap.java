@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Getter
-public class MedianHandicap implements HandicapIndex {
+class MedianHandicap implements HandicapIndex {
 
 	private final BigDecimal value;
 	private final Collection<GolfRound> rounds;
 
-	public MedianHandicap(Collection<GolfRound> rounds) {
+	MedianHandicap(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}

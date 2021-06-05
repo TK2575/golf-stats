@@ -6,17 +6,17 @@ import java.math.BigDecimal;
 
 @Getter
 @ToString
-public class EmptyHandicapIndex implements HandicapIndex {
+class EmptyHandicapIndex implements HandicapIndex {
 
 	private final BigDecimal value;
 	private final long roundCount;
 
-	public EmptyHandicapIndex() {
+	EmptyHandicapIndex() {
 		this.value = BigDecimal.ZERO;
 		this.roundCount = 0L;
 	}
 
-	public EmptyHandicapIndex(BigDecimal value) {
+	EmptyHandicapIndex(BigDecimal value) {
 		this.value = value;
 		this.roundCount = 20L;
 	}

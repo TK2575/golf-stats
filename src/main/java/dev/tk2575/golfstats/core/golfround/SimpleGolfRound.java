@@ -1,22 +1,18 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder(toBuilder = true)
 @ToString
-@AllArgsConstructor
-public class SimpleGolfRound implements GolfRound {
+class SimpleGolfRound implements GolfRound {
 
 	@Getter(AccessLevel.NONE)
 	private static final Integer HOLES = 18;
@@ -33,42 +29,32 @@ public class SimpleGolfRound implements GolfRound {
 	private final Tee tee;
 	private final Transport transport;
 
-	private BigDecimal scoreDifferential;
+	private final BigDecimal scoreDifferential;
 
-	private Integer strokes;
-	private Integer strokesAdjusted;
-	private Integer fairwaysInRegulation;
-	private Integer fairways;
-	private Integer greensInRegulation;
-	private Integer putts;
+	private final Integer strokes;
+	private final Integer strokesAdjusted;
+	private final Integer fairwaysInRegulation;
+	private final Integer fairways;
+	private final Integer greensInRegulation;
+	private final Integer putts;
 
 	private boolean nineHoleRound;
 
-	public SimpleGolfRound(SimpleGolfRoundCSVParser factory) {
-		this.date = factory.getDate();
-		this.golfer = Golfer.newGolfer(factory.getGolferName());
-		this.course = Course.of(factory.getCourseName());
-		this.tee = Tee.of(factory.getTees(), factory.getRating(), factory.getSlope(), factory.getPar());
-		this.duration = factory.getDuration();
-		this.transport = factory.getTransport();
-		this.strokes = factory.getScore();
-		this.strokesAdjusted = this.strokes;
-		this.fairwaysInRegulation = factory.getFairwaysInRegulation();
-		this.fairways = factory.getFairways();
-		this.greensInRegulation = factory.getGreensInRegulation();
-		this.putts = factory.getPutts();
+	SimpleGolfRound(LocalDate date, Duration duration, Golfer golfer, Course course, Tee tee, Transport transport, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		//TODO add null checks
+		this.date = date;
+		this.duration = duration;
+		this.golfer = golfer;
+		this.course = course;
+		this.tee = tee;
+		this.transport = transport;
+		this.strokes = strokes;
+		this.strokesAdjusted = strokesAdjusted;
+		this.fairwaysInRegulation = fairwaysInRegulation;
+		this.fairways = fairways;
+		this.greensInRegulation = greensInRegulation;
+		this.putts = putts;
+		this.nineHoleRound = nineHoleRound;
 		this.scoreDifferential = computeScoreDifferential();
-		this.nineHoleRound = factory.getNineHoleRound();
-	}
-
-	public SimpleGolfRound(String[] row, DateTimeFormatter dateFormat, DateTimeFormatter durationFormat) {
-		this.golfer = Golfer.newGolfer(row[1]);
-		this.date = LocalDate.parse(row[2], dateFormat);
-		this.course = Course.of(row[3]);
-		this.tee = Tee.of(row[4], new BigDecimal(row[5]), new BigDecimal(row[6]), Integer.valueOf(row[7]));
-		this.duration = row[8] == null || row[8].isBlank()
-		                ? Duration.ZERO
-		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[8], durationFormat));
-		this.transport = Transport.valueOf(row[9]);
 	}
 }

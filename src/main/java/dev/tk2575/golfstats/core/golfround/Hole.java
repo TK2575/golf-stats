@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.core.golfround.holebyhole;
+package dev.tk2575.golfstats.core.golfround;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;

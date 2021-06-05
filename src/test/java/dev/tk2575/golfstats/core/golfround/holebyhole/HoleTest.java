@@ -1,5 +1,7 @@
 package dev.tk2575.golfstats.core.golfround.holebyhole;
 
+import dev.tk2575.golfstats.core.golfround.Hole;
+import dev.tk2575.golfstats.core.golfround.SimpleHoleScore;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

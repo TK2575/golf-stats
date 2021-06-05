@@ -12,7 +12,7 @@ import static java.math.RoundingMode.HALF_UP;
 
 @Getter
 @ToString
-public class TeeWithHandicap implements Tee {
+class TeeWithHandicap implements Tee {
 
 	private static final BigDecimal BASE_SLOPE = BigDecimal.valueOf(113);
 
@@ -24,7 +24,7 @@ public class TeeWithHandicap implements Tee {
 	private final Long yards;
 	private final Map<String,Integer> handicapStrokes;
 
-	public TeeWithHandicap(Tee tee, Collection<Golfer> golfers) {
+	TeeWithHandicap(Tee tee, Collection<Golfer> golfers) {
 		this.name = tee.getName();
 		this.rating = tee.getRating();
 		this.slope = tee.getSlope();

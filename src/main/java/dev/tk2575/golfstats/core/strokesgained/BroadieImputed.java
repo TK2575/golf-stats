@@ -9,7 +9,7 @@ import java.util.*;
 
 import static dev.tk2575.Utils.roundToTwoDecimalPlaces;
 
-public class BroadieImputed implements ShotsGainedComputation {
+class BroadieImputed implements ShotsGainedComputation {
 
 	private static SortedMap<Integer, BigDecimal> teeMap;
 	private static SortedMap<Integer, BigDecimal> fairwayMap;
@@ -20,7 +20,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 
 	private Map<String, BigDecimal> strokesGainedMap;
 
-	public Map<String, BigDecimal> getStrokesGainedMap() {
+	Map<String, BigDecimal> getStrokesGainedMap() {
 		return Collections.unmodifiableMap(this.strokesGainedMap);
 	}
 
@@ -29,7 +29,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		private static final BroadieImputed INSTANCE = new BroadieImputed();
 	}
 
-	public static BroadieImputed getInstance() {
+	static BroadieImputed getInstance() {
 		return SingletonHelper.INSTANCE;
 	}
 
@@ -41,7 +41,7 @@ public class BroadieImputed implements ShotsGainedComputation {
 		return Shot.strokesGained(shot, baseline, strokesGained);
 	}
 
-	public String shotKey(Shot shot) {
+	String shotKey(Shot shot) {
 		return shot.getLie().getAbbrev() + shot.getDistance().getValue();
 	}
 
