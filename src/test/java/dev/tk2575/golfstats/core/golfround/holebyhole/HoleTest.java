@@ -10,9 +10,10 @@ class HoleTest {
 
 	@Test
 	void testGreenInRegulation() {
-		SimpleHoleScore hole = SimpleHoleScore.builder().number(1).index(18).fairwayInRegulation(true).build();
+		Hole hole = Hole.of(1, 18, 4, 3, true, 1);
 
-		assertTrue(hole.toBuilder().par(4).strokes(3).putts(1).build().isGreenInRegulation());
+		assertTrue(hole.isGreenInRegulation());
+		//TODO create helper constructor?
 		assertFalse(hole.toBuilder().par(4).strokes(3).putts(0).build().isGreenInRegulation());
 		assertTrue(hole.toBuilder().par(4).strokes(4).putts(2).build().isGreenInRegulation());
 		assertFalse(hole.toBuilder().par(4).strokes(4).putts(1).build().isGreenInRegulation());

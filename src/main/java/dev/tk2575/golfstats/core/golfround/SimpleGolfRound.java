@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
 @ToString
 class SimpleGolfRound implements GolfRound {
 
