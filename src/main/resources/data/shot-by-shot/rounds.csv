@@ -26,3 +26,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 25,Tom,5/30/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,12:34,2:11 PM,Walk (Push)
 26,Tom,6/6/2021,Ramblewood CC,Mt. Laurel,NJ,White,70.4,123,7:30,9:38,Cart
 27,Tom,6/19/2021,Maynard GC,Maynard,MA,White,34.1,119,9:30,11:30,Walk
+28,Tom,6/23/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,6:40,8:45,Walk
