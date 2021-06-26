@@ -1,54 +1,59 @@
 package dev.tk2575.golfstats.core.golfround.holebyhole;
 
 import dev.tk2575.golfstats.core.golfround.Hole;
-import dev.tk2575.golfstats.core.golfround.SimpleHoleScore;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class HoleTest {
 
+	private Hole hole(int par, int strokes, int putts) {
+		return Hole.of(1, 18, par, strokes, true, putts);
+	}
+
+	private Hole holeByIndex(int index, int strokes) {
+		return Hole.of(1, index, 4, strokes, true, 2);
+	}
+
 	@Test
 	void testGreenInRegulation() {
-		Hole hole = Hole.of(1, 18, 4, 3, true, 1);
+		assertTrue(hole(4,3,1).isGreenInRegulation());
+		assertFalse(hole(4, 3, 0).isGreenInRegulation());
+		assertFalse(hole(4,3,0).isGreenInRegulation());
+		assertTrue(hole(4,4,2).isGreenInRegulation());
+		assertFalse(hole(4,4,1).isGreenInRegulation());
+		assertTrue(hole(4,5,3).isGreenInRegulation());
+		assertFalse(hole(4,5,2).isGreenInRegulation());
+		assertTrue(hole(4,6,4).isGreenInRegulation());
+		assertFalse(hole(4,6,2).isGreenInRegulation());
 
-		assertTrue(hole.isGreenInRegulation());
-		//TODO create helper constructor?
-		assertFalse(hole.toBuilder().par(4).strokes(3).putts(0).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(4).strokes(4).putts(2).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(4).strokes(4).putts(1).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(4).strokes(5).putts(3).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(4).strokes(5).putts(2).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(4).strokes(6).putts(4).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(4).strokes(6).putts(2).build().isGreenInRegulation());
+		assertTrue(hole(3,2,1).isGreenInRegulation());
+		assertFalse(hole(3,2,0).isGreenInRegulation());
+		assertTrue(hole(3,3,2).isGreenInRegulation());
+		assertFalse(hole(3,3,1).isGreenInRegulation());
+		assertTrue(hole(3,4,3).isGreenInRegulation());
+		assertFalse(hole(3,4,2).isGreenInRegulation());
+		assertTrue(hole(3,5,4).isGreenInRegulation());
+		assertFalse(hole(3,5,2).isGreenInRegulation());
 
-		assertTrue(hole.toBuilder().par(3).strokes(2).putts(1).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(3).strokes(2).putts(0).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(3).strokes(3).putts(2).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(3).strokes(3).putts(1).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(3).strokes(4).putts(3).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(3).strokes(4).putts(2).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(3).strokes(5).putts(4).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(3).strokes(5).putts(2).build().isGreenInRegulation());
-
-		assertTrue(hole.toBuilder().par(5).strokes(4).putts(1).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(5).strokes(4).putts(0).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(5).strokes(5).putts(2).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(5).strokes(5).putts(1).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(5).strokes(6).putts(3).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(5).strokes(6).putts(2).build().isGreenInRegulation());
-		assertTrue(hole.toBuilder().par(5).strokes(7).putts(4).build().isGreenInRegulation());
-		assertFalse(hole.toBuilder().par(5).strokes(7).putts(2).build().isGreenInRegulation());
+		assertTrue(hole(5,4,1).isGreenInRegulation());
+		assertFalse(hole(5,4,0).isGreenInRegulation());
+		assertTrue(hole(5,5,2).isGreenInRegulation());
+		assertFalse(hole(5,5,1).isGreenInRegulation());
+		assertTrue(hole(5,6,3).isGreenInRegulation());
+		assertFalse(hole(5,6,2).isGreenInRegulation());
+		assertTrue(hole(5,7,4).isGreenInRegulation());
+		assertFalse(hole(5,7,2).isGreenInRegulation());
 
 	}
 
 	@Test
 	void testApplyNetDoubleBogey() {
-		SimpleHoleScore hole = SimpleHoleScore.builder().par(4).index(18).strokes(4).build();
+		Hole hole = holeByIndex(18, 4);
 		Hole holeAdj = hole.applyNetDoubleBogey(17);
 		assertEquals(4, holeAdj.getStrokesAdjusted());
 
-		hole = hole.toBuilder().index(18).strokes(6).build();
+		hole = holeByIndex(18, 6);
 		holeAdj = hole.applyNetDoubleBogey(17);
 		assertEquals(6, holeAdj.getStrokesAdjusted());
 		assertEquals(6, holeAdj.getNetStrokes());
@@ -57,23 +62,23 @@ class HoleTest {
 		assertEquals(5, holeAdj.getStrokesAdjusted());
 		assertEquals(6, holeAdj.getNetStrokes());
 
-		holeAdj = hole.toBuilder().index(18).strokes(7).build().applyNetDoubleBogey(17);
+		holeAdj = holeByIndex(18, 7).applyNetDoubleBogey(17);
 		assertEquals(6, holeAdj.getStrokesAdjusted());
 		assertEquals(6, holeAdj.getNetStrokes());
 
-		holeAdj = hole.toBuilder().index(1).strokes(6).build().applyNetDoubleBogey(19);
+		holeAdj = holeByIndex(1, 6).applyNetDoubleBogey(19);
 		assertEquals(6, holeAdj.getStrokesAdjusted());
 		assertEquals(4, holeAdj.getNetStrokes());
 
-		holeAdj = hole.toBuilder().index(1).strokes(8).build().applyNetDoubleBogey(19);
+		holeAdj = holeByIndex(1, 8).applyNetDoubleBogey(19);
 		assertEquals(8, holeAdj.getStrokesAdjusted());
 		assertEquals(6, holeAdj.getNetStrokes());
 
-		holeAdj = hole.toBuilder().index(1).strokes(10).build().applyNetDoubleBogey(19);
+		holeAdj = holeByIndex(1, 10).applyNetDoubleBogey(19);
 		assertEquals(8, holeAdj.getStrokesAdjusted());
 		assertEquals(6, holeAdj.getNetStrokes());
 
-		holeAdj = hole.toBuilder().index(1).strokes(4).build().applyNetDoubleBogey(3);
+		holeAdj = holeByIndex(1, 4).applyNetDoubleBogey(3);
 		assertEquals(4, holeAdj.getStrokesAdjusted());
 		assertEquals(3, holeAdj.getNetStrokes());
 	}
