@@ -26,14 +26,13 @@ public class GolfStatsConsoleOutput implements Runnable {
 	public void run() {
 		Map<String, List<GolfRound>> roundsByGolfer = parseCsvResources();
 
-		logShotsGainedInfo(roundsByGolfer.get("Tom"));
-
-//		List<PerformanceSummary> currentStats = computeStatsByGolfer(roundsByGolfer);
-//		logStatsAndRoundHistory(currentStats);
+		List<PerformanceSummary> currentStats = computeStatsByGolfer(roundsByGolfer);
+		logStatsAndRoundHistory(currentStats);
 //		logCourseHandicapForNextRound(currentStats);
 	}
 
 	private void logShotsGainedInfo(List<GolfRound> rounds) {
+		//TODO move to PerformanceSummary
 		SortedMap<LocalDate, List<Shot>> shotsByDate = new TreeMap<>();
 		rounds.forEach(each -> shotsByDate.put(each.getDate(), each.getHoles().allShots().categorized().asList()));
 
@@ -59,7 +58,7 @@ public class GolfStatsConsoleOutput implements Runnable {
 	private static Map<String, List<GolfRound>> parseCsvResources() {
 		//TODO stream as resources
 		//TODO cleanup CSV parser method accessibility, parse() vs parseFile() approach
-		//TODO separate golf round results from applying net double bogey
+		//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
 		// then take list of rounds and apply double bogey to them from first to last
 		final File dataDirectory = new File(System.getProperty("user.dir"), "src\\main\\resources\\data");
 		Map<String, List<GolfRound>> simpleRounds = new SimpleGolfRoundCSVParser(new File(dataDirectory, "simple")).readCsvData();
@@ -118,6 +117,7 @@ public class GolfStatsConsoleOutput implements Runnable {
 	}
 
 	private static void logCourseHandicapForNextRound(List<PerformanceSummary> currentStats) {
+		//TODO move to separate CourseHandicapCalculator manager object
 		Tee back = Tee.of("White", new BigDecimal("70.4"), new BigDecimal("122"), 35);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
