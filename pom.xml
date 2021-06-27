@@ -15,7 +15,7 @@
     <description>Calculate golf stats from historic performance data</description>
 
     <properties>
-        <java.version>14</java.version>
+        <java.version>16</java.version>
     </properties>
 
     <dependencies>
@@ -34,6 +34,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+            <version>1.18.20</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -5,63 +5,74 @@ import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Transport;
+import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Getter
-@NoArgsConstructor(access = AccessLevel.NONE)
 @Log4j2
 public class SimpleGolfRoundCSVParser implements CSVParser {
 
-	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round";
+	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round,golfer";
 
 	private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
 	private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
 
-	private final File directory;
+	private final List<CSVFile> files;
 
-	public SimpleGolfRoundCSVParser(File directory) {
-		this.directory = directory;
-	}
+	@Override
+	public List<GolfRound> parse() {
+		List<GolfRound> results = new ArrayList<>();
+		Golfer golfer;
+		GolfRound round;
+		int line;
 
-	public Map<String, List<GolfRound>> readCsvData() {
-		final List<File> csvs = getCSVFiles(directory);
-		Map<String, List<GolfRound>> results = new HashMap<>();
-
-		for (File csv : csvs) {
-			try {
-				List<GolfRound> rounds = new ArrayList<>();
-				String golfer = parseGolferName(csv.getName());
-				List<String[]> rows = parseFile(csv, EXPECTED_HEADERS);
-				rows.forEach(row -> rounds.add(recordSimpleRound(golfer, row)));
-				results.put(golfer, combinePrior(rounds, results.get(golfer)));
+		for (CSVFile file : files) {
+			golfer = null;
+			if (!verifyHeaders(EXPECTED_HEADERS, file.getHeader())) {
+				log.error(
+						String.format("Problem parsing file %s. Found headers = %s; expected headers = %s",
+								file.getName(),
+								file.getHeader(),
+								EXPECTED_HEADERS)
+				);
+				continue;
 			}
-			catch (IOException e) {
-				e.printStackTrace();
+
+			line = 1;
+			for (String row : file.getBody().split("\n")) {
+				line++;
+				try {
+					round = recordSimpleRound(golfer, row.split(","));
+					if (golfer == null) {
+						golfer = round.getGolfer();
+					}
+					results.add(round);
+				}
+				catch (Exception e) {
+					log.error(
+							String.format("Encountered parse error on line %s in file %s. Skipping row",
+									line,
+									file.getName())
+					);
+					e.printStackTrace();
+				}
 			}
 		}
+
 		return results;
 	}
 
-	private static List<GolfRound> combinePrior(List<GolfRound> rounds, List<GolfRound> prior) {
-		if (prior != null && !prior.isEmpty()) {
-			rounds.addAll(prior);
-		}
-		return rounds;
-	}
-
-	private GolfRound recordSimpleRound(String golferName, String[] row) {
-		var golfer = Golfer.newGolfer(golferName);
+	private GolfRound recordSimpleRound(final Golfer golfer, String[] row) {
 		var date = LocalDate.parse(row[0], DATE_FORMAT);
 		var course = Course.of(row[1]);
 
@@ -74,6 +85,7 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		var duration = row[6] == null || row[6].isBlank()
 		                ? Duration.ZERO
 		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[6], DURATION_FORMAT));
+
 		var transport = Transport.valueOf(row[7]);
 		var score = Integer.valueOf(row[8]);
 		var fairwaysInRegulation = Integer.valueOf(row[9]);
@@ -81,49 +93,9 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		var greensInRegulation = Integer.valueOf(row[11]);
 		var putts = Integer.valueOf(row[12]);
 		var nineHoleRound = Boolean.parseBoolean(row[13]);
+		var golferString = row[14];
 
-		//TODO update index on each round
-		return GolfRound.of(date, duration, golfer, course, tee, transport, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+		return GolfRound.of(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, tee, transport, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
-	private static List<File> getCSVFiles(File directory) {
-		final File[] fileList = directory.listFiles();
-		if (fileList != null) {
-			return Arrays.stream(fileList)
-			             .filter(f -> f.getName().endsWith(".csv"))
-			             .filter(File::isFile)
-			             .collect(Collectors.toList());
-		}
-		else { throw new IllegalArgumentException("could not find any csv files in " + directory); }
-	}
-
-	private static String parseGolferName(String fileName) {
-		String first = fileName.substring(fileName.lastIndexOf('_') + 1);
-		return toTitleCase(first.substring(0, first.lastIndexOf('.')));
-	}
-
-	private static String toTitleCase(String text) {
-		if (text == null || text.isEmpty()) {
-			return text;
-		}
-
-		StringBuilder converted = new StringBuilder();
-
-		boolean convertNext = true;
-		for (char ch : text.toCharArray()) {
-			if (Character.isSpaceChar(ch)) {
-				convertNext = true;
-			}
-			else if (convertNext) {
-				ch = Character.toTitleCase(ch);
-				convertNext = false;
-			}
-			else {
-				ch = Character.toLowerCase(ch);
-			}
-			converted.append(ch);
-		}
-
-		return converted.toString();
-	}
 }

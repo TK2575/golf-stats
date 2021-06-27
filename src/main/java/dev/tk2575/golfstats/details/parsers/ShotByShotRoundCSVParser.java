@@ -1,7 +1,7 @@
 package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.IncompleteRound;
+import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
@@ -9,7 +9,6 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,10 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.NONE)
 @Getter
 @Log4j2
-public class ShotByShotRoundCSVParser implements CSVParser {
+public class ShotByShotRoundCSVParser /*implements CSVParser*/ {
 
 	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,start,end,transport";
 	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,shots";
@@ -32,7 +30,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	private final File holesFile;
 	private final HandicapIndex index;
 
-	private Map<Integer, IncompleteRound> roundDetails;
+	private Map<Integer, RoundMeta> roundDetails;
 	private Map<Integer, List<Hole>> holes;
 
 	public ShotByShotRoundCSVParser(File roundFile, File holesFile) { this(roundFile, holesFile, null); }
@@ -46,12 +44,12 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	public List<GolfRound> parse() {
 		this.roundDetails = new HashMap<>();
 		this.holes = new HashMap<>();
-		parseRoundDetails(this.roundFile);
-		parseHolesDetails(this.holesFile);
+		/*parseRoundDetails(this.roundFile);
+		parseHolesDetails(this.holesFile);*/
 		return GolfRound.compile(this.roundDetails, this.holes);
 	}
 
-	private void parseRoundDetails(File roundFile) {
+	/*private void parseRoundDetails(File roundFile) {
 		try {
 			List<String[]> rows = parseFile(roundFile, EXPECTED_HEADERS_ROUND);
 			rows.forEach(row -> this.roundDetails.put(Integer.valueOf(row[0]), new IncompleteRound(row, DATE_FORMAT, TIME_FORMATS, index)));
@@ -71,7 +69,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	private Hole recordHole(String[] row) {
 		Integer number = Integer.valueOf(row[1]);

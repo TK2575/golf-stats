@@ -48,8 +48,6 @@ class ShotByShotRoundCSVParserTest {
 		assertEquals(3, round.getGreensInRegulation());
 		assertEquals(18, Game.stablefordAllPositive(round).getScore());
 		assertEquals(5078L, round.getYards());
-
-
 	}
 
 	@Test

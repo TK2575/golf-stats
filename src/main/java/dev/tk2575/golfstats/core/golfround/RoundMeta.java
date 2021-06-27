@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.core.golfround;
 
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
@@ -13,7 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
-public class IncompleteRound {
+@RequiredArgsConstructor
+public class RoundMeta {
 
 	private final LocalDate date;
 	private final Duration duration;
@@ -25,18 +27,18 @@ public class IncompleteRound {
 	private final String teeName;
 	private final Transport transport;
 
-	public IncompleteRound(String[] row, DateTimeFormatter dateFormat, List<DateTimeFormatter> timeFormats, HandicapIndex index) {
+	public RoundMeta(String[] row, DateTimeFormatter dateFormat, List<DateTimeFormatter> timeFormats, HandicapIndex index) {
 		this.golfer = Golfer.of(row[1], index);
 		this.date = LocalDate.parse(row[2], dateFormat);
 		this.course = Course.of(row[3], row[4], row[5]);
 		this.teeName = row[6];
 		this.rating = new BigDecimal(row[7]);
 		this.slope = new BigDecimal(row[8]);
-		this.duration = Duration.between(parseTime(timeFormats, row[9]), parseTime(timeFormats, row[10]));
+		this.duration = Duration.between(Utils.parseTime(timeFormats, row[9]), Utils.parseTime(timeFormats, row[10]));
 		this.transport = Transport.valueOf(row[11]);
 	}
 
-	public IncompleteRound(String[] row, DateTimeFormatter dateFormat, DateTimeFormatter durationFormat, HandicapIndex index) {
+	public RoundMeta(String[] row, DateTimeFormatter dateFormat, DateTimeFormatter durationFormat, HandicapIndex index) {
 		this.golfer = Golfer.of(row[1], index);
 		this.date = LocalDate.parse(row[2], dateFormat);
 		this.course = Course.of(row[3]);
@@ -47,30 +49,5 @@ public class IncompleteRound {
 		                ? Duration.ZERO
 		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[7], durationFormat));
 		this.transport = Transport.valueOf(row[8]);
-	}
-
-	public IncompleteRound(IncompleteRound round, HandicapIndex newIndex) {
-		this.golfer = Golfer.of(round.getGolfer(), newIndex);
-		this.date = round.getDate();
-		this.course = round.getCourse();
-		this.teeName = round.getTeeName();
-		this.rating = round.getRating();
-		this.slope = round.getSlope();
-		this.duration = round.getDuration();
-		this.transport = round.getTransport();
-	}
-
-	private LocalTime parseTime(List<DateTimeFormatter> timeFormats, String raw) {
-		LocalTime result = null;
-
-		for (DateTimeFormatter timeFormat : timeFormats) {
-			try {
-				result = LocalTime.parse(raw, timeFormat);
-				if (result != null) return result;
-			}
-			catch (Exception ignored) { }
-		}
-
-		throw new IllegalArgumentException(raw + " cannot be parsed with any of the supplied formats");
 	}
 }

@@ -1,6 +1,8 @@
 package dev.tk2575.golfstats.details.parsers;
 
+import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
+import dev.tk2575.golfstats.details.CSVFile;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +15,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 public interface CSVParser {
+
+	List<CSVFile> getFiles();
+
+	List<GolfRound> parse();
 
 	default List<String[]> parseFile(File file, String headers) throws IOException {
 		List<String[]> results = new ArrayList<>();
@@ -33,11 +39,8 @@ public interface CSVParser {
 		return results;
 	}
 
-	static boolean verifyHeaders(String expectedHeaders, String line) {
-		if (!line.equalsIgnoreCase(expectedHeaders)) {
-			throw new IllegalArgumentException(String.format("found headers = %s; expected headers = %s", line, expectedHeaders));
-		}
-		return true;
+	default boolean verifyHeaders(String expectedHeaders, String line) {
+		return line.equalsIgnoreCase(expectedHeaders);
 	}
 
 	default Map<Integer, List<Hole>> convertRowsToHoles(List<String[]> rows, Function<String[], Hole> conversionFunction) {

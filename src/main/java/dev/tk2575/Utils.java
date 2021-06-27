@@ -3,6 +3,8 @@ package dev.tk2575;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -70,6 +72,31 @@ public class Utils {
 		return printAsDelimitedValues(data, ",");
 	}
 
+	public static String toTitleCase(String text) {
+		if (text == null || text.isEmpty()) {
+			return text;
+		}
+
+		StringBuilder converted = new StringBuilder();
+
+		boolean convertNext = true;
+		for (char ch : text.toCharArray()) {
+			if (Character.isSpaceChar(ch)) {
+				convertNext = true;
+			}
+			else if (convertNext) {
+				ch = Character.toTitleCase(ch);
+				convertNext = false;
+			}
+			else {
+				ch = Character.toLowerCase(ch);
+			}
+			converted.append(ch);
+		}
+
+		return converted.toString();
+	}
+
 	public static <T> String joinByHyphenIfUnequal(T o1, T o2) {
 		return joinIfUnequal(" - ", o1, o2);
 	}
@@ -79,6 +106,20 @@ public class Utils {
 			return o1.toString();
 		}
 		return String.join(delimiter, o1.toString(), o2.toString());
+	}
+
+	public static LocalTime parseTime(List<DateTimeFormatter> timeFormats, String raw) {
+		LocalTime result;
+
+		for (DateTimeFormatter timeFormat : timeFormats) {
+			try {
+				result = LocalTime.parse(raw, timeFormat);
+				if (result != null) return result;
+			}
+			catch (Exception ignored) { }
+		}
+
+		throw new IllegalArgumentException(raw + " cannot be parsed with any of the supplied formats");
 	}
 
 	private static String printAsDelimitedValues(String[] data, String delimiter) {
