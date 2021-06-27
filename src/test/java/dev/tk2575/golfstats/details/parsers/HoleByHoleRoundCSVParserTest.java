@@ -2,41 +2,38 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.games.Game;
+import dev.tk2575.golfstats.details.CSVFile;
+import lombok.*;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static dev.tk2575.Utils.readCSVFilesInDirectory;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HoleByHoleRoundCSVParserTest {
 
 	@Test
 	void testSingleRoundFiles() {
+		List<CSVFile> files = readCSVFilesInDirectory("holeByHoleCSVParser")
+				.stream()
+				.filter(each -> !each.getName().toLowerCase().contains("multi"))
+				.toList();
+		assertNotNull(files);
+		assertEquals(2, files.size());
 
-		String roundFileName = "testHoleByHoleRoundFile.csv";
-		String holeByHoleFileName = "testHoleByHoleFile.csv";
-
-		File roundFile = null, holeByHoleFile = null;
-
-		File directory = new File(System.getProperty("user.dir"), "src/test/resources/holeByHoleCSVParser");
-		for (File f : Objects.requireNonNull(directory.listFiles())) {
-			if (roundFileName.equalsIgnoreCase(f.getName())) {
-				roundFile = f;
-			}
-			else if (holeByHoleFileName.equalsIgnoreCase(f.getName())) {
-				holeByHoleFile = f;
-			}
-		}
-
-		assertNotNull(roundFile);
-		assertNotNull(holeByHoleFile);
-
-		List<GolfRound> rounds = new HoleByHoleRoundCSVParser(roundFile, holeByHoleFile).parse();
+		List<GolfRound> rounds = new HoleByHoleRoundCSVParser(files).parse();
 		assertNotNull(rounds);
 		assertFalse(rounds.isEmpty());
 		assertEquals(1, rounds.size());
@@ -49,25 +46,14 @@ class HoleByHoleRoundCSVParserTest {
 
 	@Test
 	void testMultiRoundFiles() {
-		String roundFileName = "testHoleByHoleMultiRound.csv";
-		String holeByHoleFileName = "testHoleByHoleMultiRoundDetail.csv";
+		List<CSVFile> files = readCSVFilesInDirectory("holeByHoleCSVParser")
+				.stream()
+				.filter(each -> each.getName().toLowerCase().contains("multi"))
+				.toList();
+		assertNotNull(files);
+		assertEquals(2, files.size());
 
-		File roundFile = null, holeByHoleFile = null;
-
-		File directory = new File(System.getProperty("user.dir"), "src/test/resources/holeByHoleCSVParser");
-		for (File f : Objects.requireNonNull(directory.listFiles())) {
-			if (roundFileName.equalsIgnoreCase(f.getName())) {
-				roundFile = f;
-			}
-			else if (holeByHoleFileName.equalsIgnoreCase(f.getName())) {
-				holeByHoleFile = f;
-			}
-		}
-
-		assertNotNull(roundFile);
-		assertNotNull(holeByHoleFile);
-
-		List<GolfRound> rounds = new HoleByHoleRoundCSVParser(roundFile, holeByHoleFile).parse();
+		List<GolfRound> rounds = new HoleByHoleRoundCSVParser(files).parse();
 		assertNotNull(rounds);
 		assertFalse(rounds.isEmpty());
 		assertEquals(17, rounds.size());

@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.details;
 
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.PerformanceSummary;
 import dev.tk2575.golfstats.core.course.tee.Tee;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -45,31 +47,6 @@ public class GolfStatsConsoleOutput implements Runnable {
 				.collect(Collectors.toList());
 
 		logStatsAndRoundHistory(currentStats);*/
-	}
-
-	private List<CSVFile> readCSVFilesInDirectory(@NonNull String directory) {
-		List<CSVFile> files = new ArrayList<>();
-		ClassLoader classLoader = getClass().getClassLoader();
-		InputStream directoryStream = classLoader.getResourceAsStream(directory);
-
-		if (directoryStream != null) {
-			List<String> fileNames =
-					new BufferedReader(new InputStreamReader(directoryStream))
-							.lines()
-							.filter(each -> each.endsWith(".csv"))
-							.collect(toList());
-
-
-			InputStream fileStream;
-			for (String each : fileNames) {
-				fileStream = classLoader.getResourceAsStream(String.join("/", directory, each));
-				if (fileStream != null) {
-					files.add(new CSVFile(each, new BufferedReader(new InputStreamReader(fileStream)).lines().collect(joining("\n"))));
-				}
-			}
-		}
-
-		return files;
 	}
 
 	//TODO move to PerformanceSummary

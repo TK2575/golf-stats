@@ -27,7 +27,7 @@ public class RoundMeta {
 	private final String teeName;
 	private final Transport transport;
 
-	public RoundMeta(String[] row, DateTimeFormatter dateFormat, List<DateTimeFormatter> timeFormats, HandicapIndex index) {
+	/*public RoundMeta(String[] row, DateTimeFormatter dateFormat, List<DateTimeFormatter> timeFormats, HandicapIndex index) {
 		this.golfer = Golfer.of(row[1], index);
 		this.date = LocalDate.parse(row[2], dateFormat);
 		this.course = Course.of(row[3], row[4], row[5]);
@@ -49,5 +49,5 @@ public class RoundMeta {
 		                ? Duration.ZERO
 		                : Duration.between(LocalTime.MIN, LocalTime.parse(row[7], durationFormat));
 		this.transport = Transport.valueOf(row[8]);
-	}
+	}*/
 }

@@ -1,24 +1,24 @@
 package dev.tk2575.golfstats.details.parsers;
 
-import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.Hole;
+import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.Transport;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Log4j2
@@ -50,7 +50,7 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
 		    	this.holesFile = file;
 		    }
 		    else {
-		    	throw new IllegalArgumentException(String.format("Problem parsing file %s. Found headers = %s", file.getName(), file.getHeader()))
+		    	throw new IllegalArgumentException(String.format("Problem parsing file %s. Found headers = %s", file.getName(), file.getHeader()));
 		    }
 	    }
 
@@ -63,7 +63,10 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
 	    }
     }
 
-
+	@Override
+	public List<CSVFile> getFiles() {
+		return List.of(this.roundFile, this.holesFile);
+	}
 
 	@Override
     public List<GolfRound> parse() {

@@ -123,17 +123,14 @@ public interface GolfRound {
 
 	static List<GolfRound> compile(Map<Integer, RoundMeta> roundDetails, Map<Integer, List<Hole>> holes) {
 		List<GolfRound> results = new ArrayList<>();
-		HandicapIndex index;
-		RoundMeta incompleteRound;
 
-		//TODO refactor without for loop?
 		for (Map.Entry<Integer, RoundMeta> each : roundDetails.entrySet()) {
-			incompleteRound = each.getValue();
-			if (!results.isEmpty()) {
-				index = HandicapIndex.newIndex(results);
-				incompleteRound = new RoundMeta(incompleteRound, index);
+			RoundMeta meta = each.getValue();
+			Integer id = each.getKey();
+			List<Hole> holeList = holes.get(id);
+			if (meta != null && holeList != null) {
+				results.add(of(meta, holeList));
 			}
-			results.add(of(incompleteRound, holes.get(each.getKey())));
 		}
 		return results;
 	}
@@ -142,9 +139,8 @@ public interface GolfRound {
 		return new HoleByHoleRound(round, holes);
 	}
 
-	//TODO builder pattern?
-	static GolfRound of(LocalDate date, Duration duration, Golfer golfer, Course course, Tee tee, Transport transport, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
-		return new SimpleGolfRound(date, duration, golfer, course, tee, transport, strokes, strokesAdjusted, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+	static GolfRound of(RoundMeta meta, Integer par, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		return new SimpleGolfRound(meta, par, strokes, strokesAdjusted, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

@@ -1,10 +1,15 @@
 package dev.tk2575;
 
+import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -12,6 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.math.RoundingMode.HALF_UP;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class Utils {
@@ -120,6 +127,31 @@ public class Utils {
 		}
 
 		throw new IllegalArgumentException(raw + " cannot be parsed with any of the supplied formats");
+	}
+
+	public static List<CSVFile> readCSVFilesInDirectory(@NonNull String directory) {
+		List<CSVFile> files = new ArrayList<>();
+		ClassLoader classLoader = Utils.class.getClassLoader();
+		InputStream directoryStream = classLoader.getResourceAsStream(directory);
+
+		if (directoryStream != null) {
+			List<String> fileNames =
+					new BufferedReader(new InputStreamReader(directoryStream))
+							.lines()
+							.filter(each -> each.endsWith(".csv"))
+							.collect(toList());
+
+
+			InputStream fileStream;
+			for (String each : fileNames) {
+				fileStream = classLoader.getResourceAsStream(String.join("/", directory, each));
+				if (fileStream != null) {
+					files.add(new CSVFile(each, new BufferedReader(new InputStreamReader(fileStream)).lines().collect(joining("\n"))));
+				}
+			}
+		}
+
+		return files;
 	}
 
 	private static String printAsDelimitedValues(String[] data, String delimiter) {

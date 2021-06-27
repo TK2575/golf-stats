@@ -42,7 +42,7 @@ class HoleByHoleRound implements GolfRound {
 	@Getter(AccessLevel.NONE) @ToString.Exclude
 	private final Collection<Hole> holes;
 
-	HoleByHoleRound(RoundMeta round, Collection<Hole> holes) {
+	HoleByHoleRound(@NonNull RoundMeta round, @NonNull Collection<Hole> holes) {
 		this.date = round.getDate();
 		this.duration = round.getDuration();
 		this.golfer = round.getGolfer();

@@ -4,6 +4,7 @@ import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.Transport;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
@@ -80,7 +81,6 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		var rating = new BigDecimal(row[3]);
 		var slope = new BigDecimal(row[4]);
 		var par = Integer.valueOf(row[5]);
-		var tee = Tee.of(teeName, rating, slope, par);
 
 		var duration = row[6] == null || row[6].isBlank()
 		                ? Duration.ZERO
@@ -95,7 +95,8 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		var nineHoleRound = Boolean.parseBoolean(row[13]);
 		var golferString = row[14];
 
-		return GolfRound.of(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, tee, transport, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, rating, slope, teeName, transport);
+		return GolfRound.of(meta, par, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

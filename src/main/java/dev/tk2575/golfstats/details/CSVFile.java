@@ -3,9 +3,12 @@ package dev.tk2575.golfstats.details;
 import lombok.*;
 
 @Getter
+@ToString
 public class CSVFile {
 	private final String name;
 	private final String header;
+
+	@ToString.Exclude
 	private final String body;
 
 	public CSVFile(String name, String content) {

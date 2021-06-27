@@ -9,9 +9,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 
-@Data
-@Builder(toBuilder = true)
-@AllArgsConstructor
+@Getter
 @ToString
 class SimpleGolfRound implements GolfRound {
 
@@ -39,16 +37,15 @@ class SimpleGolfRound implements GolfRound {
 	private final Integer greensInRegulation;
 	private final Integer putts;
 
-	private boolean nineHoleRound;
+	private final boolean nineHoleRound;
 
-	SimpleGolfRound(LocalDate date, Duration duration, Golfer golfer, Course course, Tee tee, Transport transport, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
-		//TODO add null checks
-		this.date = date;
-		this.duration = duration;
-		this.golfer = golfer;
-		this.course = course;
-		this.tee = tee;
-		this.transport = transport;
+	SimpleGolfRound(@NonNull RoundMeta meta, Integer par, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		this.date = meta.getDate();
+		this.duration = meta.getDuration();
+		this.golfer = meta.getGolfer();
+		this.course = meta.getCourse();
+		this.tee = Tee.of(meta.getTeeName(), meta.getRating(), meta.getSlope(), par);
+		this.transport = meta.getTransport();
 		this.strokes = strokes;
 		this.strokesAdjusted = strokesAdjusted;
 		this.fairwaysInRegulation = fairwaysInRegulation;
