@@ -100,18 +100,18 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
     }
 
 	private RoundMeta recordRoundMeta(String[] cells) {
-		var date = LocalDate.parse(cells[2], DATE_FORMAT);
-		var course = Course.of(cells[3], cells[4], cells[5]);
-		var teeName = cells[6];
-		var rating = new BigDecimal(cells[7]);
-		var slope = new BigDecimal(cells[8]);
-		LocalTime from = LocalTime.parse(cells[9], DURATION_FORMAT);
-		LocalTime thru = LocalTime.parse(cells[10], DURATION_FORMAT);
-		var duration = Duration.between(from, thru);
-		var transport = Transport.valueOf(cells[11]);
-
 		var golferString = cells[1];
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
+		var date = LocalDate.parse(cells[2], DATE_FORMAT);
+		var course = Course.of(cells[3]);
+		var teeName = cells[4];
+		var rating = new BigDecimal(cells[5]);
+		var slope = new BigDecimal(cells[6]);
+		String durationString = cells[7];
+		var duration = durationString == null || durationString.isBlank()
+				? Duration.ZERO
+				: Duration.between(LocalTime.MIN, LocalTime.parse(durationString, DURATION_FORMAT));
+		var transport = Transport.valueOf(cells[8]);
 
 		return new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport);
 	}
