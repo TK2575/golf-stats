@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.course.Course;
-import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
@@ -50,10 +49,10 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 			}
 
 			line = 1;
-			for (String row : file.getBody().split("\n")) {
+			for (String[] row : file.getRowsOfDelimitedValues()) {
 				line++;
 				try {
-					round = recordSimpleRound(golfer, row.split(","));
+					round = recordSimpleRound(golfer, row);
 					if (golfer == null) {
 						golfer = round.getGolfer();
 					}

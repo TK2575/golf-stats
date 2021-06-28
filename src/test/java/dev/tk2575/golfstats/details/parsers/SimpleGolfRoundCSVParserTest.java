@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.games.Game;
 import dev.tk2575.golfstats.details.CSVFile;
 import org.junit.jupiter.api.Test;
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @Getter
 @Log4j2
@@ -30,7 +31,7 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
     private static final DateTimeFormatter DURATION_FORMAT = DateTimeFormatter.ofPattern("H:m");
 
-    private CSVFile roundFile = null;
+	private CSVFile roundFile = null;
     private CSVFile holesFile = null;
 
 	private final Map<Integer, RoundMeta> roundMetas = new HashMap<>();
@@ -70,89 +71,60 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
 
 	@Override
     public List<GolfRound> parse() {
-        parseRoundDetails();
-        parseHolesDetails();
+		parse(this.roundFile, roundMetaParser);
+		parse(this.holesFile, holeParser);
         return GolfRound.compile(this.roundMetas, this.holes);
     }
 
-    private void parseRoundDetails() {
+    private void parse(CSVFile file, BiConsumer<Integer, String[]> parser) {
 	    int line = 1;
-	    int id;
-	    RoundMeta meta;
-
-	    for (String row : this.roundFile.getBody().split("\n")) {
-		    line++;
-		    String[] cells = row.split(",");
-		    try {
-			    id = Integer.parseInt(cells[0]);
-			    meta = recordRoundMeta(cells);
-			    this.roundMetas.put(id, meta);
+	    for (String[] row : file.getRowsOfDelimitedValues()) {
+	    	line++;
+	    	try {
+			    parser.accept(Integer.parseInt(row[0]), row);
 		    }
 		    catch (Exception e) {
 			    log.error(
 					    String.format("Encountered parse error on line %s in file %s. Skipping row",
 							    line,
-							    this.roundFile.getName())
+							    file.getName())
 			    );
 			    e.printStackTrace();
 		    }
 	    }
     }
 
-	private RoundMeta recordRoundMeta(String[] cells) {
-		var golferString = cells[1];
+	private final BiConsumer<Integer, String[]> roundMetaParser = (id, row) -> {
+		var golferString = row[1];
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
-		var date = LocalDate.parse(cells[2], DATE_FORMAT);
-		var course = Course.of(cells[3]);
-		var teeName = cells[4];
-		var rating = new BigDecimal(cells[5]);
-		var slope = new BigDecimal(cells[6]);
-		String durationString = cells[7];
+		var date = LocalDate.parse(row[2], DATE_FORMAT);
+		var course = Course.of(row[3]);
+		var teeName = row[4];
+		var rating = new BigDecimal(row[5]);
+		var slope = new BigDecimal(row[6]);
+		var durationString = row[7];
 		var duration = durationString == null || durationString.isBlank()
 				? Duration.ZERO
 				: Duration.between(LocalTime.MIN, LocalTime.parse(durationString, DURATION_FORMAT));
-		var transport = Transport.valueOf(cells[8]);
+		var transport = Transport.valueOf(row[8]);
 
-		return new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport);
-	}
+		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport));
+	};
 
-	//TODO refactor to avoid duplicated code
-	private void parseHolesDetails() {
-		int line = 1;
-		int id;
-		Hole hole;
+    private final BiConsumer<Integer, String[]> holeParser = (id, row) -> {
+	    var number = Integer.valueOf(row[1]);
+	    var index = Integer.valueOf(row[2]);
+	    var par = Integer.valueOf(row[3]);
+	    var strokes = Integer.valueOf(row[4]);
+	    var fairwayInRegulation = Boolean.parseBoolean(row[5]);
+	    var putts = Integer.valueOf(row[6]);
 
-		for (String row : this.holesFile.getBody().split("\n")) {
-			line++;
-			String[] cells = row.split(",");
-			try {
-				id = Integer.parseInt(cells[0]);
-				hole = recordHole(cells);
-				this.holes.merge(id, List.of(hole), (prior, current) -> {
-					List<Hole> result = new ArrayList<>(prior);
-					result.addAll(current);
-					return result;
-				});
-			}
-			catch (Exception e) {
-				log.error(
-						String.format("Encountered parse error on line %s in file %s. Skipping row",
-								line,
-								this.holesFile.getName())
-				);
-				e.printStackTrace();
-			}
-		}
-    }
-
-    private Hole recordHole(String[] row) {
-        Integer number = Integer.valueOf(row[1]);
-        Integer index = Integer.valueOf(row[2]);
-        Integer par = Integer.valueOf(row[3]);
-        Integer strokes = Integer.valueOf(row[4]);
-        boolean fairwayInRegulation = Boolean.parseBoolean(row[5]);
-        Integer putts = Integer.valueOf(row[6]);
-        return Hole.of(number, index, par, strokes, fairwayInRegulation, putts);
-    }
+	    Hole hole = Hole.of(number, index, par, strokes, fairwayInRegulation, putts);
+		this.holes.merge(id, List.of(hole), (prior, current) -> {
+			List<Hole> result = new ArrayList<>(prior);
+			result.addAll(current);
+			return result;
+		});
+	};
 
 }

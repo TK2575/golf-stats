@@ -2,6 +2,9 @@ package dev.tk2575.golfstats.details;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @ToString
 public class CSVFile {
@@ -9,7 +12,7 @@ public class CSVFile {
 	private final String header;
 
 	@ToString.Exclude
-	private final String body;
+	private final List<String[]> rowsOfDelimitedValues;
 
 	public CSVFile(String name, String content) {
 		if (!name.endsWith(".csv")) {
@@ -22,7 +25,10 @@ public class CSVFile {
 		}
 		String[] split = content.split("\n", 2);
 		this.header = split[0];
-		this.body = split[1];
 
+		this.rowsOfDelimitedValues = new ArrayList<>();
+		for (String row : split[1].split("\n")) {
+			this.rowsOfDelimitedValues.add(row.split(","));
+		}
 	}
 }
