@@ -2,39 +2,28 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.games.Game;
+import dev.tk2575.golfstats.details.CSVFile;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShotByShotRoundCSVParserTest {
 
 	@Test
 	void testSingleRoundFiles() {
-		String roundFileName = "testSingleShotByShotRoundFile.csv";
-		String shotByShotFileName = "testSingleShotByShotFile.csv";
+		List<CSVFile> files = readCSVFilesInDirectory("shotByShotCSVParser")
+				.stream()
+				.filter(each -> !each.getName().toLowerCase().contains("multi"))
+				.toList();
+		assertNotNull(files);
+		assertEquals(2, files.size());
 
-		File roundFile = null, shotByShotFile = null;
-
-		File directory = new File(System.getProperty("user.dir"), "src/test/resources/shotByShotCSVParser");
-		for (File f : Objects.requireNonNull(directory.listFiles())) {
-			if (roundFileName.equalsIgnoreCase(f.getName())) {
-				roundFile = f;
-			}
-			else if (shotByShotFileName.equalsIgnoreCase(f.getName())) {
-				shotByShotFile = f;
-			}
-		}
-
-		assertNotNull(roundFile);
-		assertNotNull(shotByShotFile);
-
-		List<GolfRound> rounds = new ShotByShotRoundCSVParser(roundFile, shotByShotFile).parse();
+		List<GolfRound> rounds = new ShotByShotRoundCSVParser(files).parse();
 		assertNotNull(rounds);
 		assertFalse(rounds.isEmpty());
 		assertEquals(1, rounds.size());
@@ -52,25 +41,14 @@ class ShotByShotRoundCSVParserTest {
 
 	@Test
 	void testMultiRoundFiles() {
-		String roundFileName = "testMultiShotByShotRoundFile.csv";
-		String shotByShotFileName = "testMultiShotByShotFile.csv";
+		List<CSVFile> files = readCSVFilesInDirectory("shotByShotCSVParser")
+				.stream()
+				.filter(each -> each.getName().toLowerCase().contains("multi"))
+				.toList();
+		assertNotNull(files);
+		assertEquals(2, files.size());
 
-		File roundFile = null, shotByShotFile = null;
-
-		File directory = new File(System.getProperty("user.dir"), "src/test/resources/shotByShotCSVParser");
-		for (File f : Objects.requireNonNull(directory.listFiles())) {
-			if (roundFileName.equalsIgnoreCase(f.getName())) {
-				roundFile = f;
-			}
-			else if (shotByShotFileName.equalsIgnoreCase(f.getName())) {
-				shotByShotFile = f;
-			}
-		}
-
-		assertNotNull(roundFile);
-		assertNotNull(shotByShotFile);
-
-		List<GolfRound> rounds = new ShotByShotRoundCSVParser(roundFile, shotByShotFile).parse();
+		List<GolfRound> rounds = new ShotByShotRoundCSVParser(files).parse();
 		assertNotNull(rounds);
 		assertFalse(rounds.isEmpty());
 		assertEquals(14, rounds.size());

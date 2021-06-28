@@ -1,30 +1,25 @@
 package dev.tk2575.golfstats.details;
 
-import dev.tk2575.Utils;
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.PerformanceSummary;
 import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
 import dev.tk2575.golfstats.details.parsers.HoleByHoleRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.ShotByShotRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
-import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static dev.tk2575.Utils.readCSVFilesInDirectory;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 @Log4j2
 public class GolfStatsConsoleOutput implements Runnable {
@@ -33,20 +28,15 @@ public class GolfStatsConsoleOutput implements Runnable {
 	public void run() {
 		try {
 			List<GolfRound> simpleRounds = new SimpleGolfRoundCSVParser((readCSVFilesInDirectory("data/simple"))).parse();
-			List<CSVFile> holeByHoleRounds = readCSVFilesInDirectory("data/hole-by-hole");
-			List<CSVFile> shotByShotRounds = readCSVFilesInDirectory("data/shot-by-shot");
+			List<GolfRound> holeByHoleRounds = new HoleByHoleRoundCSVParser(readCSVFilesInDirectory("data/hole-by-hole")).parse();
+			List<GolfRound> shotByShotRounds = new ShotByShotRoundCSVParser(readCSVFilesInDirectory("data/shot-by-shot")).parse();
+
+			//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
+			// then take list of rounds and apply double bogey to them from first to last, updating handicap index after each
 		}
 		catch (Exception e) {
 			log.error(e);
 		}
-
-		/*Map<String, List<GolfRound>> roundsByGolfer = loadRoundsIntoMemory();
-
-		List<PerformanceSummary> currentStats = roundsByGolfer.values().stream()
-				.map(PerformanceSummary::new)
-				.collect(Collectors.toList());
-
-		logStatsAndRoundHistory(currentStats);*/
 	}
 
 	//TODO move to PerformanceSummary
@@ -73,45 +63,6 @@ public class GolfStatsConsoleOutput implements Runnable {
 		}
 	}
 
-	//TODO stream as resources
-	//TODO cleanup CSV parser method accessibility, parse() vs parseFile() approach
-	//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
-	// then take list of rounds and apply double bogey to them from first to last, updating handicap index after each
-	private static Map<String, List<GolfRound>> loadRoundsIntoMemory() {
-		final File dataDirectory = new File(System.getProperty("user.dir"), "src\\main\\resources\\data");
-//		Map<String, List<GolfRound>> simpleRounds = new SimpleGolfRoundCSVParser(new File(dataDirectory, "simple")).readCsvData();
-
-		List<GolfRound> holeByHoleRounds = new ArrayList<>();
-		File holeByHoleDirectory = new File(dataDirectory, "hole-by-hole");
-		/*if (holeByHoleDirectory != null && holeByHoleDirectory.list().length > 0) {
-			File rounds = new File(holeByHoleDirectory, "rounds.csv");
-			File holes = new File(holeByHoleDirectory, "holes.csv");
-
-			if (rounds.exists() && holes.exists()) {
-				holeByHoleRounds = new HoleByHoleRoundCSVParser(rounds, holes).parse();
-			}
-		}*/
-
-		List<GolfRound> shotByShotRounds = new ArrayList<>();
-		File shotByShotDirectory = new File(dataDirectory, "shot-by-shot");
-		if (shotByShotDirectory != null && shotByShotDirectory.list().length > 0) {
-			File rounds = new File(shotByShotDirectory, "rounds.csv");
-			File shots = new File(shotByShotDirectory, "shots.csv");
-
-			if (rounds.exists() && shots.exists()) {
-				shotByShotRounds = new ShotByShotRoundCSVParser(rounds, shots).parse();
-			}
-		}
-
-		List<GolfRound> allRounds = new ArrayList<>();
-		/*for (List<GolfRound> list : simpleRounds.values()) {
-			allRounds.addAll(list);
-		}
-		allRounds.addAll(holeByHoleRounds);*/
-		allRounds.addAll(shotByShotRounds);
-
-		return allRounds.stream().collect(Collectors.groupingBy(each -> each.getGolfer().getName()));
-	}
 
 	private static void logStatsAndRoundHistory(List<PerformanceSummary> currentStats) {
 		currentStats.forEach(s -> {

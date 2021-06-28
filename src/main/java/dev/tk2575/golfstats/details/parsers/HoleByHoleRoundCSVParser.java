@@ -35,8 +35,8 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
     private CSVFile holesFile = null;
 
 	private final Map<Integer, RoundMeta> roundMetas = new HashMap<>();
-	private final Map<String, Golfer> golfers = new HashMap<>();
 	private final Map<Integer, List<Hole>> holes = new HashMap<>();
+	private final Map<String, Golfer> golfers = new HashMap<>();
 
     public HoleByHoleRoundCSVParser(@NonNull List<CSVFile> files) {
     	if (files.size() != 2) {
