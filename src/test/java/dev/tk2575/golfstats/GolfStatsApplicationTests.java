@@ -18,24 +18,6 @@ class GolfStatsApplicationTests {
 	}
 
 	@Test
-	void testGolfNameSubstring() {
-		String example = "scores_will.csv";
-		String expected = "will";
-		String first = example.substring(example.lastIndexOf('_') + 1);
-		String result = first.substring(0, first.lastIndexOf('.'));
-		assertEquals(expected, result);
-
-	}
-
-	@Test
-	void testDivisionToBigDecimal() {
-		int holes = 18;
-		int putts = 30;
-		BigDecimal result = BigDecimal.valueOf((float) putts / holes).setScale(2, HALF_UP);
-		assertEquals(BigDecimal.valueOf(1.67), result);
-	}
-
-	@Test
 	void testCourseRatingCorrection() {
 		BigDecimal rating = new BigDecimal("69.8");
 		int par = 36;
