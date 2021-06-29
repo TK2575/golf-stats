@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.core.handicapindex;
 
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 
 import java.math.BigDecimal;
@@ -20,6 +21,10 @@ public interface HandicapIndex {
 
 		return this.getClass()
 		           .getSimpleName() + "(" + String.join(", ", fields) + ")";
+	}
+
+	default BigDecimal getRoundedValue() {
+		return Utils.roundToOneDecimalPlace(getValue());
 	}
 
 	static HandicapIndex newIndex(Collection<GolfRound> rounds) {
