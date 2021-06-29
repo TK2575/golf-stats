@@ -38,7 +38,7 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 
 		for (CSVFile file : files) {
 			golfer = null;
-			if (!verifyHeaders(EXPECTED_HEADERS, file.getHeader())) {
+			if (!EXPECTED_HEADERS.equalsIgnoreCase(file.getHeader())) {
 				log.error(
 						String.format("Problem parsing file %s. Found headers = %s; expected headers = %s",
 								file.getName(),
@@ -73,6 +73,7 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 	}
 
 	private GolfRound recordSimpleRound(final Golfer golfer, String[] row) {
+		//TODO sanitize raw string inputs
 		var date = LocalDate.parse(row[0], DATE_FORMAT);
 		var course = Course.of(row[1]);
 

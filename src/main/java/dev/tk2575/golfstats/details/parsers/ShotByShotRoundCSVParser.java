@@ -45,10 +45,10 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 		}
 
 		for (CSVFile file : files) {
-			if (verifyHeaders(EXPECTED_HEADERS_ROUND, file.getHeader())) {
+			if (EXPECTED_HEADERS_ROUND.equalsIgnoreCase(file.getHeader())) {
 				this.roundFile = file;
 			}
-			else if (verifyHeaders(EXPECTED_HEADERS_HOLES, file.getHeader())) {
+			else if (EXPECTED_HEADERS_HOLES.equalsIgnoreCase(file.getHeader())) {
 				this.holesFile = file;
 			}
 			else {
@@ -97,6 +97,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	}
 
 	private final BiConsumer<Integer, String[]> roundMetaParser = (id, row) -> {
+		//TODO sanitize raw string inputs
 		String golferString = row[1];
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
@@ -111,6 +112,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	};
 
 	private final BiConsumer<Integer, String[]> holeParser = (id, row) -> {
+		//TODO sanitize raw string inputs
 		var number = Integer.valueOf(row[1]);
 		var holeIndex = Integer.valueOf(row[2]);
 		var par = Integer.valueOf(row[3]);

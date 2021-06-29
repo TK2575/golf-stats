@@ -34,6 +34,7 @@ public class PerformanceSummary {
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
 		this.golfRounds = GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList();
+		//FIXME what if there are 0 18 hole rounds?
 
 		this.golfer = rounds().golferNames();
 		this.asOf = rounds().getMostRecentRound().getDate();

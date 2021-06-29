@@ -10,8 +10,4 @@ public interface CSVParser {
 	List<CSVFile> getFiles();
 
 	List<GolfRound> parse();
-
-	default boolean verifyHeaders(String expectedHeaders, String line) {
-		return line.equalsIgnoreCase(expectedHeaders);
-	}
 }
