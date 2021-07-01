@@ -1,5 +1,8 @@
-package dev.tk2575.golfstats.details;
+package dev.tk2575.golfstats.core.analysis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
@@ -8,7 +11,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class PerformanceSummary {
 
 	@Getter(AccessLevel.NONE)
+	@JsonIgnore
 	private final List<GolfRound> golfRounds;
 
 	private final String golfer;

@@ -1,5 +1,9 @@
 package dev.tk2575;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 
@@ -7,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,6 +28,25 @@ import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class Utils {
+
+	@Getter(lazy = true)
+	private static final Gson gson = gson();
+
+	private static Gson gson() {
+		return new GsonBuilder()
+				.setPrettyPrinting()
+				.registerTypeAdapter(BigDecimal.class, (JsonSerializer<BigDecimal>) (bigDecimal, type, context) ->
+						new JsonPrimitive(roundToOneDecimalPlace(bigDecimal)))
+				.registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (localDate, type, context) ->
+						new JsonPrimitive(localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)))
+				.registerTypeAdapter(Duration.class, (JsonSerializer<Duration>) (duration, type, context) ->
+						new JsonPrimitive(duration.toMinutes()))
+				.create();
+	}
+
+	public static String toJson(Object o) {
+		return getGson().toJson(o);
+	}
 
 	public static boolean isNullOrBlank(String string) {
 		return (string == null || string.isBlank());

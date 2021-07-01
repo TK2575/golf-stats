@@ -1,50 +1,46 @@
 package dev.tk2575.golfstats.details;
 
+import dev.tk2575.golfstats.core.analysis.PerformanceSummary;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
-import dev.tk2575.golfstats.details.parsers.CSVParser;
 import dev.tk2575.golfstats.details.parsers.HoleByHoleRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.ShotByShotRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
-import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static dev.tk2575.Utils.readCSVFilesInDirectory;
+import static dev.tk2575.Utils.toJson;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+@RestController
+@RequestMapping("api")
 @Log4j2
-public class GolfStatsConsoleOutput implements Runnable {
+public class PerformanceAnalysisApi {
 
-	@Override
-	public void run() {
-		try {
-			List<GolfRound> rounds = readGolfRoundsFromFiles();
+	@GetMapping(produces = "application/json")
+	public List<PerformanceSummary> all() {
+		//FIXME transport serializer (use toString) https://www.baeldung.com/jackson-custom-serialization
 
-			//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
-			// then take list of rounds and apply double bogey to them from first to last, updating handicap index after each
+		//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
+		// then take list of rounds and apply double bogey to them from first to last, updating handicap index after each
 
-			List<PerformanceSummary> performanceSummaries = rounds
-					.stream()
-					.collect(groupingBy(each -> each.getGolfer().getName()))
-					.values()
-					.stream()
-					.map(PerformanceSummary::new)
-					.collect(toList());
-
-			log.info(performanceSummaries);
-			//TODO write full summary output to JSON file for review
-		}
-		catch (Exception e) {
-			log.error(e);
-		}
+		return readGolfRoundsFromFiles()
+				.stream()
+				.collect(groupingBy(each -> each.getGolfer().getName()))
+				.values()
+				.stream()
+				.map(PerformanceSummary::new)
+				.collect(toList());
 	}
 
 	private List<GolfRound> readGolfRoundsFromFiles() {
@@ -95,21 +91,16 @@ public class GolfStatsConsoleOutput implements Runnable {
 		StablefordQuota whiteLowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
 
 		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee()
-		                                                                   .getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota
+				.getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota
 				.getTee()
 				.getHandicapStrokes()));
 		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee()
-		                                                                     .getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota
+				.getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota
 				.getTee()
 				.getHandicapStrokes()));
 		log.info(String.format("%s - Low quota = %s, (%s)", whiteLowQuota.getTee()
-		                                                                 .getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota
+				.getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota
 				.getTee()
 				.getHandicapStrokes()));
-	}
-
-	//local testing
-	public static void main(String[] args) {
-		new GolfStatsConsoleOutput().run();
 	}
 }
