@@ -29,3 +29,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 28,Tom,6/23/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,6:40,8:45,Walk
 29,Tom,6/25/2021,William J Devine GC,Dorchester,MA,Blue,69.5,126,9:40,1:58,Walk (Push)
 30,Tom,6/29/2021,Patriot GC,Bedord,MA,Blue,68.6,128,7:00,8:40,Walk
+31,Tom,6/23/2021,Pine Meadows GC,Lexington,MA,Blue,67,105,6:40,8:30,Walk
