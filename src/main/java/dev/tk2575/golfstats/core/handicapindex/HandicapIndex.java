@@ -23,10 +23,6 @@ public interface HandicapIndex {
 		           .getSimpleName() + "(" + String.join(", ", fields) + ")";
 	}
 
-	default BigDecimal getRoundedValue() {
-		return Utils.roundToOneDecimalPlace(getValue());
-	}
-
 	static HandicapIndex newIndex(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			return emptyIndex();

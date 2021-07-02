@@ -4,7 +4,6 @@ import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
-import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -14,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static dev.tk2575.Utils.roundToOneDecimalPlace;
 import static java.math.RoundingMode.HALF_UP;
 
 public interface GolfRound {
@@ -58,7 +58,7 @@ public interface GolfRound {
 		BigDecimal secondTerm = BigDecimal.valueOf(getStrokesAdjusted())
 		                                  .subtract(getRating())
 		                                  .setScale(2, HALF_UP);
-		return firstTerm.multiply(secondTerm);
+		return roundToOneDecimalPlace(firstTerm.multiply(secondTerm));
 	}
 
 	default Integer getHandicapStrokes() {

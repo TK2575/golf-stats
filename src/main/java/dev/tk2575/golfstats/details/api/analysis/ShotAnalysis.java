@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.core.analysis;
+package dev.tk2575.golfstats.details.api.analysis;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import lombok.*;

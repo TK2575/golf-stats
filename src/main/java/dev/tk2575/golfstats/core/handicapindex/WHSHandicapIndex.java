@@ -6,34 +6,27 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 class WHSHandicapIndex implements HandicapIndex {
 
 	private final BigDecimal value;
-	private final Collection<GolfRound> rounds;
+	private final long roundCount;
 
-	WHSHandicapIndex(Collection<GolfRound> rounds) {
-		if (rounds == null || rounds.isEmpty()) {
+	WHSHandicapIndex(@NonNull Collection<GolfRound> rounds) {
+		if (rounds.isEmpty()) {
 			throw new IllegalArgumentException("rounds cannot be empty");
 		}
 
-		this.rounds = GolfRound.stream(rounds)
+		List<GolfRound> compiled = GolfRound.stream(rounds)
 		                       .compileTo18HoleRounds()
 		                       .sortNewestToOldest()
 		                       .limit(20)
 		                       .asList();
 
-		this.value = rounds().getBestDifferentials().meanDifferential();
-	}
-
-	private GolfRoundStream rounds() {
-		return GolfRound.stream(this.rounds);
-	}
-
-	@Override
-	public long getRoundCount() {
-		return this.rounds.size();
+		this.value = GolfRound.stream(compiled).getBestDifferentials().meanDifferential();
+		this.roundCount = compiled.size();
 	}
 
 	@Override

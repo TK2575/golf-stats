@@ -1,13 +1,40 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import lombok.*;
 
-import java.io.IOException;
-
+@Getter
 public class Transport {
+	//FIXME somehow getting "CartWalking" as result on some rounds
+
 	private final int representation;
+	public String getDescription() {
+		if (this.equals(unknown())) {
+			return "Unknown";
+		}
+		if (this.equals(various())) {
+			return "Various";
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		if (this.isSupersetOf(ride())) {
+			sb.append("Cart");
+		}
+
+		if (this.isSupersetOf(walk())) {
+			sb.append("Walking");
+		}
+
+		if (this.isSupersetOf(caddie())) {
+			sb.append(" (Caddie)");
+		}
+
+		if (this.isSupersetOf(pushCart())) {
+			sb.append(" (Push)");
+		}
+
+		return sb.toString();
+	}
 
 	public static Transport ride() { return new Transport(0); }
 
@@ -66,52 +93,21 @@ public class Transport {
 		return new Transport(this.representation | status.representation);
 	}
 
-	@Override
-	public String toString() {
-		if (this.equals(unknown())) {
-			return "Unknown";
-		}
-		if (this.equals(various())) {
-			return "Various";
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		if (this.isSupersetOf(ride())) {
-			sb.append("Cart").append(", ");
-		}
-
-		if (this.isSupersetOf(walk())) {
-			sb.append("Walking").append(" ");
-		}
-
-		if (this.isSupersetOf(caddie())) {
-			sb.append("(Caddie)").append(" ");
-		}
-
-		if (this.isSupersetOf(pushCart())) {
-			sb.append("(Push)").append(" ");
-		}
-
-		return sb.toString().trim();
-	}
-
 	public boolean isSupersetOf(Transport other) {
 		return (this.representation & other.representation) == other.representation;
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		return other instanceof Transport &&
-				this.equals((Transport)other);
+		return other instanceof Transport && this.equals((Transport) other);
+	}
+
+	private boolean equals(Transport other) {
+		return this.representation == other.representation;
 	}
 
 	@Override
 	public int hashCode() {
 		return this.representation;
-	}
-
-	private boolean equals(Transport other) {
-		return this.representation == other.representation;
 	}
 }

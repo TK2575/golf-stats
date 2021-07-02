@@ -42,6 +42,14 @@ public interface Hole {
 
 	default ShotStream getShots() { return ShotStream.empty(); }
 
+	default Integer getScore() {
+		return getStrokes() - getPar();
+	}
+
+	default Integer getAdjustedScore() {
+		return getStrokesAdjusted() - getPar();
+	}
+
 	default boolean isFairwayPresent() {
 		return getPar() > 3;
 	}

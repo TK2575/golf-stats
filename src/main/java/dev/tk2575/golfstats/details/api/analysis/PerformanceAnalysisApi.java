@@ -1,10 +1,7 @@
-package dev.tk2575.golfstats.details;
+package dev.tk2575.golfstats.details.api.analysis;
 
-import dev.tk2575.golfstats.core.analysis.PerformanceSummary;
-import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
+import dev.tk2575.golfstats.details.CSVFile;
 import dev.tk2575.golfstats.details.parsers.HoleByHoleRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.ShotByShotRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
@@ -13,17 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static dev.tk2575.Utils.readCSVFilesInDirectory;
-import static dev.tk2575.Utils.toJson;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("analysis")
 @Log4j2
 public class PerformanceAnalysisApi {
 
@@ -63,7 +58,7 @@ public class PerformanceAnalysisApi {
 	}
 
 	//TODO move to separate CourseHandicapCalculator object
-	private static void logCourseHandicapForNextRound(List<PerformanceSummary> currentStats) {
+	/*private static void logCourseHandicapForNextRound(List<PerformanceSummary> currentStats) {
 		Tee back = Tee.of("White", new BigDecimal("70.4"), new BigDecimal("122"), 35);
 
 		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
@@ -102,5 +97,5 @@ public class PerformanceAnalysisApi {
 				.getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota
 				.getTee()
 				.getHandicapStrokes()));
-	}
+	}*/
 }
