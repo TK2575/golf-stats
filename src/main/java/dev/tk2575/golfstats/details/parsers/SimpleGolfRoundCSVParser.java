@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Log4j2
-public class SimpleGolfRoundCSVParser implements CSVParser {
+public class SimpleGolfRoundCSVParser extends CSVParser {
 
 	private static final String EXPECTED_HEADERS = "date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways,greens_in_reg,putts,nine_hole_round,golfer";
 
@@ -73,11 +73,10 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 	}
 
 	private GolfRound recordSimpleRound(final Golfer golfer, String[] row) {
-		//TODO sanitize raw string inputs
 		var date = LocalDate.parse(row[0], DATE_FORMAT);
-		var course = Course.of(row[1]);
+		var course = Course.of(Utils.toTitleCase(row[1]));
 
-		var teeName = row[2];
+		var teeName = Utils.toTitleCase(row[2]);
 		var rating = new BigDecimal(row[3]);
 		var slope = new BigDecimal(row[4]);
 		var par = Integer.valueOf(row[5]);
@@ -93,7 +92,7 @@ public class SimpleGolfRoundCSVParser implements CSVParser {
 		var greensInRegulation = Integer.valueOf(row[11]);
 		var putts = Integer.valueOf(row[12]);
 		var nineHoleRound = Boolean.parseBoolean(row[13]);
-		var golferString = row[14];
+		var golferString = Utils.toTitleCase(row[14]);
 
 		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, rating, slope, teeName, transport);
 		return GolfRound.of(meta, par, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);

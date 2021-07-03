@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Log4j2
-public class ShotByShotRoundCSVParser implements CSVParser {
+public class ShotByShotRoundCSVParser extends CSVParser {
 
 	private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,start,end,transport";
 	private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,shots";
@@ -32,8 +32,8 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	private CSVFile roundFile = null;
 	private CSVFile holesFile = null;
 
-	private Map<Integer, RoundMeta> roundMetas = new HashMap<>();
-	private Map<Integer, List<Hole>> holes = new HashMap<>();
+	private final Map<Integer, RoundMeta> roundMetas = new HashMap<>();
+	private final Map<Integer, List<Hole>> holes = new HashMap<>();
 	private final Map<String, Golfer> golfers = new HashMap<>();
 
 	public ShotByShotRoundCSVParser(@NonNull List<CSVFile> files) {
@@ -69,37 +69,17 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 
 	@Override
 	public List<GolfRound> parse() {
-		parse(this.roundFile, roundMetaParser);
-		parse(this.holesFile, holeParser);
+		super.parse(this.roundFile, roundMetaParser);
+		super.parse(this.holesFile, holeParser);
 		return GolfRound.compile(this.roundMetas, this.holes);
 	}
 
-	//TODO move to interface as default but keep exception catch logging (abstract class?)
-	private void parse(CSVFile file, BiConsumer<Integer, String[]> parser) {
-		int line = 1;
-		for (String[] row : file.getRowsOfDelimitedValues()) {
-			line++;
-			try {
-				parser.accept(Integer.parseInt(row[0]), row);
-			}
-			catch (Exception e) {
-				log.error(
-						String.format("Encountered parse error on line %s in file %s. Skipping row",
-								line,
-								file.getName())
-				);
-				e.printStackTrace();
-			}
-		}
-	}
-
 	private final BiConsumer<Integer, String[]> roundMetaParser = (id, row) -> {
-		//TODO sanitize raw string inputs
-		String golferString = row[1];
+		String golferString = Utils.toTitleCase(row[1]);
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
 		var course = Course.of(row[3], row[4], row[5]);
-		var teeName = row[6];
+		var teeName = Utils.toTitleCase(row[6]);
 		var rating = new BigDecimal(row[7]);
 		var slope = new BigDecimal(row[8]);
 		var duration = Duration.between(Utils.parseTime(TIME_FORMATS, row[9]), Utils.parseTime(TIME_FORMATS, row[10]));
@@ -109,7 +89,6 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 	};
 
 	private final BiConsumer<Integer, String[]> holeParser = (id, row) -> {
-		//TODO sanitize raw string inputs
 		var number = Integer.valueOf(row[1]);
 		var holeIndex = Integer.valueOf(row[2]);
 		var par = Integer.valueOf(row[3]);

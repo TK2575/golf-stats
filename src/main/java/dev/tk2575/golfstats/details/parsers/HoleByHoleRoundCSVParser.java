@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 
 @Getter
 @Log4j2
-public class HoleByHoleRoundCSVParser implements CSVParser {
+public class HoleByHoleRoundCSVParser extends CSVParser {
 
     private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,tees,rating,slope,duration,transport";
     private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,strokes,fir,putts";
@@ -76,31 +76,12 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
         return GolfRound.compile(this.roundMetas, this.holes);
     }
 
-    private void parse(CSVFile file, BiConsumer<Integer, String[]> parser) {
-	    int line = 1;
-	    for (String[] row : file.getRowsOfDelimitedValues()) {
-	    	line++;
-	    	try {
-			    parser.accept(Integer.parseInt(row[0]), row);
-		    }
-		    catch (Exception e) {
-			    log.error(
-					    String.format("Encountered parse error on line %s in file %s. Skipping row",
-							    line,
-							    file.getName())
-			    );
-			    e.printStackTrace();
-		    }
-	    }
-    }
-
 	private final BiConsumer<Integer, String[]> roundMetaParser = (id, row) -> {
-		//TODO sanitize raw string inputs
-		var golferString = row[1];
+		var golferString = Utils.toTitleCase(row[1]);
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
-		var course = Course.of(row[3]);
-		var teeName = row[4];
+		var course = Course.of(Utils.toTitleCase(row[3]));
+		var teeName = Utils.toTitleCase(row[4]);
 		var rating = new BigDecimal(row[5]);
 		var slope = new BigDecimal(row[6]);
 		var durationString = row[7];
@@ -113,7 +94,6 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
 	};
 
     private final BiConsumer<Integer, String[]> holeParser = (id, row) -> {
-	    //TODO sanitize raw string inputs
 	    var number = Integer.valueOf(row[1]);
 	    var index = Integer.valueOf(row[2]);
 	    var par = Integer.valueOf(row[3]);

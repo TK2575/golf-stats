@@ -2,12 +2,33 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.details.CSVFile;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
-public interface CSVParser {
+@Log4j2
+public abstract class CSVParser {
 
-	List<CSVFile> getFiles();
+	abstract List<CSVFile> getFiles();
 
-	List<GolfRound> parse();
+	abstract List<GolfRound> parse();
+
+	protected void parse(CSVFile file, BiConsumer<Integer, String[]> parser) {
+		int line = 1;
+		for (String[] row : file.getRowsOfDelimitedValues()) {
+			line++;
+			try {
+				parser.accept(Integer.parseInt(row[0]), row);
+			}
+			catch (Exception e) {
+				log.error(
+						String.format("Encountered parse error on line %s in file %s. Skipping row",
+								line,
+								file.getName())
+				);
+				e.printStackTrace();
+			}
+		}
+	}
 }
