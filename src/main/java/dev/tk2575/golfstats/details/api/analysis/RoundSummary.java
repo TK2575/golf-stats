@@ -1,7 +1,6 @@
 package dev.tk2575.golfstats.details.api.analysis;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.Transport;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -36,7 +35,7 @@ public class RoundSummary {
 		this.handicapDifferential = round.getScoreDifferential();
 		this.holes = round.getHoles().map(HoleAnalysis::new).collect(toList());
 		this.shots = round.getHoles().allShots().map(ShotAnalysis::new).collect(toList());
-		this.transport = round.getTransport().getDescription();
+		this.transport = round.getTransport();
 	}
 
 }

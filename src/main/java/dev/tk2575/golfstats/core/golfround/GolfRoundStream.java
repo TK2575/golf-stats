@@ -34,14 +34,11 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRoundStream compileTo18HoleRounds() {
-		List<GolfRound> roundsList = this.sortOldestToNewest().asList();
-
 		List<GolfRound> compiledRounds = new ArrayList<>();
 		GolfRound pendingNineHoleRound = null;
 		GolfRound thisRound;
 
-		//TODO refactor without for loop
-		for (GolfRound round : roundsList) {
+		for (GolfRound round : this.sortOldestToNewest().asList()) {
 			thisRound = null;
 			if (round.isNineHoleRound()) {
 				if (pendingNineHoleRound == null) {
@@ -134,7 +131,6 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return this.stream.mapToLong(GolfRound::getHoleCount).sum();
 	}
 
-	//FIXME how do I get get away from needing this on this child class?
 	@Override
 	public GolfRoundStream limit(long maxSize) {
 		return new GolfRoundStream(this.stream.limit(maxSize));

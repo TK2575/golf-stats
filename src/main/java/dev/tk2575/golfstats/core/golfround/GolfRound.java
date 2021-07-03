@@ -28,7 +28,7 @@ public interface GolfRound {
 
 	Tee getTee();
 
-	Transport getTransport();
+	String getTransport();
 
 	BigDecimal getScoreDifferential();
 

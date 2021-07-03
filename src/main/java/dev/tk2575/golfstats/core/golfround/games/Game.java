@@ -1,10 +1,9 @@
 package dev.tk2575.golfstats.core.golfround.games;
 
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.Transport;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import lombok.*;
 
@@ -62,7 +61,7 @@ public abstract class Game implements GolfRound {
 	}
 
 	@Override
-	public Transport getTransport() {
+	public String getTransport() {
 		return round.getTransport();
 	}
 

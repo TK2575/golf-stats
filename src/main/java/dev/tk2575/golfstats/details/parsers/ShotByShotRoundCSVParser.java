@@ -4,16 +4,13 @@ import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.Hole;
-import dev.tk2575.golfstats.core.golfround.Transport;
+import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
-import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -106,7 +103,7 @@ public class ShotByShotRoundCSVParser implements CSVParser {
 		var rating = new BigDecimal(row[7]);
 		var slope = new BigDecimal(row[8]);
 		var duration = Duration.between(Utils.parseTime(TIME_FORMATS, row[9]), Utils.parseTime(TIME_FORMATS, row[10]));
-		var transport = Transport.valueOf(row[11]);
+		var transport = Utils.toTitleCase(row[11]);
 
 		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport));
 	};

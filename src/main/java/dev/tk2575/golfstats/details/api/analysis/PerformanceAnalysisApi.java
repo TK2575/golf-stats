@@ -24,8 +24,6 @@ public class PerformanceAnalysisApi {
 
 	@GetMapping(produces = "application/json")
 	public List<PerformanceSummary> all() {
-		//FIXME transport serializer (use toString) https://www.baeldung.com/jackson-custom-serialization
-
 		//TODO separate reading golf round results from applying net double bogey (do that in PerformanceSummary)
 		// then take list of rounds and apply double bogey to them from first to last, updating handicap index after each
 

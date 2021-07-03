@@ -26,7 +26,7 @@ class SimpleGolfRound implements GolfRound {
 	private final Golfer golfer;
 	private final Course course;
 	private final Tee tee;
-	private final Transport transport;
+	private final String transport;
 
 	private final BigDecimal scoreDifferential;
 

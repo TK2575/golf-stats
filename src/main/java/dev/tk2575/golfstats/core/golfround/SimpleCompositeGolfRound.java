@@ -42,7 +42,7 @@ class SimpleCompositeGolfRound implements GolfRound {
 	private final Golfer golfer;
 	private final Course course;
 	private final Tee tee;
-	private final Transport transport;
+	private final String transport;
 
 	private final BigDecimal scoreDifferential;
 
@@ -68,7 +68,7 @@ class SimpleCompositeGolfRound implements GolfRound {
 
 		this.course = Course.compositeOf(firstRound.getCourse(), secondRound.getCourse());
 		this.tee = Tee.compositeOf(firstRound.getTee(), secondRound.getTee());
-		this.transport = Transport.compositeOf(firstRound.getTransport(), secondRound.getTransport());
+		this.transport = firstRound.getTransport().equalsIgnoreCase(secondRound.getTransport()) ? firstRound.getTransport() : "Various";
 
 		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
 

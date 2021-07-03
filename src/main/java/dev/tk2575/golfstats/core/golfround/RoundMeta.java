@@ -20,5 +20,5 @@ public class RoundMeta {
 	private final BigDecimal rating;
 	private final BigDecimal slope;
 	private final String teeName;
-	private final Transport transport;
+	private final String transport;
 }

@@ -6,6 +6,9 @@ import dev.tk2575.golfstats.core.course.tee.Tee;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public interface Course {
 
@@ -47,10 +50,7 @@ public interface Course {
 	}
 
 	default List<Tee> handicapOf(List<Golfer> golfers) {
-		//TODO one liner via stream?
-		List<Tee> handicaps = new ArrayList<>();
-		getTees().forEach(t -> handicaps.add(t.handicapOf(golfers)));
-		return handicaps;
+		return getTees().stream().map(t -> t.handicapOf(golfers)).collect(toList());
 	}
 
 }

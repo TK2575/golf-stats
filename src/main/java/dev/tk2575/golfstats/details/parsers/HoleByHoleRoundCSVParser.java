@@ -1,11 +1,11 @@
 package dev.tk2575.golfstats.details.parsers;
 
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
-import dev.tk2575.golfstats.core.golfround.Transport;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -107,7 +107,7 @@ public class HoleByHoleRoundCSVParser implements CSVParser {
 		var duration = durationString == null || durationString.isBlank()
 				? Duration.ZERO
 				: Duration.between(LocalTime.MIN, LocalTime.parse(durationString, DURATION_FORMAT));
-		var transport = Transport.valueOf(row[8]);
+		var transport = Utils.toTitleCase(row[8]);
 
 		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport));
 	};
