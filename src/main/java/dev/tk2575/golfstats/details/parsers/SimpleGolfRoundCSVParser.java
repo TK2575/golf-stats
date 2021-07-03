@@ -74,7 +74,7 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 
 	private GolfRound recordSimpleRound(final Golfer golfer, String[] row) {
 		var date = LocalDate.parse(row[0], DATE_FORMAT);
-		var course = Course.of(Utils.toTitleCase(row[1]));
+		var course = Course.of(row[1]);
 
 		var teeName = Utils.toTitleCase(row[2]);
 		var rating = new BigDecimal(row[3]);

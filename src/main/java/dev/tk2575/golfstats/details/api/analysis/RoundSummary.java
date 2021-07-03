@@ -17,6 +17,7 @@ public class RoundSummary {
 	private final String course;
 	private final int strokes;
 	private final int score;
+	private final int netScore;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
 	private final BigDecimal handicapDifferential;
@@ -30,6 +31,7 @@ public class RoundSummary {
 		this.course = round.getCourse().getName();
 		this.strokes = round.getStrokesAdjusted();
 		this.score = round.getScore();
+		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();
 		this.handicapDifferential = round.getScoreDifferential();

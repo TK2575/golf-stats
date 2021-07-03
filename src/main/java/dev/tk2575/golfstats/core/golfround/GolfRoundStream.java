@@ -99,21 +99,21 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		final List<GolfRound> rounds = this.asList();
 		long fairwaysInRegulation = rounds.stream().mapToLong(GolfRound::getFairwaysInRegulation).sum();
 		long fairways = rounds.stream().mapToLong(GolfRound::getFairways).sum();
-		return BigDecimal.valueOf(fairwaysInRegulation).divide(BigDecimal.valueOf(fairways), 1, RoundingMode.HALF_UP);
+		return BigDecimal.valueOf(fairwaysInRegulation).divide(BigDecimal.valueOf(fairways), 2, RoundingMode.HALF_UP);
 	}
 
 	public BigDecimal getGreensInRegulation() {
 		final List<GolfRound> rounds = this.asList();
 		final long greensInRegulation = rounds.stream().mapToLong(GolfRound::getGreensInRegulation).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
-		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 1, RoundingMode.HALF_UP);
+		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
 	public BigDecimal getPuttsPerHole() {
 		final List<GolfRound> rounds = this.asList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
-		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 1, RoundingMode.HALF_UP);
+		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
 	public Long getMinutesPerRound() {

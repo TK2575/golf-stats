@@ -80,7 +80,7 @@ public class HoleByHoleRoundCSVParser extends CSVParser {
 		var golferString = Utils.toTitleCase(row[1]);
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
-		var course = Course.of(Utils.toTitleCase(row[3]));
+		var course = Course.of(row[3]);
 		var teeName = Utils.toTitleCase(row[4]);
 		var rating = new BigDecimal(row[5]);
 		var slope = new BigDecimal(row[6]);
