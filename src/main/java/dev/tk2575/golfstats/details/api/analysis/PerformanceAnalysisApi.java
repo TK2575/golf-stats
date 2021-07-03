@@ -54,46 +54,4 @@ public class PerformanceAnalysisApi {
 		}
 		return rounds;
 	}
-
-	//TODO move to separate CourseHandicapCalculator object
-	/*private static void logCourseHandicapForNextRound(List<PerformanceSummary> currentStats) {
-		Tee back = Tee.of("White", new BigDecimal("70.4"), new BigDecimal("122"), 35);
-
-		Golfer tom = null, tomTrend = null, tomAnti = null, will = null, willTrend = null, willAnti = null;
-
-		for (PerformanceSummary stats : currentStats) {
-			if (stats.getGolfer().equalsIgnoreCase("tom")) {
-				tom = Golfer.of(stats.getGolfer(), stats.getHandicapIndex());
-				tomTrend = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
-				tomAnti = Golfer.of(stats.getGolfer(), stats.getAntiHandicap());
-
-			}
-			else if (stats.getGolfer().equalsIgnoreCase("will")) {
-				will = Golfer.of(stats.getGolfer(), stats.getHandicapIndex());
-				willTrend = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
-				willAnti = Golfer.of(stats.getGolfer(), stats.getTrendingHandicap());
-			}
-		}
-
-		if (tom == null || will == null) {
-			throw new IllegalArgumentException("could not find all golfer stats");
-		}
-
-		StablefordQuota whiteHighQuota = back.stablefordQuota(List.of(tom, will));
-		StablefordQuota whiteTrendQuota = back.stablefordQuota(List.of(tomTrend, willTrend));
-		StablefordQuota whiteLowQuota = back.stablefordQuota(List.of(tomAnti, willAnti));
-
-		log.info(String.format("%s - High quota = %s, (%s)", whiteHighQuota.getTee()
-				.getName(), whiteHighQuota.getTotalQuota(), whiteHighQuota
-				.getTee()
-				.getHandicapStrokes()));
-		log.info(String.format("%s - Trend quota = %s, (%s)", whiteTrendQuota.getTee()
-				.getName(), whiteTrendQuota.getTotalQuota(), whiteTrendQuota
-				.getTee()
-				.getHandicapStrokes()));
-		log.info(String.format("%s - Low quota = %s, (%s)", whiteLowQuota.getTee()
-				.getName(), whiteLowQuota.getTotalQuota(), whiteLowQuota
-				.getTee()
-				.getHandicapStrokes()));
-	}*/
 }
