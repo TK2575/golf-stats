@@ -18,7 +18,24 @@ class SimpleGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		return this;
+		return new SimpleGolfRound(this, this.tee.handicapStrokes(incomingIndex));
+	}
+
+	private SimpleGolfRound(SimpleGolfRound other, int handicapStrokes) {
+		this.date = other.date;
+		this.duration = other.duration;
+		this.golfer = other.golfer;
+		this.course = other.course;
+		this.tee = other.tee;
+		this.transport = other.transport;
+		this.scoreDifferential = other.scoreDifferential;
+		this.strokes = other.strokes;
+		this.strokesAdjusted = other.strokes - handicapStrokes;
+		this.fairwaysInRegulation = other.fairwaysInRegulation;
+		this.fairways = other.fairways;
+		this.greensInRegulation = other.greensInRegulation;
+		this.putts = other.putts;
+		this.nineHoleRound = other.nineHoleRound;
 	}
 
 	public Integer getHoleCount() {
@@ -36,7 +53,7 @@ class SimpleGolfRound implements GolfRound {
 	private final BigDecimal scoreDifferential;
 
 	private final Integer strokes;
-	private final Integer strokesAdjusted;
+	private Integer strokesAdjusted;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;

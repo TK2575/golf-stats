@@ -17,6 +17,7 @@ public class RoundSummary {
 	private final String course;
 	private final int strokes;
 	private final int score;
+	private final int strokesAdjusted;
 	private final int netScore;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
@@ -29,8 +30,10 @@ public class RoundSummary {
 		this.number = number;
 		this.date = round.getDate();
 		this.course = round.getCourse().getName();
-		this.strokes = round.getStrokesAdjusted();
+		this.strokes = round.getStrokes();
+		this.strokesAdjusted = round.getStrokesAdjusted();
 		this.score = round.getScore();
+		//FIXME netscore appears wrong (greater than strokes)
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();

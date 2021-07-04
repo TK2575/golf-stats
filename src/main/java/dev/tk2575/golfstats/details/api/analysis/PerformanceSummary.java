@@ -38,7 +38,8 @@ public class PerformanceSummary {
 	private final List<RoundSummary> rounds = new ArrayList<>();
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
-		this.golfRounds = GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList();
+		HandicapIndex index = HandicapIndex.newIndex(GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList());
+		this.golfRounds = index.getAdjustedRounds();
 
 		this.golfer = rounds().golferNames();
 		this.fairwaysInRegulation = rounds().fairwaysInRegulation();
@@ -53,7 +54,6 @@ public class PerformanceSummary {
 		round = rounds().newestRound();
 		this.asOf = round.isEmpty() ? today : round.get().getDate();
 
-		HandicapIndex index = HandicapIndex.newIndex(this.golfRounds);
 		this.handicapIndex = index.getValue();
 		this.handicapRevisionHistory = index.getRevisionHistory();
 		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(this.golfRounds).getValue();

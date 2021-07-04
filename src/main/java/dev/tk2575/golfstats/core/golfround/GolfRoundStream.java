@@ -169,8 +169,8 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public Optional<GolfRound> lowestScoreRound() {
 		return this.stream.reduce((a, b) -> {
-			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
-				return a.getScoreToPar() < b.getScoreToPar() ? a : b;
+			if (!a.getScore().equals(b.getScore())) {
+				return a.getScore() < b.getScore() ? a : b;
 			}
 			else {
 				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b;
@@ -180,8 +180,8 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public Optional<GolfRound> highestScoreRound() {
 		return this.stream.reduce((a, b) -> {
-			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
-				return a.getScoreToPar() > b.getScoreToPar() ? a : b;
+			if (!a.getScore().equals(b.getScore())) {
+				return a.getScore() > b.getScore() ? a : b;
 			}
 			else {
 				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b;

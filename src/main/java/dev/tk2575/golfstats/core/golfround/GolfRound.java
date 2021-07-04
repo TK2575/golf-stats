@@ -63,13 +63,8 @@ public interface GolfRound {
 		return roundToOneDecimalPlace(firstTerm.multiply(secondTerm));
 	}
 
-	default Integer getHandicapStrokes() {
-		Tee handicap = getTee().handicapOf(getGolfer());
-		return handicap.getHandicapStrokesForGolfer(getGolfer());
-	}
-
 	default Integer getNetScore() {
-		return getStrokes() - getHandicapStrokes();
+		return getStrokesAdjusted() - getPar();
 	}
 
 	default BigDecimal getPuttsPerHole() {
@@ -103,10 +98,6 @@ public interface GolfRound {
 	}
 
 	default Integer getScore() { return getStrokes() - getPar(); }
-
-	default Integer getScoreToPar() {
-		return getStrokes() - getPar();
-	}
 
 	default Long getYards() { return getTee().getYards(); }
 
