@@ -13,6 +13,7 @@ import java.time.LocalDate;
 
 @Getter
 public abstract class Game implements GolfRound {
+	//TODO separate from GolfRound
 	private final GolfRound round;
 
 	protected Game(GolfRound round) {
@@ -34,6 +35,11 @@ public abstract class Game implements GolfRound {
 	}
 
 	public abstract int score(Hole h);
+
+	@Override
+	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		return this;
+	}
 
 	@Override
 	public LocalDate getDate() {

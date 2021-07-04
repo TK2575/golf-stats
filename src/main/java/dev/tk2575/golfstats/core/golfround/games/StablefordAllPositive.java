@@ -4,6 +4,7 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.function.ToIntFunction;
 
 @Getter

@@ -18,6 +18,8 @@ import static java.math.RoundingMode.HALF_UP;
 
 public interface GolfRound {
 
+	GolfRound applyNetDoubleBogey(BigDecimal incomingIndex);
+
 	LocalDate getDate();
 
 	Duration getDuration();
@@ -139,8 +141,8 @@ public interface GolfRound {
 		return new HoleByHoleRound(round, holes);
 	}
 
-	static GolfRound of(RoundMeta meta, Integer par, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
-		return new SimpleGolfRound(meta, par, strokes, strokesAdjusted, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+	static GolfRound of(RoundMeta meta, Integer par, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		return new SimpleGolfRound(meta, par, strokes, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

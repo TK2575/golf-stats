@@ -1,33 +1,31 @@
 package dev.tk2575.golfstats.core.handicapindex;
 
-import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface HandicapIndex {
+
+	//TODO opportunity to reduce duplicated code in round loops?
+
+	Integer MINIMUM_ROUNDS_FOR_INDEX = 3;
 
 	BigDecimal getValue();
 
 	long getRoundCount();
 
-	default String toStringDefault() {
-		List<String> fields = new ArrayList<>();
-		fields.add(String.format("value=%s", getValue()));
-		fields.add(String.format("roundCount=%s", getRoundCount()));
+	List<GolfRound> getAdjustedRounds();
 
-		return this.getClass()
-		           .getSimpleName() + "(" + String.join(", ", fields) + ")";
-	}
+	Map<LocalDate, BigDecimal> getRevisionHistory();
 
 	static HandicapIndex newIndex(Collection<GolfRound> rounds) {
 		if (rounds == null || rounds.isEmpty()) {
 			return emptyIndex();
 		}
-
 		return new WHSHandicapIndex(rounds);
 	}
 

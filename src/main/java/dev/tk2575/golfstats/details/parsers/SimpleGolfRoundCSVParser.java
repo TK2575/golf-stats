@@ -95,7 +95,7 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 		var golferString = Utils.toTitleCase(row[14]);
 
 		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, rating, slope, teeName, transport);
-		return GolfRound.of(meta, par, score, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+		return GolfRound.of(meta, par, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.core.golfround;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
@@ -23,24 +24,25 @@ class HoleByHoleRound implements GolfRound {
 	private final Tee tee;
 	private final String transport;
 
-	private final BigDecimal scoreDifferential;
+	private BigDecimal scoreDifferential;
 
-	private final Integer strokes;
-	private final Integer strokesAdjusted;
-	private final Integer fairwaysInRegulation;
-	private final Integer fairways;
-	private final Integer greensInRegulation;
-	private final Integer putts;
-	private final Integer netScore;
+	private Integer strokes;
+	private Integer strokesAdjusted;
+	private Integer fairwaysInRegulation;
+	private Integer fairways;
+	private Integer greensInRegulation;
+	private Integer putts;
+	private Integer netScore;
 
-	private final boolean nineHoleRound;
+	private boolean nineHoleRound;
 
-	private final BigDecimal strokesGained;
-	private final Map<String, BigDecimal> strokesGainedByShotType;
-	private final Map<Integer, BigDecimal> strokesGainedByHole;
+	private BigDecimal strokesGained;
+	private Map<String, BigDecimal> strokesGainedByShotType;
+	private Map<Integer, BigDecimal> strokesGainedByHole;
 
-	@Getter(AccessLevel.NONE) @ToString.Exclude
-	private final Collection<Hole> holes;
+	@ToString.Exclude
+	@JsonIgnore
+	private Collection<Hole> holes;
 
 	HoleByHoleRound(@NonNull RoundMeta round, @NonNull Collection<Hole> holes) {
 		this.date = round.getDate();
@@ -51,8 +53,11 @@ class HoleByHoleRound implements GolfRound {
 
 		List<Hole> validatedHoles = Hole.stream(holes).validate().asList();
 		this.tee = Tee.of(this.golfer, round.getTeeName(), round.getRating(), round.getSlope(), Hole.stream(validatedHoles).getPar());
-		this.holes = Hole.stream(validatedHoles).applyNetDoubleBogey(this.tee, this.golfer).sortFirstToLast().asList();
+		assignHoles(Hole.stream(validatedHoles).sortFirstToLast().asList());
+	}
 
+	private void assignHoles(Collection<Hole> holes) {
+		this.holes = holes;
 		this.strokes = holes().totalStrokes();
 		this.strokesAdjusted = holes().totalStrokesAdjusted();
 		this.netScore = holes().totalNetStrokes();
@@ -78,6 +83,12 @@ class HoleByHoleRound implements GolfRound {
 	@Override
 	public HoleStream getHoles() {
 		return holes();
+	}
+
+	@Override
+	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		assignHoles(holes().applyNetDoubleBogey(this.tee.handicapStrokes(incomingIndex)).toList());
+		return this;
 	}
 
 	public Integer getHoleCount() {

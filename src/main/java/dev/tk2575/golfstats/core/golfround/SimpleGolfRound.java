@@ -16,6 +16,11 @@ class SimpleGolfRound implements GolfRound {
 	@Getter(AccessLevel.NONE)
 	private static final Integer HOLES = 18;
 
+	@Override
+	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		return this;
+	}
+
 	public Integer getHoleCount() {
 		return HOLES;
 	}
@@ -39,7 +44,7 @@ class SimpleGolfRound implements GolfRound {
 
 	private final boolean nineHoleRound;
 
-	SimpleGolfRound(@NonNull RoundMeta meta, Integer par, Integer strokes, Integer strokesAdjusted, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+	SimpleGolfRound(@NonNull RoundMeta meta, Integer par, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
 		this.date = meta.getDate();
 		this.duration = meta.getDuration();
 		this.golfer = meta.getGolfer();
@@ -47,7 +52,7 @@ class SimpleGolfRound implements GolfRound {
 		this.tee = Tee.of(meta.getTeeName(), meta.getRating(), meta.getSlope(), par);
 		this.transport = meta.getTransport();
 		this.strokes = strokes;
-		this.strokesAdjusted = strokesAdjusted;
+		this.strokesAdjusted = this.strokes;
 		this.fairwaysInRegulation = fairwaysInRegulation;
 		this.fairways = fairways;
 		this.greensInRegulation = greensInRegulation;

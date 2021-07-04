@@ -28,6 +28,11 @@ class SimpleCompositeGolfRound implements GolfRound {
 		return this.tee.getSlope();
 	}
 
+	@Override
+	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		return this;
+	}
+
 	public Integer getHoleCount() {
 		return HOLES;
 	}

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class PerformanceSummary {
@@ -33,6 +34,7 @@ public class PerformanceSummary {
 	private final BigDecimal trendingHandicap;
 	private final BigDecimal antiHandicap;
 	private final BigDecimal medianHandicap;
+	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
 	@ToString.Exclude
 	private final List<RoundSummary> rounds = new ArrayList<>();
@@ -50,7 +52,9 @@ public class PerformanceSummary {
 		this.minutesPer18Holes = rounds().getMinutesPerRound();
 		this.roundCount = rounds().count();
 
-		this.handicapIndex = HandicapIndex.newIndex(this.golfRounds).getValue();
+		HandicapIndex index = HandicapIndex.newIndex(this.golfRounds);
+		this.handicapIndex = index.getValue();
+		this.handicapRevisionHistory = index.getRevisionHistory();
 		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(this.golfRounds).getValue();
 		this.antiHandicap = HandicapIndex.antiHandicapOf(this.golfRounds).getValue();
 		this.medianHandicap = HandicapIndex.medianHandicap(this.golfRounds).getValue();

@@ -6,6 +6,8 @@ import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static java.math.RoundingMode.HALF_UP;
+
 public interface Tee {
 
 	String getName();
@@ -53,6 +55,7 @@ public interface Tee {
 		return new CompositeTee(tee1, tee2);
 	}
 
+	//TODO remove TeeWithHandicap
 	default Tee handicapOf(Golfer golfer) {
 		return new TeeWithHandicap(this, List.of(golfer));
 	}
@@ -64,5 +67,15 @@ public interface Tee {
 	default StablefordQuota stablefordQuota(Golfer golfer) { return new StablefordQuota(List.of(golfer), this); }
 
 	default StablefordQuota stablefordQuota(List<Golfer> golfers) { return new StablefordQuota(golfers, this); }
+
+	default Integer handicapStrokes(BigDecimal incomingIndex) {
+		//Handicap Index x (Slope Rating / 113) + (Course Rating – par)
+		BigDecimal slopeDiff = getSlope().divide(BigDecimal.valueOf(113), 2, HALF_UP);
+		BigDecimal result = incomingIndex.multiply(slopeDiff).add((getRating().subtract(BigDecimal.valueOf(this.getPar()))));
+
+		//course handicap formula assumes 18 hole rounds, so divide by two for nine hole rounds
+		if (getHoleCount() <= 9) result = result.divide(BigDecimal.valueOf(2L), 2, HALF_UP);
+		return result.setScale(0, HALF_UP).intValue();
+	}
 
 }

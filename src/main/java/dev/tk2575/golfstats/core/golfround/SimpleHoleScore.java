@@ -3,8 +3,6 @@ package dev.tk2575.golfstats.core.golfround;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor
-@Builder(toBuilder = true)
 class SimpleHoleScore implements Hole {
 	private final Integer number;
 	private final Integer index;
@@ -31,15 +29,15 @@ class SimpleHoleScore implements Hole {
 		this.netStrokes = this.strokesAdjusted - handicapStrokes;
 	}
 
-	protected SimpleHoleScore(Integer number, Integer index, Integer par, Integer strokes, boolean fairwayInRegulation, Integer putts) {
+	SimpleHoleScore(Integer number, Integer index, Integer par, Integer strokes, boolean fairwayInRegulation, Integer putts) {
 		this.number = number;
 		this.index = index;
 		this.par = par;
 		this.strokes = strokes;
 		this.fairwayInRegulation = fairwayInRegulation;
 		this.putts = putts;
+		this.strokesAdjusted = this.strokes;
+		this.netStrokes = this.strokes;
 
-		this.strokesAdjusted = getStrokes();
-		this.netStrokes = getNetStrokes();
 	}
 }

@@ -56,6 +56,10 @@ public class HoleStream implements ObjectStream<Hole> {
 		return new HoleStream(this.stream.map(h -> h.applyNetDoubleBogey(handicapStrokes)), this.empty);
 	}
 
+	public HoleStream applyNetDoubleBogey(Integer handicapStrokes) {
+		return new HoleStream(this.stream.map(h -> h.applyNetDoubleBogey(handicapStrokes)), this.empty);
+	}
+
 	public Integer getPar() {
 		return sumInteger(Hole::getPar);
 	}
