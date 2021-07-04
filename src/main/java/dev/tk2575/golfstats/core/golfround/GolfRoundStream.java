@@ -7,17 +7,26 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	private final Stream<GolfRound> stream;
+	private final boolean empty;
+
+	public GolfRoundStream(@NonNull Collection<GolfRound> rounds) {
+		this.stream = rounds.stream();
+		this.empty = rounds.isEmpty();
+	}
+
+	public static GolfRoundStream empty() {
+		return new GolfRoundStream(Stream.empty(), true);
+	}
 
 	public String golferNames() {
 		return this.stream.map(r -> r.getGolfer().getName()).distinct().collect(Collectors.joining(", "));
@@ -61,62 +70,70 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRoundStream sortOldestToNewest() {
-		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate)));
+		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate)), this.empty);
 	}
 
 	public GolfRoundStream sortNewestToOldest() {
-		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate).reversed()));
+		return new GolfRoundStream(this.stream.sorted(Comparator.comparing(GolfRound::getDate).reversed()), this.empty);
 	}
 
-	public GolfRound getMostRecentRound() {
-		return this.sortNewestToOldest().asList().get(0);
+	public Optional<GolfRound> newestRound() {
+		return this.empty
+				? Optional.empty()
+				: Optional.of(this.sortNewestToOldest().asList().get(0));
 	}
 
-	public GolfRound getOldestRound() {
-		return this.sortOldestToNewest().asList().get(0);
+	public Optional<GolfRound> oldestRound() {
+		return this.empty
+				? Optional.empty()
+				: Optional.of(this.sortOldestToNewest().asList().get(0));
 	}
 
 	//TODO can methods that re-collect the stream to list be refactored to
 	// pure stream operations? perhaps some functional interface to avoid
 	// code duplication?
-	public GolfRoundStream getBestDifferentials() {
+	public GolfRoundStream lowestDifferentials() {
 		final List<GolfRound> rounds = this.asList();
 		long subsetSize = (long) (rounds.size() * .4);
 		return new GolfRoundStream(rounds.stream()
 		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential))
-		                                 .limit(subsetSize));
+		                                 .limit(subsetSize), this.empty);
 	}
 
-	public GolfRoundStream getWorstDifferentials() {
+	public GolfRoundStream highestDifferentials() {
 		final List<GolfRound> rounds = this.asList();
 		long subsetSize = (long) (rounds.size() * .4);
 		return new GolfRoundStream(rounds.stream()
 		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential).reversed())
-		                                 .limit(subsetSize));
+		                                 .limit(subsetSize), this.empty);
 	}
 
-	public BigDecimal getFairwaysInRegulation() {
+	public BigDecimal fairwaysInRegulation() {
+		if (this.empty) { return BigDecimal.ZERO; }
 		final List<GolfRound> rounds = this.asList();
 		long fairwaysInRegulation = rounds.stream().mapToLong(GolfRound::getFairwaysInRegulation).sum();
 		long fairways = rounds.stream().mapToLong(GolfRound::getFairways).sum();
 		return BigDecimal.valueOf(fairwaysInRegulation).divide(BigDecimal.valueOf(fairways), 2, RoundingMode.HALF_UP);
 	}
 
-	public BigDecimal getGreensInRegulation() {
+	public BigDecimal greensInRegulation() {
+		if (this.empty) { return BigDecimal.ZERO; }
 		final List<GolfRound> rounds = this.asList();
 		final long greensInRegulation = rounds.stream().mapToLong(GolfRound::getGreensInRegulation).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
-	public BigDecimal getPuttsPerHole() {
+	public BigDecimal puttsPerHole() {
+		if (this.empty) { return BigDecimal.ZERO; }
 		final List<GolfRound> rounds = this.asList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
-	public Long getMinutesPerRound() {
+	public Long minutesPerRound() {
+		if (this.empty) { return 0L; }
 		final List<GolfRound> rounds = this.asList();
 		final Duration duration = rounds.stream()
 		                                .map(GolfRound::getDuration)
@@ -133,24 +150,24 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	@Override
 	public GolfRoundStream limit(long maxSize) {
-		return new GolfRoundStream(this.stream.limit(maxSize));
+		return new GolfRoundStream(this.stream.limit(maxSize), this.empty);
 	}
 
-	public BigDecimal getMedianDifferential() {
-		return Utils.median(this.stream.map(GolfRound::getScoreDifferential).collect(Collectors.toList()));
+	public BigDecimal medianDifferential() {
+		return this.empty
+				? BigDecimal.ZERO
+				: Utils.median(this.stream.map(GolfRound::getScoreDifferential).collect(Collectors.toList()));
 	}
 
-	public GolfRound getBestDifferential() {
-		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b)
-		                  .orElseThrow();
+	public Optional<GolfRound> lowestDifferential() {
+		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b);
 	}
 
-	public GolfRound getWorstDifferential() {
-		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b)
-		                  .orElseThrow();
+	public Optional<GolfRound> largestDifferential() {
+		return this.stream.reduce((a, b) -> a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b);
 	}
 
-	public GolfRound getLowestScoreRound() {
+	public Optional<GolfRound> lowestScoreRound() {
 		return this.stream.reduce((a, b) -> {
 			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
 				return a.getScoreToPar() < b.getScoreToPar() ? a : b;
@@ -158,10 +175,10 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 			else {
 				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) < 0 ? a : b;
 			}
-		}).orElseThrow();
+		});
 	}
 
-	public GolfRound getHighestScoreRound() {
+	public Optional<GolfRound> highestScoreRound() {
 		return this.stream.reduce((a, b) -> {
 			if (!a.getScoreToPar().equals(b.getScoreToPar())) {
 				return a.getScoreToPar() > b.getScoreToPar() ? a : b;
@@ -169,6 +186,6 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 			else {
 				return a.getScoreDifferential().compareTo(b.getScoreDifferential()) > 0 ? a : b;
 			}
-		}).orElseThrow();
+		});
 	}
 }

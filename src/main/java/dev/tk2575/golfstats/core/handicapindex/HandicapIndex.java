@@ -29,13 +29,24 @@ public interface HandicapIndex {
 		return new WHSHandicapIndex(rounds);
 	}
 
-	static HandicapIndex antiHandicapOf(Collection<GolfRound> rounds) { return new AntiWHSHandicapIndex(rounds); }
+	static HandicapIndex antiHandicapOf(Collection<GolfRound> rounds) {
+		if (rounds == null || rounds.isEmpty()) {
+			return emptyIndex();
+		}
+		return new AntiWHSHandicapIndex(rounds);
+	}
 
 	static HandicapIndex lastFiveRoundsTrendingHandicap(Collection<GolfRound> rounds) {
+		if (rounds == null || rounds.isEmpty()) {
+			return emptyIndex();
+		}
 		return new LastNRoundsTrendingHandicap(rounds, 5);
 	}
 
 	static HandicapIndex overallHandicap(Collection<GolfRound> rounds) {
+		if (rounds == null || rounds.isEmpty()) {
+			return emptyIndex();
+		}
 		return new LastNRoundsTrendingHandicap(rounds, rounds.size());
 	}
 
@@ -46,6 +57,9 @@ public interface HandicapIndex {
 	static HandicapIndex of(BigDecimal value) { return new EmptyHandicapIndex(value); }
 
 	static HandicapIndex medianHandicap(Collection<GolfRound> rounds) {
+		if (rounds == null || rounds.isEmpty()) {
+			return emptyIndex();
+		}
 		return new MedianHandicap(rounds);
 	}
 }

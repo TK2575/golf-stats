@@ -34,7 +34,7 @@ class AntiWHSHandicapIndex implements HandicapIndex {
 		List<GolfRound> adjusted = new ArrayList<>();
 		for (GolfRound round : compiledRounds) {
 			adjusted.add(adjusted.size() < MINIMUM_ROUNDS_FOR_INDEX ? round : round.applyNetDoubleBogey(indexCursor));
-			indexCursor = GolfRound.stream(adjusted).sortNewestToOldest().limit(20).getWorstDifferentials().meanDifferential();
+			indexCursor = GolfRound.stream(adjusted).sortNewestToOldest().limit(20).highestDifferentials().meanDifferential();
 			if (adjusted.size() >= MINIMUM_ROUNDS_FOR_INDEX) {
 				this.revisionHistory.put(round.getDate(), indexCursor);
 			}

@@ -8,12 +8,10 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
+@ToString
 public class PerformanceSummary {
 
 	@Getter(AccessLevel.NONE)
@@ -41,16 +39,19 @@ public class PerformanceSummary {
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
 		this.golfRounds = GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList();
-		//FIXME what if there are 0 18 hole rounds?
 
 		this.golfer = rounds().golferNames();
-		this.from = rounds().getOldestRound().getDate();
-		this.asOf = rounds().getMostRecentRound().getDate();
-		this.fairwaysInRegulation = rounds().getFairwaysInRegulation();
-		this.greensInRegulation = rounds().getGreensInRegulation();
-		this.puttsPerHole = rounds().getPuttsPerHole();
-		this.minutesPer18Holes = rounds().getMinutesPerRound();
+		this.fairwaysInRegulation = rounds().fairwaysInRegulation();
+		this.greensInRegulation = rounds().greensInRegulation();
+		this.puttsPerHole = rounds().puttsPerHole();
+		this.minutesPer18Holes = rounds().minutesPerRound();
 		this.roundCount = rounds().count();
+
+		LocalDate today = LocalDate.now();
+		Optional<GolfRound> round = rounds().oldestRound();
+		this.from = round.isEmpty() ? today : round.get().getDate();
+		round = rounds().newestRound();
+		this.asOf = round.isEmpty() ? today : round.get().getDate();
 
 		HandicapIndex index = HandicapIndex.newIndex(this.golfRounds);
 		this.handicapIndex = index.getValue();

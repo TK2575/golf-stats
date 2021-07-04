@@ -35,7 +35,7 @@ class MedianHandicap implements HandicapIndex {
 		List<GolfRound> adjusted = new ArrayList<>();
 		for (GolfRound round : compiled) {
 			adjusted.add(adjusted.size() < MINIMUM_ROUNDS_FOR_INDEX ? round : round.applyNetDoubleBogey(indexCursor));
-			indexCursor = GolfRound.stream(adjusted).getMedianDifferential();
+			indexCursor = GolfRound.stream(adjusted).medianDifferential();
 			if (adjusted.size() >= MINIMUM_ROUNDS_FOR_INDEX) {
 				this.revisionHistory.put(round.getDate(), indexCursor);
 			}

@@ -120,7 +120,7 @@ public interface GolfRound {
 	}
 
 	static GolfRoundStream stream(Collection<GolfRound> rounds) {
-		return new GolfRoundStream(rounds.stream());
+		return new GolfRoundStream(rounds);
 	}
 
 	static List<GolfRound> compile(Map<Integer, RoundMeta> roundDetails, Map<Integer, List<Hole>> holes) {

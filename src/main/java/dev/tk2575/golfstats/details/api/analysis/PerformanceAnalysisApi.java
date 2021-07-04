@@ -17,9 +17,6 @@ public class PerformanceAnalysisApi {
 
 	@GetMapping(produces = "application/json")
 	public List<PerformanceSummary> all() {
-		//TODO take list of rounds and apply double bogey to them from first to last, updating handicap index after each
-		// add resultant handicap index to roundsummary
-
 		return GolfRoundResourceManager.getInstance()
 				.getRoundsByGolfer()
 				.values()

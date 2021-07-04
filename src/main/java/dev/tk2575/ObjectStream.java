@@ -7,6 +7,8 @@ import java.util.stream.*;
 
 public interface ObjectStream<T> extends Stream<T> {
 	Stream<T> getStream();
+	boolean isEmpty();
+
 	default Stream<T> filter(Predicate<? super T> predicate) { return this.getStream().filter(predicate); }
 	default <R> Stream<R> map(Function<? super T, ? extends R> mapper) { return this.getStream().map(mapper); }
 	default IntStream mapToInt(ToIntFunction<? super T> mapper) { return this.getStream().mapToInt(mapper); }
