@@ -33,7 +33,6 @@ public class RoundSummary {
 		this.strokes = round.getStrokes();
 		this.strokesAdjusted = round.getStrokesAdjusted();
 		this.score = round.getScore();
-		//FIXME netscore appears wrong (greater than strokes)
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();

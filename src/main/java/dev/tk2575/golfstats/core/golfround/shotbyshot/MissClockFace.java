@@ -5,7 +5,7 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class MissClockFace implements MissAngle {
+class MissClockFace implements MissAngle {
 
 	private final int missAngle;
 	private final boolean leftMiss;
@@ -13,15 +13,15 @@ public class MissClockFace implements MissAngle {
 	private final boolean shortMiss;
 	private final boolean longMiss;
 
-	public MissClockFace(int clockFace) {
-		if (clockFace < 0 || clockFace > 12) {
+	MissClockFace(int clockFace) {
+		if (clockFace <= 0 || clockFace > 12) {
 			throw new IllegalArgumentException(clockFace + " is not a valid clockFace");
 		}
 
-		this.missAngle = clockFace == 0 ? 12 : clockFace;
-		this.leftMiss = this.missAngle > 6 && this.missAngle < 12;
-		this.rightMiss = this.missAngle < 6;
-		this.longMiss = this.missAngle < 3 || this.missAngle > 9;
-		this.shortMiss = this.missAngle > 3 && this.missAngle < 9;
+		this.missAngle = clockFace == 12 ? 0 : clockFace * 30;
+		this.leftMiss = clockFace > 6 && clockFace < 12;
+		this.rightMiss = clockFace < 6;
+		this.longMiss = clockFace < 3 || clockFace > 9;
+		this.shortMiss = clockFace > 3 && clockFace < 9;
 	}
 }

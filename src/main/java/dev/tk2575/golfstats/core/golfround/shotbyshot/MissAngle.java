@@ -29,6 +29,10 @@ public interface MissAngle {
 		return new MissClockFace(angleShorthand);
 	}
 
+	default int getAngleDegrees() {
+		return -1;
+	}
+
 	boolean isLeftMiss();
 
 	boolean isRightMiss();

@@ -5,12 +5,12 @@ import lombok.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class MissDirection implements MissAngle {
+class MissDirection implements MissAngle {
 
 	private boolean leftMiss;
 	private boolean rightMiss;
 
-	public MissDirection(char missDirection) {
+	MissDirection(char missDirection) {
 		if (!MissAngle.SHORTHAND_DIRECTIONS.contains(missDirection)) {
 			throw new IllegalArgumentException(missDirection + " not a supported missDirection");
 		}

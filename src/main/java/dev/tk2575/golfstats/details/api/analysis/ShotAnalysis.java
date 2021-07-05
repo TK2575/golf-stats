@@ -13,6 +13,7 @@ public class ShotAnalysis {
 	private final String distanceUnit;
 	private final BigDecimal strokesGained;
 	//TODO miss angle
+	// need to transpose parsed miss angles to the prior shot during object construction
 
 	public ShotAnalysis(Shot shot) {
 		this.lie = shot.getLie().getLabel();

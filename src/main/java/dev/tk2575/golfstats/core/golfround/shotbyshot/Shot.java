@@ -65,7 +65,7 @@ public interface Shot {
 		char lie = shorthand.charAt(0);
 		long distance;
 		char missDirection = 'c';
-		int missAngle = 0;
+		int missAngle = -1;
 		int count = 1;
 
 		//get and remove count from end
@@ -100,7 +100,7 @@ public interface Shot {
 			if (temp.charAt(0) == '-') {
 				temp = temp.substring(1);
 			}
-			if (temp.toLowerCase().equalsIgnoreCase("l") || temp.toLowerCase().equalsIgnoreCase("r")) {
+			if (temp.equalsIgnoreCase("l") || temp.equalsIgnoreCase("r")) {
 				missDirection = Character.toLowerCase(temp.charAt(0));
 			}
 			else {
