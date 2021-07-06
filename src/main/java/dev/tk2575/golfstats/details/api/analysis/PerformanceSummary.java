@@ -14,7 +14,6 @@ import java.util.*;
 @ToString
 public class PerformanceSummary {
 
-	@Getter(AccessLevel.NONE)
 	@JsonIgnore
 	@ToString.Exclude
 	private final List<GolfRound> golfRounds;
@@ -35,7 +34,7 @@ public class PerformanceSummary {
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
 	@ToString.Exclude
-	private final List<RoundSummary> rounds = new ArrayList<>();
+	private final List<RoundSummary> roundSummaries = new ArrayList<>();
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
 		HandicapIndex index = HandicapIndex.newIndex(GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList());
@@ -62,7 +61,7 @@ public class PerformanceSummary {
 
 		int i = 1;
 		for (GolfRound each : this.golfRounds) {
-			rounds.add(new RoundSummary(i, each));
+			roundSummaries.add(new RoundSummary(i, each));
 			i++;
 		}
 	}
