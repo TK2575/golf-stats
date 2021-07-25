@@ -5,9 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public class RoundSummary {
@@ -22,9 +20,11 @@ public class RoundSummary {
 	private final BigDecimal rating;
 	private final BigDecimal slope;
 	private final BigDecimal handicapDifferential;
-	private final List<HoleAnalysis> holes;
-	private final List<ShotAnalysis> shots;
 	private final String transport;
+
+	public String getDisplay() {
+		return String.join(" - ", this.date.format(DateTimeFormatter.BASIC_ISO_DATE), this.course);
+	}
 
 	public RoundSummary(int number, GolfRound round) {
 		this.number = number;
@@ -38,8 +38,6 @@ public class RoundSummary {
 		this.rating = round.getRating();
 		this.slope = round.getSlope();
 		this.handicapDifferential = round.getScoreDifferential();
-		this.holes = round.getHoles().map(HoleAnalysis::new).collect(toList());
-		this.shots = round.getHoles().allShots().map(ShotAnalysis::new).collect(toList());
 		this.transport = round.getTransport();
 	}
 

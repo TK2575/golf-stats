@@ -33,9 +33,6 @@ public class PerformanceSummary {
 	private final BigDecimal medianHandicap;
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
-	@ToString.Exclude
-	private final List<RoundSummary> roundSummaries = new ArrayList<>();
-
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
 		HandicapIndex index = HandicapIndex.newIndex(GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList());
 		this.golfRounds = index.getAdjustedRounds();
@@ -58,12 +55,6 @@ public class PerformanceSummary {
 		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(this.golfRounds).getValue();
 		this.antiHandicap = HandicapIndex.antiHandicapOf(this.golfRounds).getValue();
 		this.medianHandicap = HandicapIndex.medianHandicap(this.golfRounds).getValue();
-
-		int i = 1;
-		for (GolfRound each : this.golfRounds) {
-			roundSummaries.add(new RoundSummary(i, each));
-			i++;
-		}
 	}
 
 	private GolfRoundStream rounds() {
