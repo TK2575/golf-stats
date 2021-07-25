@@ -16,9 +16,11 @@ public class RoundSummary {
 	private final int strokes;
 	private final int score;
 	private final int strokesAdjusted;
+	private final int netStrokes;
 	private final int netScore;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
+	private final BigDecimal incomingHandicapIndex;
 	private final BigDecimal handicapDifferential;
 	private final String transport;
 
@@ -33,10 +35,11 @@ public class RoundSummary {
 		this.strokes = round.getStrokes();
 		this.strokesAdjusted = round.getStrokesAdjusted();
 		this.score = round.getScore();
-		//FIXME netscore still looks wrong
+		this.netStrokes = round.getNetStrokes();
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();
+		this.incomingHandicapIndex = round.getIncomingHandicapIndex();
 		this.handicapDifferential = round.getScoreDifferential();
 		this.transport = round.getTransport();
 	}

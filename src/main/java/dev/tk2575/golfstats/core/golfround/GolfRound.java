@@ -32,6 +32,8 @@ public interface GolfRound {
 
 	String getTransport();
 
+	BigDecimal getIncomingHandicapIndex();
+
 	BigDecimal getScoreDifferential();
 
 	Integer getStrokes();
@@ -63,8 +65,10 @@ public interface GolfRound {
 		return roundToOneDecimalPlace(firstTerm.multiply(secondTerm));
 	}
 
+	Integer getNetStrokes();
+
 	default Integer getNetScore() {
-		return getStrokesAdjusted() - getPar();
+		return getNetStrokes() - getPar();
 	}
 
 	default BigDecimal getPuttsPerHole() {

@@ -18,24 +18,9 @@ class SimpleGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		return new SimpleGolfRound(this, this.tee.handicapStrokes(incomingIndex));
-	}
-
-	private SimpleGolfRound(SimpleGolfRound other, int handicapStrokes) {
-		this.date = other.date;
-		this.duration = other.duration;
-		this.golfer = other.golfer;
-		this.course = other.course;
-		this.tee = other.tee;
-		this.transport = other.transport;
-		this.scoreDifferential = other.scoreDifferential;
-		this.strokes = other.strokes;
-		this.strokesAdjusted = other.strokes - handicapStrokes;
-		this.fairwaysInRegulation = other.fairwaysInRegulation;
-		this.fairways = other.fairways;
-		this.greensInRegulation = other.greensInRegulation;
-		this.putts = other.putts;
-		this.nineHoleRound = other.nineHoleRound;
+		this.incomingHandicapIndex = incomingIndex;
+		this.netStrokes = this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex);
+		return this;
 	}
 
 	public Integer getHoleCount() {
@@ -50,10 +35,12 @@ class SimpleGolfRound implements GolfRound {
 	private final Tee tee;
 	private final String transport;
 
+	private BigDecimal incomingHandicapIndex;
 	private final BigDecimal scoreDifferential;
 
 	private final Integer strokes;
-	private Integer strokesAdjusted;
+	private final Integer strokesAdjusted;
+	private Integer netStrokes;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;
@@ -70,6 +57,7 @@ class SimpleGolfRound implements GolfRound {
 		this.transport = meta.getTransport();
 		this.strokes = strokes;
 		this.strokesAdjusted = this.strokes;
+		this.netStrokes = this.strokes;
 		this.fairwaysInRegulation = fairwaysInRegulation;
 		this.fairways = fairways;
 		this.greensInRegulation = greensInRegulation;

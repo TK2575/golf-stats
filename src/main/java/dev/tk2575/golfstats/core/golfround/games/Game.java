@@ -15,6 +15,12 @@ import java.time.LocalDate;
 public abstract class Game implements GolfRound {
 	//TODO separate from GolfRound
 	private final GolfRound round;
+	private BigDecimal incomingHandicapIndex;
+
+	@Override
+	public Integer getNetStrokes() {
+		return round.getNetStrokes();
+	}
 
 	protected Game(GolfRound round) {
 		if (round == null) {
@@ -38,6 +44,7 @@ public abstract class Game implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		this.incomingHandicapIndex = incomingIndex;
 		return this;
 	}
 

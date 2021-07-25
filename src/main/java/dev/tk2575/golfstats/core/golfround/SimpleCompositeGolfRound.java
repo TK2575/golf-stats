@@ -30,6 +30,8 @@ class SimpleCompositeGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		this.incomingHandicapIndex = incomingIndex;
+		this.netStrokes = this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex);
 		return this;
 	}
 
@@ -49,11 +51,13 @@ class SimpleCompositeGolfRound implements GolfRound {
 	private final Tee tee;
 	private final String transport;
 
+	private BigDecimal incomingHandicapIndex;
 	private final BigDecimal scoreDifferential;
 
 	private final Integer par;
 	private final Integer strokes;
 	private final Integer strokesAdjusted;
+	private Integer netStrokes;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;
@@ -80,6 +84,7 @@ class SimpleCompositeGolfRound implements GolfRound {
 		this.par = firstRound.getPar() + secondRound.getPar();
 		this.strokes = firstRound.getStrokes() + secondRound.getStrokes();
 		this.strokesAdjusted = this.strokes;
+		this.netStrokes = this.strokes;
 		this.fairwaysInRegulation = firstRound.getFairwaysInRegulation() + secondRound.getFairwaysInRegulation();
 		this.fairways = firstRound.getFairways() + secondRound.getFairways();
 		this.greensInRegulation = firstRound.getGreensInRegulation() + secondRound.getGreensInRegulation();

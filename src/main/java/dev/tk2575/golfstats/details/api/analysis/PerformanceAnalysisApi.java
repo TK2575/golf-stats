@@ -55,13 +55,9 @@ public class PerformanceAnalysisApi {
 
 	@GetMapping(value = "rounds", produces = "application/json")
 	public Map<String, List<RoundSummary>> rounds() {
-		Map<String, List<RoundSummary>> results = new HashMap<>();
-
-		golfRoundListStream()
+		return golfRoundListStream()
 				.map(PerformanceSummaryWithRounds::new)
-				.forEach(each -> results.put(each.getGolfer(), each.getRoundSummaries()));
-
-		return results;
+				.collect(toMap(PerformanceSummaryWithRounds::getGolfer, PerformanceSummaryWithRounds::getRoundSummaries));
 	}
 
 	@GetMapping(value = "holes", produces = "application/json")
