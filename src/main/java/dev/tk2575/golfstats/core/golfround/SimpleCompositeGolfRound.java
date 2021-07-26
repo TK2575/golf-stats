@@ -11,6 +11,8 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 class SimpleCompositeGolfRound implements GolfRound {
 
 	private static final String DELIMITER = " - ";
@@ -30,9 +32,7 @@ class SimpleCompositeGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		this.incomingHandicapIndex = incomingIndex;
-		this.netStrokes = this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex);
-		return this;
+		return this.toBuilder().netStrokes(this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex)).incomingHandicapIndex(incomingIndex).build();
 	}
 
 	public Integer getHoleCount() {

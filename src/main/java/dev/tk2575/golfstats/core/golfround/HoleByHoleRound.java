@@ -15,6 +15,8 @@ import java.util.Map;
 
 @Getter
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 class HoleByHoleRound implements GolfRound {
 	private final LocalDate date;
 	private final Duration duration;
@@ -88,9 +90,8 @@ class HoleByHoleRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		this.incomingHandicapIndex = incomingIndex;
-		assignHoles(holes().applyNetDoubleBogey(this.tee.handicapStrokes(incomingIndex)).toList());
-		return this;
+		RoundMeta meta = new RoundMeta(this.date, this.duration, this.golfer, this.course, this.tee.getRating(), this.tee.getSlope(), this.tee.getName(), this.transport);
+		return new HoleByHoleRound(meta, holes().applyNetDoubleBogey(this.tee.handicapStrokes(incomingIndex)).toList()).toBuilder().incomingHandicapIndex(incomingIndex).build();
 	}
 
 	public Integer getHoleCount() {

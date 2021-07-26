@@ -18,6 +18,7 @@ public class RoundSummary {
 	private final int strokesAdjusted;
 	private final int netStrokes;
 	private final int netScore;
+	private final int par;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
 	private final BigDecimal incomingHandicapIndex;
@@ -35,6 +36,7 @@ public class RoundSummary {
 		this.strokes = round.getStrokes();
 		this.strokesAdjusted = round.getStrokesAdjusted();
 		this.score = round.getScore();
+		this.par = round.getPar();
 		this.netStrokes = round.getNetStrokes();
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();

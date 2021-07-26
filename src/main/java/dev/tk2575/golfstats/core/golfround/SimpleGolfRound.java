@@ -11,6 +11,8 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 class SimpleGolfRound implements GolfRound {
 
 	@Getter(AccessLevel.NONE)
@@ -18,9 +20,7 @@ class SimpleGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		this.incomingHandicapIndex = incomingIndex;
-		this.netStrokes = this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex);
-		return this;
+		return this.toBuilder().netStrokes(this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex)).incomingHandicapIndex(incomingIndex).build();
 	}
 
 	public Integer getHoleCount() {

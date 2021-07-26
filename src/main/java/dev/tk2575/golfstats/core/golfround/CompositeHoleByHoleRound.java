@@ -20,4 +20,6 @@ class CompositeHoleByHoleRound extends SimpleCompositeGolfRound {
 		super(round1, round2);
 		this.holes = HoleStream.compositeOf(round1, round2);
 	}
+
+	//TODO shouldn't applyNetDoubleBogey be overridden here so it's more like HoleByHoleRound?
 }
