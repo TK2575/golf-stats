@@ -22,6 +22,8 @@ public interface Hole {
 		return new SimpleHoleScore(number, index, par, strokes, fairwayInRegulation, putts);
 	}
 
+	Hole invertNumber();
+
 	Integer getNumber();
 
 	Integer getIndex();

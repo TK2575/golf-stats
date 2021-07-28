@@ -1,8 +1,8 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.ObjectStream;
 import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import lombok.*;
@@ -12,6 +12,9 @@ import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 @Getter
 @AllArgsConstructor
@@ -40,6 +43,10 @@ public class HoleStream implements ObjectStream<Hole> {
 		if (count != 9 && count != 18) {
 			throw new IllegalArgumentException("must record 9 or 18 holes");
 		}
+		if (holes.stream().collect(groupingBy(Hole::getNumber, counting())).values().stream().anyMatch(l -> l > 1)) {
+			throw new IllegalArgumentException("found multiple holes with the same number");
+		}
+
 		return new HoleStream(holes);
 	}
 
@@ -100,18 +107,15 @@ public class HoleStream implements ObjectStream<Hole> {
 		return this.stream.count() == 9;
 	}
 
-	public static List<Hole> compositeOf(GolfRound round1, GolfRound round2) {
+	public static List<Hole> compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
 		List<Hole> list = new ArrayList<>();
-		if (round1.getDate().isAfter(round2.getDate())) {
-			list.addAll(round2.getHoles().asList());
-			list.addAll(round1.getHoles().asList());
-		}
-		else {
-			list.addAll(round1.getHoles().asList());
-			list.addAll(round2.getHoles().asList());
-		}
-
+		list.addAll(round1.getHoles().asList());
+		list.addAll(round2.getHoles().invertHoleNumbers().asList());
 		return new HoleStream(list).validate().asList();
+	}
+
+	private HoleStream invertHoleNumbers() {
+		return new HoleStream(this.stream.map(Hole::invertNumber).collect(Collectors.toList()));
 	}
 
 	public ShotStream allShots() {

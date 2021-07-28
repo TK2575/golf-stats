@@ -8,7 +8,7 @@ import lombok.*;
 import java.util.Collection;
 
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Getter
 class ShotByShotHole implements Hole {
 	private final Integer number;
@@ -39,6 +39,11 @@ class ShotByShotHole implements Hole {
 	public ShotStream getShots() { return shots(); }
 
 	private ShotStream shots() { return Shot.stream(this.shots); }
+
+	@Override
+	public Hole invertNumber() {
+		return this.toBuilder().number(this.number + 9).build();
+	}
 
 	@Override
 	public Integer getStrokes() {

@@ -3,7 +3,10 @@ package dev.tk2575.golfstats.core.golfround;
 import lombok.*;
 
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE, toBuilder = true)
 class SimpleHoleScore implements Hole {
+
 	private final Integer number;
 	private final Integer index;
 	private final Integer par;
@@ -12,6 +15,11 @@ class SimpleHoleScore implements Hole {
 	private final boolean fairwayInRegulation;
 	private final Integer putts;
 	private final Integer netStrokes;
+
+	@Override
+	public Hole invertNumber() {
+		return this.toBuilder().number(this.number + 9).build();
+	}
 
 	@Override
 	public Hole applyNetDoubleBogey(Integer handicapStrokes) {
@@ -25,7 +33,7 @@ class SimpleHoleScore implements Hole {
 		this.strokes = hole.getStrokes();
 		this.fairwayInRegulation = hole.isFairwayInRegulation();
 		this.putts = hole.getPutts();
-		this.strokesAdjusted = Math.min(this.strokes, this.par+2+handicapStrokes);
+		this.strokesAdjusted = Math.min(this.strokes, this.par + 2 + handicapStrokes);
 		this.netStrokes = this.strokesAdjusted - handicapStrokes;
 	}
 

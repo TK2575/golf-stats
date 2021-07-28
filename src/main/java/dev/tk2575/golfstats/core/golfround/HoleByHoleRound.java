@@ -86,6 +86,7 @@ class HoleByHoleRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
+		//FIXME net strokes/score looks wrong for holebyhole rounds
 		List<Hole> holesAdjusted = holes().applyNetDoubleBogey(this.tee.handicapStrokes(incomingIndex)).toList();
 		return new HoleByHoleRound(new RoundMeta(this), holesAdjusted).toBuilder().incomingHandicapIndex(incomingIndex).build();
 	}
