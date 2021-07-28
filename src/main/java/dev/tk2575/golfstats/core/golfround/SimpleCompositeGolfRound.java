@@ -32,7 +32,10 @@ class SimpleCompositeGolfRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		return this.toBuilder().netStrokes(this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex)).incomingHandicapIndex(incomingIndex).build();
+		return this.toBuilder()
+				.netStrokes(this.strokesAdjusted - this.tee.handicapStrokes(incomingIndex))
+				.incomingHandicapIndex(incomingIndex)
+				.build();
 	}
 
 	public Integer getHoleCount() {
@@ -57,27 +60,30 @@ class SimpleCompositeGolfRound implements GolfRound {
 	private final Integer par;
 	private final Integer strokes;
 	private final Integer strokesAdjusted;
-	private Integer netStrokes;
+	private final Integer netStrokes;
 	private final Integer fairwaysInRegulation;
 	private final Integer fairways;
 	private final Integer greensInRegulation;
 	private final Integer putts;
 
 	@ToString.Exclude
-	private GolfRound firstRound;
+	private final GolfRound firstRound;
 	@ToString.Exclude
-	private GolfRound secondRound;
+	private final GolfRound secondRound;
 
 	SimpleCompositeGolfRound(GolfRound round1, GolfRound round2) {
-		validateArguments(round1, round2);
-		assignFirstAndSecondRound(round1, round2);
+		this.firstRound = round1;
+		this.secondRound = round2;
 
 		this.date = secondRound.getDate();
 		this.golfer = secondRound.getGolfer();
 
 		this.course = Course.compositeOf(firstRound.getCourse(), secondRound.getCourse());
 		this.tee = Tee.compositeOf(firstRound.getTee(), secondRound.getTee());
-		this.transport = firstRound.getTransport().equalsIgnoreCase(secondRound.getTransport()) ? firstRound.getTransport() : "Various";
+		this.transport =
+				firstRound.getTransport().equalsIgnoreCase(secondRound.getTransport())
+						? firstRound.getTransport()
+						: "Various";
 
 		this.duration = setDuration(firstRound.getDuration(), secondRound.getDuration());
 
@@ -97,34 +103,5 @@ class SimpleCompositeGolfRound implements GolfRound {
 		if (duration1 == null) { return duration2; }
 		else if (duration2 == null) { return duration1; }
 		else { return duration1.plus(duration2); }
-	}
-
-	private void assignFirstAndSecondRound(GolfRound round1, GolfRound round2) {
-		if (round1.getDate().isBefore(round2.getDate())) {
-			this.firstRound = round1;
-			this.secondRound = round2;
-		}
-		else {
-			this.firstRound = round2;
-			this.secondRound = round1;
-		}
-	}
-
-	private void validateArguments(GolfRound round1, GolfRound round2) {
-		if (round1 == null || round2 == null) {
-			throw new IllegalArgumentException("round1 and round2 are required arguments");
-		}
-
-		if (round1.equals(round2)) {
-			throw new IllegalArgumentException("these rounds are the same");
-		}
-
-		if (!round1.isNineHoleRound() || !round2.isNineHoleRound()) {
-			throw new IllegalArgumentException("both rounds must be nine hole rounds");
-		}
-
-		if (!round1.getGolfer().equals(round2.getGolfer())) {
-			throw new IllegalArgumentException("cannot create composite round for two different golfers' rounds");
-		}
 	}
 }

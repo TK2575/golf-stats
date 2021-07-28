@@ -1,25 +1,10 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import java.util.Collection;
+import lombok.*;
 
-class CompositeHoleByHoleRound extends SimpleCompositeGolfRound {
+class CompositeHoleByHoleRound extends HoleByHoleRound {
 
-	private final Collection<Hole> holes;
-
-	@Override
-	public HoleStream getHoles() {
-		return Hole.stream(this.holes);
+	CompositeHoleByHoleRound(@NonNull GolfRound round1, @NonNull GolfRound round2) {
+		super(RoundMeta.compositeOf(round1, round2), HoleStream.compositeOf(round1, round2));
 	}
-
-	@Override
-	public Integer getHoleCount() {
-		return this.holes.size();
-	}
-
-	CompositeHoleByHoleRound(GolfRound round1, GolfRound round2) {
-		super(round1, round2);
-		this.holes = HoleStream.compositeOf(round1, round2);
-	}
-
-	//TODO shouldn't applyNetDoubleBogey be overridden here so it's more like HoleByHoleRound?
 }

@@ -4,6 +4,7 @@ import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -107,11 +108,29 @@ public interface GolfRound {
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
 
-	static GolfRound compositeOf(GolfRound round1, GolfRound round2) {
-		if (round1.getHoles().isEmpty() || round2.getHoles().isEmpty()) {
-			return new SimpleCompositeGolfRound(round1, round2);
+	static GolfRound compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
+		if (round1.equals(round2)) {
+			throw new IllegalArgumentException("these rounds are the same");
 		}
-		return new CompositeHoleByHoleRound(round1, round2);
+
+		if (!round1.isNineHoleRound() || !round2.isNineHoleRound()) {
+			throw new IllegalArgumentException("both rounds must be nine hole rounds");
+		}
+
+		if (!round1.getGolfer().equals(round2.getGolfer())) {
+			throw new IllegalArgumentException("cannot create composite round for two different golfers' rounds");
+		}
+
+		if (round1.getHoles().isEmpty() || round2.getHoles().isEmpty()) {
+			return round1.getDate().isBefore(round2.getDate())
+					? new SimpleCompositeGolfRound(round1, round2)
+					: new SimpleCompositeGolfRound(round2, round1);
+
+		}
+
+		return round1.getDate().isBefore(round2.getDate())
+				? new CompositeHoleByHoleRound(round1, round2)
+				: new CompositeHoleByHoleRound(round2, round1);
 	}
 
 	static GolfRoundStream stream(Collection<GolfRound> rounds) {
