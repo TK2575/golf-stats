@@ -13,6 +13,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -46,12 +47,19 @@ public class HoleStream implements ObjectStream<Hole> {
 		if (holes.stream().collect(groupingBy(Hole::getNumber, counting())).values().stream().anyMatch(l -> l > 1)) {
 			throw new IllegalArgumentException("found multiple holes with the same number");
 		}
+		if (holes.stream().collect(groupingBy(Hole::getIndex, counting())).values().stream().anyMatch(l -> l > 1)) {
+			throw new IllegalArgumentException("found multiple holes with the same index");
+		}
 
 		return new HoleStream(holes);
 	}
 
-	public HoleStream sortFirstToLast() {
-		return new HoleStream(this.stream.sorted(Comparator.comparing(Hole::getNumber)), this.empty);
+	public HoleStream sortByNumber() {
+		return new HoleStream(this.stream.sorted(comparing(Hole::getNumber)), this.empty);
+	}
+
+	public HoleStream sortByIndex() {
+		return new HoleStream(this.stream.sorted(comparing(Hole::getIndex)), this.empty);
 	}
 
 	public Hole byNumber(Integer number) {
@@ -109,13 +117,9 @@ public class HoleStream implements ObjectStream<Hole> {
 
 	public static List<Hole> compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
 		List<Hole> list = new ArrayList<>();
-		list.addAll(round1.getHoles().asList());
-		list.addAll(round2.getHoles().invertHoleNumbers().asList());
+		list.addAll(round1.getHoles().reNumber(1).reIndex(1).toList());
+		list.addAll(round2.getHoles().reNumber(10).reIndex(2).toList());
 		return new HoleStream(list).validate().asList();
-	}
-
-	private HoleStream invertHoleNumbers() {
-		return new HoleStream(this.stream.map(Hole::invertNumber).collect(Collectors.toList()));
 	}
 
 	public ShotStream allShots() {
@@ -142,5 +146,25 @@ public class HoleStream implements ObjectStream<Hole> {
 
 	public Long totalYards() {
 		return sumLong(Hole::getYards);
+	}
+
+	private HoleStream reIndex(int start) {
+		List<Hole> results = new ArrayList<>();
+		int i = start;
+		for (Hole hole : this.sortByIndex().toList()) {
+			results.add(hole.setIndex(i));
+			i = i + 2;
+		}
+		return new HoleStream(results).sortByNumber();
+	}
+
+	private HoleStream reNumber(int start) {
+		List<Hole> results = new ArrayList<>();
+		int i = start;
+		for (Hole hole : this.stream.toList()) {
+			results.add(hole.setNumber(i));
+			i++;
+		}
+		return new HoleStream(results);
 	}
 }

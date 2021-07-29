@@ -26,7 +26,7 @@ class HoleByHoleRound implements GolfRound {
 	private final Tee tee;
 	private final String transport;
 
-	private BigDecimal incomingHandicapIndex;
+	@Setter(AccessLevel.PACKAGE) private BigDecimal incomingHandicapIndex;
 	private final BigDecimal scoreDifferential;
 
 	private final Integer strokes;
@@ -54,7 +54,7 @@ class HoleByHoleRound implements GolfRound {
 		this.course = round.getCourse();
 		this.transport = round.getTransport();
 
-		this.holes = Hole.stream(holes).validate().sortFirstToLast().asList();
+		this.holes = Hole.stream(holes).validate().sortByNumber().asList();
 		this.tee = Tee.of(this.golfer, round.getTeeName(), round.getRating(), round.getSlope(), holes().getPar());
 
 		this.strokes = holes().totalStrokes();
@@ -86,7 +86,6 @@ class HoleByHoleRound implements GolfRound {
 
 	@Override
 	public GolfRound applyNetDoubleBogey(BigDecimal incomingIndex) {
-		//FIXME net strokes/score looks wrong for holebyhole rounds
 		List<Hole> holesAdjusted = holes().applyNetDoubleBogey(this.tee.handicapStrokes(incomingIndex)).toList();
 		return new HoleByHoleRound(new RoundMeta(this), holesAdjusted).toBuilder().incomingHandicapIndex(incomingIndex).build();
 	}
@@ -95,7 +94,7 @@ class HoleByHoleRound implements GolfRound {
 		return this.holes.size();
 	}
 
-	private HoleStream holes() {
+	HoleStream holes() {
 		return Hole.stream(this.holes);
 	}
 }

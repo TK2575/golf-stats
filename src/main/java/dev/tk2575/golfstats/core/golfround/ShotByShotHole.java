@@ -41,8 +41,13 @@ class ShotByShotHole implements Hole {
 	private ShotStream shots() { return Shot.stream(this.shots); }
 
 	@Override
-	public Hole invertNumber() {
-		return this.toBuilder().number(this.number + 9).build();
+	public Hole setNumber(Integer number) {
+		return this.toBuilder().number(number).build();
+	}
+
+	@Override
+	public Hole setIndex(Integer index) {
+		return this.toBuilder().index(index).build();
 	}
 
 	@Override

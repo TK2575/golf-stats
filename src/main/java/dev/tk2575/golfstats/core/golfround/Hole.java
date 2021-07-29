@@ -22,7 +22,9 @@ public interface Hole {
 		return new SimpleHoleScore(number, index, par, strokes, fairwayInRegulation, putts);
 	}
 
-	Hole invertNumber();
+	Hole setNumber(Integer number);
+
+	Hole setIndex(Integer index);
 
 	Integer getNumber();
 
