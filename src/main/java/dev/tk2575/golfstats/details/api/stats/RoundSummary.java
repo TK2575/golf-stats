@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.api.analysis;
+package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import lombok.*;
@@ -12,6 +12,7 @@ public class RoundSummary {
 	private final int roundId;
 	private final LocalDate date;
 	private final String course;
+	private final String location;
 	private final int strokes;
 	private final int score;
 	private final int strokesAdjusted;
@@ -32,6 +33,7 @@ public class RoundSummary {
 		this.roundId = number;
 		this.date = round.getDate();
 		this.course = round.getCourse().getName();
+		this.location = round.getCourse().getLocation();
 		this.strokes = round.getStrokes();
 		this.strokesAdjusted = round.getStrokesAdjusted();
 		this.score = round.getScore();
@@ -49,6 +51,7 @@ public class RoundSummary {
 		this.roundId = other.roundId;
 		this.date = other.date;
 		this.course = other.course;
+		this.location = other.location;
 		this.strokes = other.strokes;
 		this.score = other.score;
 		this.strokesAdjusted = other.strokesAdjusted;

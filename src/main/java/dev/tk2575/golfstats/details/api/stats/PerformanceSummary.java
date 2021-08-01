@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.api.analysis;
+package dev.tk2575.golfstats.details.api.stats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
@@ -31,6 +31,8 @@ public class PerformanceSummary {
 	private final BigDecimal trendingHandicap;
 	private final BigDecimal antiHandicap;
 	private final BigDecimal medianHandicap;
+
+	@JsonIgnore @ToString.Exclude
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {

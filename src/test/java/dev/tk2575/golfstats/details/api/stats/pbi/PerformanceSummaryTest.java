@@ -1,9 +1,10 @@
-package dev.tk2575.golfstats.details.api.analysis;
+package dev.tk2575.golfstats.details.api.stats.pbi;
 
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
+import dev.tk2575.golfstats.details.api.stats.PerformanceSummary;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

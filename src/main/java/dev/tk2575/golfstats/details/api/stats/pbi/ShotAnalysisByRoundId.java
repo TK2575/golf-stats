@@ -1,9 +1,10 @@
-package dev.tk2575.golfstats.details.api.analysis;
+package dev.tk2575.golfstats.details.api.stats.pbi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.tk2575.golfstats.details.api.stats.PerformanceDetail;
+import dev.tk2575.golfstats.details.api.stats.ShotAnalysis;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,10 +23,6 @@ public class ShotAnalysisByRoundId {
 	}
 
 	static List<ShotAnalysisByRoundId> compile(PerformanceDetail detail) {
-		List<ShotAnalysisByRoundId> results = new ArrayList<>();
-		for (RoundDetail round : detail.getRoundDetails()) {
-			results.add(new ShotAnalysisByRoundId(detail.getGolfer(), round.getRoundId(), round.getShots()));
-		}
-		return results;
+		return detail.getRoundDetails().stream().map(round -> new ShotAnalysisByRoundId(detail.getGolfer(), round.getRoundId(), round.getShots())).toList();
 	}
 }

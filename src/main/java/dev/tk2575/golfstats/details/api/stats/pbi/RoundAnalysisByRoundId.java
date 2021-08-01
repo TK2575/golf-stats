@@ -1,8 +1,9 @@
-package dev.tk2575.golfstats.details.api.analysis;
+package dev.tk2575.golfstats.details.api.stats.pbi;
 
+import dev.tk2575.golfstats.details.api.stats.PerformanceSummaryWithRounds;
+import dev.tk2575.golfstats.details.api.stats.RoundSummary;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,11 +16,7 @@ public class RoundAnalysisByRoundId extends RoundSummary {
 	}
 
 	static List<RoundAnalysisByRoundId> compile(PerformanceSummaryWithRounds summary) {
-		List<RoundAnalysisByRoundId> results = new ArrayList<>();
-		for (RoundSummary round : summary.getRoundSummaries()) {
-			results.add(new RoundAnalysisByRoundId(summary.getGolfer(), round));
-		}
-		return results;
+		return summary.getRoundSummaries().stream().map(round -> new RoundAnalysisByRoundId(summary.getGolfer(), round)).toList();
 	}
 
 }
