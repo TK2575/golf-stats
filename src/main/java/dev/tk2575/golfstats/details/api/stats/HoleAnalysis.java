@@ -16,6 +16,19 @@ public class HoleAnalysis {
 	private final long yards;
 	private final BigDecimal strokesGained;
 
+	public String getScoreName() {
+		if (this.score <= -1) {
+			return "Birdie or better";
+		}
+		if (this.score == 0) {
+			return "Par";
+		}
+		if (this.score == 1) {
+			return "Bogey";
+		}
+		return "Double Bogey or worse";
+	}
+
 	public HoleAnalysis(Hole hole) {
 		this.number = hole.getNumber();
 		this.par = hole.getPar();
