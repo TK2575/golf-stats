@@ -8,15 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @RestController
 @RequestMapping("analysis")
@@ -54,32 +52,35 @@ public class PerformanceAnalysisApi {
 	}
 
 	@GetMapping(value = "rounds", produces = "application/json")
-	public Map<String, List<RoundSummary>> rounds() {
+	public List<RoundAnalysisByRoundId> rounds() {
 		return golfRoundListStream()
 				.map(PerformanceSummaryWithRounds::new)
-				.collect(toMap(PerformanceSummaryWithRounds::getGolfer, PerformanceSummaryWithRounds::getRoundSummaries));
+				.map(RoundAnalysisByRoundId::compile)
+				.flatMap(List::stream)
+				.collect(toList());
 	}
 
 	@GetMapping(value = "holes", produces = "application/json")
-	public Map<String, Map<String, List<HoleAnalysis>>> holes() {
-		Map<String, Map<String, List<HoleAnalysis>>> results = new HashMap<>();
-		golfRoundListStream().map(PerformanceDetail::new).forEach(each -> {
-			Map<String, List<HoleAnalysis>> holesByRound =
-					each.getRoundDetails().stream().collect(toMap(RoundDetail::getDisplay, RoundDetail::getHoles));
-			results.put(each.getGolfer(), holesByRound);
-		});
-		return results;
+	public List<HoleAnalysisByRoundId> holes() {
+		/*@formatter:off*/
+		return golfRoundListStream()
+				.map(PerformanceDetail::new)
+				.map(HoleAnalysisByRoundId::compile)
+				.flatMap(List::stream)
+				.filter(HoleAnalysisByRoundId::isPresent)
+				.collect(toList());
+		/*@formatter:on*/
 	}
 
 	@GetMapping(value = "shots", produces = "application/json")
-	public Map<String, List<ShotAnalysis>> shots() {
-		Map<String, List<ShotAnalysis>> results = new HashMap<>();
-
-		for (PerformanceDetail detail : golfRoundListStream().map(PerformanceDetail::new).collect(toList())) {
-			List<ShotAnalysis> shots = detail.getRoundDetails().stream().map(RoundDetail::getShots).flatMap(List::stream).collect(toList());
-			results.put(detail.getGolfer(), shots);
-		}
-
-		return results;
+	public List<ShotAnalysisByRoundId> shots() {
+		/*@formatter:off*/
+		return golfRoundListStream()
+				.map(PerformanceDetail::new)
+				.map(ShotAnalysisByRoundId::compile)
+				.flatMap(List::stream)
+				.filter(ShotAnalysisByRoundId::isPresent)
+				.collect(toList());
+		/*@formatter:on*/
 	}
 }

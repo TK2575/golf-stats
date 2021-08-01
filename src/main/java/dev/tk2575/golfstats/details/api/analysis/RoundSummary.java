@@ -9,8 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 public class RoundSummary {
-
-	private final int number;
+	private final int roundId;
 	private final LocalDate date;
 	private final String course;
 	private final int strokes;
@@ -30,7 +29,7 @@ public class RoundSummary {
 	}
 
 	public RoundSummary(int number, GolfRound round) {
-		this.number = number;
+		this.roundId = number;
 		this.date = round.getDate();
 		this.course = round.getCourse().getName();
 		this.strokes = round.getStrokes();
@@ -46,4 +45,20 @@ public class RoundSummary {
 		this.transport = round.getTransport();
 	}
 
+	public RoundSummary(RoundSummary other) {
+		this.roundId = other.roundId;
+		this.date = other.date;
+		this.course = other.course;
+		this.strokes = other.strokes;
+		this.score = other.score;
+		this.strokesAdjusted = other.strokesAdjusted;
+		this.netStrokes = other.netStrokes;
+		this.netScore = other.netScore;
+		this.par = other.par;
+		this.rating = other.rating;
+		this.slope = other.slope;
+		this.incomingHandicapIndex = other.incomingHandicapIndex;
+		this.handicapDifferential = other.handicapDifferential;
+		this.transport = other.transport;
+	}
 }
