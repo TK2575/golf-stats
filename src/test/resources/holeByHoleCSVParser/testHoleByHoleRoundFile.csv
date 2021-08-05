@@ -1,2 +1,2 @@
-id,golfer,date,course,tees,rating,slope,duration,transport
-1,Tom,06/25/2007,Sandy Burr,White,68.3,124,4:25,Walk (Push)
+id,golfer,date,course,city,state,tees,rating,slope,duration,transport
+1,Tom,06/25/2007,Sandy Burr,Wayland,MA,White,68.3,124,4:25,Walk (Push)

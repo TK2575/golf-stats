@@ -25,7 +25,7 @@ import java.util.function.BiConsumer;
 @Log4j2
 public class HoleByHoleRoundCSVParser extends CSVParser {
 
-    private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,tees,rating,slope,duration,transport";
+    private static final String EXPECTED_HEADERS_ROUND = "id,golfer,date,course,city,state,tees,rating,slope,duration,transport";
     private static final String EXPECTED_HEADERS_HOLES = "id,hole,index,par,strokes,fir,putts";
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("M/d/yyyy");
@@ -80,15 +80,15 @@ public class HoleByHoleRoundCSVParser extends CSVParser {
 		var golferString = Utils.toTitleCase(row[1]);
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
-		var course = Course.of(row[3]);
-		var teeName = Utils.toTitleCase(row[4]);
-		var rating = new BigDecimal(row[5]);
-		var slope = new BigDecimal(row[6]);
-		var durationString = row[7];
+		var course = Course.of(row[3], row[4], row[5]);
+		var teeName = Utils.toTitleCase(row[6]);
+		var rating = new BigDecimal(row[7]);
+		var slope = new BigDecimal(row[8]);
+		var durationString = row[9];
 		var duration = durationString == null || durationString.isBlank()
 				? Duration.ZERO
 				: Duration.between(LocalTime.MIN, LocalTime.parse(durationString, DURATION_FORMAT));
-		var transport = Utils.toTitleCase(row[8]);
+		var transport = Utils.toTitleCase(row[10]);
 
 		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport));
 	};

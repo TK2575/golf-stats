@@ -16,3 +16,7 @@ id,golfer,date,course,city,state,tees,rating,slope,duration,transport
 16,Will,10/10/2020,Norwood CC,Norwood,MA,Gold,67.1,113,4:55,Walk
 17,Will,10/18/2020,Butter Brook GC,Westford,MA,White,68.6,120,4:41,Walk
 18,Will,10/24/2020,Sassamon Trace Golf Course,Natick,MA,White,30.7,111,2:25,Walk
+19,Will,4/24/2021,Berlin CC,Berlin,MA,Men,62.9,108,2:25,Walk
+20,Will,6/19/2021,Maynard GC,Maynard,MA,White,34.1,119,2:00,Walk
+21,Will,6/25/2021,William J Devine GC,Dorchester,MA,Blue,69.5,126,4:18,Walk
+22,Will,7/5/2021,South Shore CC,Hingham,MA,White,68.9,131,4:40,Walk

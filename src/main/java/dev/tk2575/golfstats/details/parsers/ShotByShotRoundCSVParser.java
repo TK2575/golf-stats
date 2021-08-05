@@ -96,7 +96,7 @@ public class ShotByShotRoundCSVParser extends CSVParser {
 		List<Shot> shots = Arrays.stream(row[4].split("\\."))
 				.sequential()
 				.map(Shot::parse)
-				.collect(Collectors.toList());
+				.toList();
 
 		Hole hole = Hole.of(number, holeIndex, par, shots);
 		this.holes.merge(id, List.of(hole), (prior, current) -> {
