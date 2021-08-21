@@ -23,13 +23,14 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 22,Tom,5/18/2021,Fresh Pond GC,Cambridge,MA,Blue,68.8,121,13:10,15:12,Walk
 23,Tom,5/21/2021,Patriot GC,Bedford,MA,Blue,68.6,128,7:09,9:03,Walk
 24,Tom,5/23/2021,Leo J Martin GC,Weston,MA,White,68.1,113,7:10,10:59,Walk (Push)
-25,Tom,5/30/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,12:34,2:11 PM,Walk (Push)
+25,Tom,5/30/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,12:34,14:11,Walk (Push)
 26,Tom,6/6/2021,Ramblewood CC,Mt. Laurel,NJ,White,70.4,123,7:30,9:38,Cart
 27,Tom,6/19/2021,Maynard GC,Maynard,MA,White,34.1,119,9:30,11:30,Walk
 28,Tom,6/23/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,6:40,8:45,Walk
-29,Tom,6/25/2021,William J Devine GC,Dorchester,MA,Blue,69.5,126,9:40,1:58,Walk (Push)
+29,Tom,6/25/2021,William J Devine GC,Dorchester,MA,Blue,69.5,126,9:40,13:58,Walk (Push)
 30,Tom,6/29/2021,Patriot GC,Bedford,MA,Blue,68.6,128,7:00,8:40,Walk
 31,Tom,7/1/2021,Pine Meadows GC,Lexington,MA,Blue,67,105,6:40,8:30,Walk
-32,Tom,7/5/2021,South Shore CC,Hingham,MA,White,68.9,131,1:30,6:10,Walk (Push)
+32,Tom,7/5/2021,South Shore CC,Hingham,MA,White,68.9,131,13:30,18:10,Walk (Push)
 33,Tom,7/26/2021,Pine Meadows GC,Lexington,MA,White,62.8,102,7:10,9:02,Walk
-34,Tom,8/6/2021,Robert T. Lynch GC,Brookline,MA,White,68.1,116,10:04,2:43,Walk (Push)
+34,Tom,8/6/2021,Robert T. Lynch GC,Brookline,MA,White,68.1,116,10:04,14:43,Walk (Push)
+35,Tom,8/20/2021,Butter Brook GC,Westford,MA,White,68.6,120,9:50,14:47,Cart
