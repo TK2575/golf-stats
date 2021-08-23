@@ -14,49 +14,22 @@ import java.util.*;
 @ToString
 public class PerformanceSummary {
 
-	@JsonIgnore
-	@ToString.Exclude
-	private final List<GolfRound> golfRounds;
-
 	private final String golfer;
-	private final BigDecimal fairwaysInRegulation;
-	private final BigDecimal greensInRegulation;
-	private final BigDecimal puttsPerHole;
-	private final Long minutesPer18Holes;
-	private final Long roundCount;
-	private final LocalDate from;
-	private final LocalDate asOf;
-
 	private final BigDecimal handicapIndex;
-	private final BigDecimal trendingHandicap;
-	private final BigDecimal antiHandicap;
-	private final BigDecimal medianHandicap;
 
 	@JsonIgnore @ToString.Exclude
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
+	@JsonIgnore
+	@ToString.Exclude
+	private final List<GolfRound> golfRounds;
+
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
 		HandicapIndex index = HandicapIndex.newIndex(GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().asList());
 		this.golfRounds = index.getAdjustedRounds();
-
 		this.golfer = rounds().golferNames();
-		this.fairwaysInRegulation = rounds().fairwaysInRegulation();
-		this.greensInRegulation = rounds().greensInRegulation();
-		this.puttsPerHole = rounds().puttsPerHole();
-		this.minutesPer18Holes = rounds().minutesPerRound();
-		this.roundCount = rounds().count();
-
-		LocalDate today = LocalDate.now();
-		Optional<GolfRound> round = rounds().oldestRound();
-		this.from = round.isEmpty() ? today : round.get().getDate();
-		round = rounds().newestRound();
-		this.asOf = round.isEmpty() ? today : round.get().getDate();
-
 		this.handicapIndex = index.getValue();
 		this.handicapRevisionHistory = index.getRevisionHistory();
-		this.trendingHandicap = HandicapIndex.lastFiveRoundsTrendingHandicap(this.golfRounds).getValue();
-		this.antiHandicap = HandicapIndex.antiHandicapOf(this.golfRounds).getValue();
-		this.medianHandicap = HandicapIndex.medianHandicap(this.golfRounds).getValue();
 	}
 
 	private GolfRoundStream rounds() {

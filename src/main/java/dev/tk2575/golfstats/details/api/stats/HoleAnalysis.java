@@ -14,11 +14,19 @@ public class HoleAnalysis {
 	private final int strokesAdjusted;
 	private final int score;
 	private final long yards;
+	private final int netStrokes;
+	private final int netScore;
 	private final BigDecimal strokesGained;
 
 	public String getScoreName() {
-		if (this.score <= -1) {
-			return "Birdie or better";
+		if (this.score <= -3) {
+			return "Albatross";
+		}
+		if (this.score == -2) {
+			return "Eagle";
+		}
+		if (this.score == -1) {
+			return "Birdie";
 		}
 		if (this.score == 0) {
 			return "Par";
@@ -26,7 +34,10 @@ public class HoleAnalysis {
 		if (this.score == 1) {
 			return "Bogey";
 		}
-		return "Double Bogey or worse";
+		if (this.score == 2) {
+			return "Double Bogey";
+		}
+		return "Triple+ Bogey";
 	}
 
 	public HoleAnalysis(Hole hole) {
@@ -37,5 +48,7 @@ public class HoleAnalysis {
 		this.score = hole.getAdjustedScore();
 		this.yards = hole.getYards();
 		this.strokesGained = hole.getStrokesGained();
+		this.netStrokes = hole.getNetStrokes();
+		this.netScore = hole.getNetScore();
 	}
 }

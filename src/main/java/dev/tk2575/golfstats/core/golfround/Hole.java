@@ -54,6 +54,10 @@ public interface Hole {
 		return getStrokesAdjusted() - getPar();
 	}
 
+	default Integer getNetScore() {
+		return getNetStrokes() - getPar();
+	}
+
 	default boolean isFairwayPresent() {
 		return getPar() > 3;
 	}

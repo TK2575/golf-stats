@@ -24,6 +24,11 @@ public class RoundSummary {
 	private final BigDecimal incomingHandicapIndex;
 	private final BigDecimal handicapDifferential;
 	private final String transport;
+	private final int fairways;
+	private final int fairwaysInRegulation;
+	private final int greensInRegulation;
+	private final int putts;
+	private final BigDecimal strokesGained;
 
 	public String getDisplay() {
 		return String.join(" - ", this.date.format(DateTimeFormatter.BASIC_ISO_DATE), this.course);
@@ -45,6 +50,11 @@ public class RoundSummary {
 		this.incomingHandicapIndex = round.getIncomingHandicapIndex();
 		this.handicapDifferential = round.getScoreDifferential();
 		this.transport = round.getTransport();
+		this.fairways = round.getFairways();
+		this.fairwaysInRegulation = round.getFairwaysInRegulation();
+		this.greensInRegulation = round.getGreensInRegulation();
+		this.putts = round.getPutts();
+		this.strokesGained = round.getStrokesGained();
 	}
 
 	public RoundSummary(RoundSummary other) {
@@ -63,5 +73,10 @@ public class RoundSummary {
 		this.incomingHandicapIndex = other.incomingHandicapIndex;
 		this.handicapDifferential = other.handicapDifferential;
 		this.transport = other.transport;
+		this.fairways = other.fairways;
+		this.fairwaysInRegulation = other.fairwaysInRegulation;
+		this.greensInRegulation = other.greensInRegulation;
+		this.putts = other.putts;
+		this.strokesGained = other.strokesGained;
 	}
 }
