@@ -21,8 +21,9 @@ public class RoundSummary {
 	private final int par;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
-	private final BigDecimal incomingHandicapIndex;
 	private final BigDecimal handicapDifferential;
+	private final BigDecimal incomingHandicapIndex;
+	private final BigDecimal resultantHandicapIndex;
 	private final String transport;
 	private final int fairways;
 	private final int fairwaysInRegulation;
@@ -34,7 +35,7 @@ public class RoundSummary {
 		return String.join(" - ", this.date.format(DateTimeFormatter.BASIC_ISO_DATE), this.course);
 	}
 
-	public RoundSummary(int number, GolfRound round) {
+	public RoundSummary(int number, GolfRound round, BigDecimal resultantHandicapIndex) {
 		this.roundId = number;
 		this.date = round.getDate();
 		this.course = round.getCourse().getName();
@@ -47,8 +48,9 @@ public class RoundSummary {
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();
-		this.incomingHandicapIndex = round.getIncomingHandicapIndex();
 		this.handicapDifferential = round.getScoreDifferential();
+		this.incomingHandicapIndex = round.getIncomingHandicapIndex();
+		this.resultantHandicapIndex = resultantHandicapIndex;
 		this.transport = round.getTransport();
 		this.fairways = round.getFairways();
 		this.fairwaysInRegulation = round.getFairwaysInRegulation();
@@ -70,8 +72,9 @@ public class RoundSummary {
 		this.par = other.par;
 		this.rating = other.rating;
 		this.slope = other.slope;
-		this.incomingHandicapIndex = other.incomingHandicapIndex;
 		this.handicapDifferential = other.handicapDifferential;
+		this.incomingHandicapIndex = other.incomingHandicapIndex;
+		this.resultantHandicapIndex = other.resultantHandicapIndex;
 		this.transport = other.transport;
 		this.fairways = other.fairways;
 		this.fairwaysInRegulation = other.fairwaysInRegulation;
