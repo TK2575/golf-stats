@@ -1,14 +1,10 @@
 package dev.tk2575.golfstats.core.course;
 
-import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public interface Course {
 
@@ -50,7 +46,7 @@ public interface Course {
 	}
 
 	default List<Tee> handicapOf(List<Golfer> golfers) {
-		return getTees().stream().map(t -> t.handicapOf(golfers)).collect(toList());
+		return getTees().stream().map(t -> t.handicapOf(golfers)).toList();
 	}
 
 }

@@ -123,7 +123,7 @@ public class HoleStream implements ObjectStream<Hole> {
 	}
 
 	public ShotStream allShots() {
-		return Shot.stream(this.stream.flatMap(Hole::getShots).collect(Collectors.toList()));
+		return Shot.stream(this.stream.flatMap(Hole::getShots).toList());
 	}
 
 	public Map<Integer, BigDecimal> strokesGainedByHole() {
