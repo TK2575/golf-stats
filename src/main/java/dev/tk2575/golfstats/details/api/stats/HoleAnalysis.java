@@ -17,6 +17,9 @@ public class HoleAnalysis {
 	private final int netStrokes;
 	private final int netScore;
 	private final BigDecimal strokesGained;
+	private final boolean fairwayInRegulation;
+	private final boolean greenInRegulation;
+	private final int putts;
 
 	public String getScoreName() {
 		if (this.score <= -3) {
@@ -50,5 +53,8 @@ public class HoleAnalysis {
 		this.strokesGained = hole.getStrokesGained();
 		this.netStrokes = hole.getNetStrokes();
 		this.netScore = hole.getNetScore();
+		this.fairwayInRegulation = hole.isFairwayInRegulation();
+		this.greenInRegulation = hole.isGreenInRegulation();
+		this.putts = hole.getPutts();
 	}
 }

@@ -36,10 +36,10 @@ class SimpleHoleScore implements Hole {
 		this.index = hole.getIndex();
 		this.par = hole.getPar();
 		this.strokes = hole.getStrokes();
-		this.fairwayInRegulation = hole.isFairwayInRegulation();
 		this.putts = hole.getPutts();
 		this.strokesAdjusted = Math.min(this.strokes, this.par + 2 + handicapStrokes);
 		this.netStrokes = this.strokesAdjusted - handicapStrokes;
+		this.fairwayInRegulation = hole.isFairwayPresent() && hole.isFairwayInRegulation();
 	}
 
 	SimpleHoleScore(Integer number, Integer index, Integer par, Integer strokes, boolean fairwayInRegulation, Integer putts) {
@@ -47,10 +47,10 @@ class SimpleHoleScore implements Hole {
 		this.index = index;
 		this.par = par;
 		this.strokes = strokes;
-		this.fairwayInRegulation = fairwayInRegulation;
 		this.putts = putts;
 		this.strokesAdjusted = this.strokes;
 		this.netStrokes = this.strokes;
+		this.fairwayInRegulation = this.isFairwayPresent() && fairwayInRegulation;
 
 	}
 }
