@@ -23,3 +23,4 @@ id,golfer,date,course,city,state,tees,rating,slope,duration,transport
 23,Will,8/6/2021,Robert T. Lynch GC,Brookline,MA,White,68.1,116,4:39,Walk
 24,Will,8/20/2021,Butter Brook GC,Westford,MA,White,68.6,120,4:57,Cart
 25,Will,8/28/2021,Sandy Burr CC,Wayland,MA,White,68.3,124,4:44,Cart
+26,Will,9/3/2021,Wayland CC,Wayland,MA,White,66.3,114,4:40,Walk

@@ -35,3 +35,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 34,Tom,8/6/2021,Robert T. Lynch GC,Brookline,MA,White,68.1,116,10:04,14:43,Walk (Push)
 35,Tom,8/20/2021,Butter Brook GC,Westford,MA,White,68.6,120,9:50,14:47,Cart
 36,Tom,8/28/2021,Sandy Burr CC,Wayland,MA,White,68.3,124,10:37,15:21,Cart
+37,Tom,9/3/2021,Wayland CC,Wayland,MA,White,66.3,114,10:40,15:19,Walk (Push)
