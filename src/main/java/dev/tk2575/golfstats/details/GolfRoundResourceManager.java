@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.details;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.details.parsers.Hole19JsonParser;
 import dev.tk2575.golfstats.details.parsers.HoleByHoleRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.ShotByShotRoundCSVParser;
 import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
@@ -45,6 +46,8 @@ public class GolfRoundResourceManager {
 		if (!files.isEmpty()) {
 			rounds.addAll(new ShotByShotRoundCSVParser(files).parse());
 		}
+
+		rounds.addAll(Hole19JsonParser.parse("data/hole19/hole19_export-tom.json"));
 		return rounds;
 	}
 }

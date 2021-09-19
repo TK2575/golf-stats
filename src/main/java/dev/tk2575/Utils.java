@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 
 import static java.math.RoundingMode.HALF_UP;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class Utils {
@@ -139,7 +138,7 @@ public class Utils {
 					new BufferedReader(new InputStreamReader(directoryStream))
 							.lines()
 							.filter(each -> each.endsWith(".csv"))
-							.collect(toList());
+							.toList();
 
 
 			InputStream fileStream;
