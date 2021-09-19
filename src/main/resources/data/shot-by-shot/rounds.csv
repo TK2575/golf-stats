@@ -36,3 +36,7 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 35,Tom,8/20/2021,Butter Brook GC,Westford,MA,White,68.6,120,9:50,14:47,Cart
 36,Tom,8/28/2021,Sandy Burr CC,Wayland,MA,White,68.3,124,10:37,15:21,Cart
 37,Tom,9/3/2021,Wayland CC,Wayland,MA,White,66.3,114,10:40,15:19,Walk (Push)
+38,Tom,9/5/2021,Miner Hills GC,Middletown,CT,Blue,58.1,95,13:42,15:38,Walk
+39,Tom,9/6/2021,Lyman Orchards GC (Jones),Middlefield,CT,Blue,72.0,129,10:09,14:47,Cart
+40,Tom,9/17/2021,Wellesley CC,Wellesley Hills,MA,White,71.0,129,13:00,17:23,Walk (Push)
+41,Tom,9/18/2021,Butter Brook GC,Westford,MA,White,68.6,120,11:27,16:19,Cart
