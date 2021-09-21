@@ -2,16 +2,18 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
-import dev.tk2575.golfstats.core.golfround.RoundMeta;
+import dev.tk2575.golfstats.core.golfround.HoleStream;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
+@ToString
 public class Hole19Round {
 	private String shareId;
 	private String startedAt;
@@ -26,6 +28,16 @@ public class Hole19Round {
 	private Long steps;
 	private List<Hole19Score> scores;
 
+	private List<Hole> holes = null;
+
+	public String getCourse() {
+		return course.getName();
+	}
+
+	public String getTee() {
+		return tee.getName();
+	}
+
 	private DateTimeFormatter dateTimeFormatter() {
 		return DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s z");
 	}
@@ -38,15 +50,42 @@ public class Hole19Round {
 		return LocalDateTime.parse(this.endedAt, dateTimeFormatter());
 	}
 
-	public GolfRound convert() {
-		//TODO need rating, slope, transport, and course location
+	public List<Hole> getHoles() {
+		if (this.holes == null) {
+			this.holes = scores.stream().map(Hole19Score::convert).sorted(Comparator.comparing(Hole::getNumber)).toList();
+		}
+		return this.holes;
+	}
 
-		//RoundMeta
-		RoundMeta meta = new RoundMeta();
+	private HoleStream holes() {
+		return Hole.stream(getHoles());
+	}
 
-		//List<Hole>
-		List<Hole> holes = scores.stream().map(Hole19Score::convert).toList();
+	public boolean sameAs(GolfRound simpleRound) {
+		if (!getStartedAt().toLocalDate().equals(simpleRound.getDate())) {
+			return false;
+		}
 
-		return GolfRound.of(meta, holes);
+		if (!simpleRound.getGolfer().getName().equalsIgnoreCase("Tom")) {
+			return false;
+		}
+
+		if (!simpleRound.getCourse().getName().split("\\s+")[0].equalsIgnoreCase(getCourse().split("\\s+")[0])) {
+			return false;
+		}
+
+		if (!simpleRound.isNineHoleRound() == holes().isNineHoleRound()) {
+			return false;
+		}
+
+		if (!Objects.equals(simpleRound.getStrokes(), holes().totalStrokes())) {
+			return false;
+		}
+
+		if (!Objects.equals(simpleRound.getPutts(), holes().totalPutts())) {
+			return false;
+		}
+
+		return true;
 	}
 }

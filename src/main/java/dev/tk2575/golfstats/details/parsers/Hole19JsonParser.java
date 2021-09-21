@@ -2,7 +2,6 @@ package dev.tk2575.golfstats.details.parsers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.tk2575.golfstats.core.golfround.GolfRound;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,8 +22,6 @@ public class Hole19JsonParser {
 		assert input != null;
 		InputStreamReader reader = new InputStreamReader(input);
 		Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
-		List<Hole19Round> data = gson.fromJson(reader, Hole19Export.class).getData();
-		return data;
-//		return data.stream().map(Hole19Round::convert).toList();
+		return gson.fromJson(reader, Hole19Export.class).getData();
 	}
 }

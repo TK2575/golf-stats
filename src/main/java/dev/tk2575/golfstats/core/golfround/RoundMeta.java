@@ -24,7 +24,7 @@ public class RoundMeta {
 	private final String teeName;
 	private final String transport;
 
-	RoundMeta(GolfRound round) {
+	public RoundMeta(GolfRound round) {
 		this.date = round.getDate();
 		this.duration = round.getDuration();
 		this.golfer = round.getGolfer();

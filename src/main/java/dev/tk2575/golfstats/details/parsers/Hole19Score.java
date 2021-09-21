@@ -1,13 +1,15 @@
 package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.golfstats.core.golfround.Hole;
+import lombok.*;
 
+@ToString
 public class Hole19Score {
 	private Hole19Hole hole;
-	private Long totalOfStrokes;
-	private Long totalOfPutts;
-	private Long totalOfSandShots;
-	private Long totalOfPenalties;
+	private Integer totalOfStrokes;
+	private Integer totalOfPutts;
+	private Integer totalOfSandShots;
+	private Integer totalOfPenalties;
 	private String fairwayHit;
 	private boolean greenInRegulation;
 	private boolean scrambling;
@@ -16,7 +18,11 @@ public class Hole19Score {
 	private boolean upAndDown;
 	private boolean possibleUpAndDown;
 
-	public static Hole convert(Hole19Score hole19Score) {
+	public boolean isFairwayHit() {
+		return this.fairwayHit.equalsIgnoreCase("target");
+	}
 
+	public Hole convert() {
+		return Hole.of(hole.getSequence(), hole.getStrokeIndex(), hole.getPar(), totalOfStrokes, isFairwayHit(), totalOfPutts);
 	}
 }
