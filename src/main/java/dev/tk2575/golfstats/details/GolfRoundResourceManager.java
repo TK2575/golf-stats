@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.details;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.details.parsers.*;
 import lombok.*;
@@ -53,12 +54,13 @@ public class GolfRoundResourceManager {
 		return rounds.stream().sorted(Comparator.comparing((GolfRound each) -> each.getGolfer().getName()).thenComparing(GolfRound::getDate)).toList();
 	}
 
-	private List<GolfRound> join(@NonNull List<GolfRound> simpleRounds, @NonNull List<Hole19Round> hole19Rounds) {
+	public static List<GolfRound> join(@NonNull List<GolfRound> simpleRounds, @NonNull List<Hole19Round> hole19Rounds) {
 		if (hole19Rounds.isEmpty()) {
 			return simpleRounds;
 		}
 
 		List<GolfRound> results = new ArrayList<>();
+		List<Hole> partialRound = null;
 		GolfRound simpleRound;
 		Hole19Round hole19Round;
 		//expects arguments to already be sorted
@@ -70,8 +72,23 @@ public class GolfRoundResourceManager {
 				hole19Round = hole19Rounds.get(j);
 
 				if (hole19Round.sameAs(simpleRound)) {
-					results.add(GolfRound.of(new RoundMeta(simpleRound), hole19Round.getHoles()));
-					i++;
+					if (!simpleRound.isNineHoleRound() && hole19Round.isNineHoleRound()) {
+						if (partialRound == null) {
+							partialRound = Hole.stream(hole19Round.getHoles()).shuffleIndexesOdd().toList();
+						}
+						else {
+							partialRound.addAll(Hole.stream(hole19Round.getHoles()).shuffleIndexesEven().toList());
+						}
+						partialRound.addAll(hole19Round.getHoles());
+						if (partialRound.size() == 18) {
+							results.add(GolfRound.of(new RoundMeta(simpleRound), partialRound));
+							i++;
+						}
+					}
+					else {
+						results.add(GolfRound.of(new RoundMeta(simpleRound), hole19Round.getHoles()));
+						i++;
+					}
 					j++;
 				}
 				else {

@@ -30,6 +30,10 @@ public class Hole19Round {
 
 	private List<Hole> holes = null;
 
+	public boolean isNineHoleRound() {
+		return holes().isNineHoleRound();
+	}
+
 	public String getCourse() {
 		return course.getName();
 	}
@@ -71,18 +75,6 @@ public class Hole19Round {
 		}
 
 		if (!simpleRound.getCourse().getName().split("\\s+")[0].equalsIgnoreCase(getCourse().split("\\s+")[0])) {
-			return false;
-		}
-
-		if (!simpleRound.isNineHoleRound() == holes().isNineHoleRound()) {
-			return false;
-		}
-
-		if (!Objects.equals(simpleRound.getStrokes(), holes().totalStrokes())) {
-			return false;
-		}
-
-		if (!Objects.equals(simpleRound.getPutts(), holes().totalPutts())) {
 			return false;
 		}
 

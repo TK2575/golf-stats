@@ -167,4 +167,12 @@ public class HoleStream implements ObjectStream<Hole> {
 		}
 		return new HoleStream(results);
 	}
+
+	public HoleStream shuffleIndexesOdd() {
+	
+	}
+
+	public HoleStream shuffleIndexesEven() {
+
+	}
 }
