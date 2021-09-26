@@ -28,7 +28,7 @@ class AntiWHSHandicapIndex implements HandicapIndex {
 		List<GolfRound> compiledRounds =
 				GolfRound.stream(rounds)
 						.compileTo18HoleRounds()
-						.asList();
+						.toList();
 
 		BigDecimal indexCursor = BigDecimal.ZERO;
 		List<GolfRound> adjusted = new ArrayList<>();

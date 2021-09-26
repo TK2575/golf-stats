@@ -29,7 +29,7 @@ class MedianHandicap implements HandicapIndex {
 				GolfRound.stream(rounds)
 						.compileTo18HoleRounds()
 						.sortOldestToNewest()
-						.asList();
+						.toList();
 
 		BigDecimal indexCursor = BigDecimal.ZERO;
 		List<GolfRound> adjusted = new ArrayList<>();

@@ -50,7 +50,6 @@ public interface ObjectStream<T> extends Stream<T> {
 	default Stream<T> onClose(Runnable closeHandler) { return this.getStream().onClose(closeHandler); }
 	default void close() { this.getStream().close(); }
 
-	default List<T> asList() { return getStream().collect(Collectors.toList()); }
 	default Long sumLong(Function<T, Long> field) { return getStream().map(field).reduce(0L, Long::sum); }
 	default Integer sumInteger(Function<T, Integer> field) { return getStream().map(field).reduce(0, Integer::sum); }
 	default BigDecimal sumBigDecimal(Function<T, BigDecimal> field) { return getStream().map(field).reduce(BigDecimal.ZERO, BigDecimal::add); }

@@ -19,7 +19,7 @@ public class Hole19Score {
 	private boolean possibleUpAndDown;
 
 	public boolean isFairwayHit() {
-		return this.fairwayHit.equalsIgnoreCase("target");
+		return this.fairwayHit != null && this.fairwayHit.equalsIgnoreCase("target");
 	}
 
 	public Hole convert() {

@@ -35,7 +35,7 @@ public class HoleStream implements ObjectStream<Hole> {
 	}
 
 	public HoleStream validate() {
-		List<Hole> holes = this.asList();
+		List<Hole> holes = this.toList();
 		if (holes == null || holes.isEmpty()) {
 			throw new IllegalArgumentException("holes collection cannot be empty");
 		}
@@ -47,11 +47,16 @@ public class HoleStream implements ObjectStream<Hole> {
 		if (holes.stream().collect(groupingBy(Hole::getNumber, counting())).values().stream().anyMatch(l -> l > 1)) {
 			throw new IllegalArgumentException("found multiple holes with the same number");
 		}
-		if (holes.stream().collect(groupingBy(Hole::getIndex, counting())).values().stream().anyMatch(l -> l > 1)) {
+
+		if (new HoleStream(holes).duplicateIndexes()) {
 			throw new IllegalArgumentException("found multiple holes with the same index");
 		}
 
 		return new HoleStream(holes);
+	}
+
+	public boolean duplicateIndexes() {
+		return this.stream.collect(groupingBy(Hole::getIndex, counting())).values().stream().anyMatch(l -> l > 1);
 	}
 
 	public HoleStream sortByNumber() {
@@ -119,7 +124,7 @@ public class HoleStream implements ObjectStream<Hole> {
 		List<Hole> list = new ArrayList<>();
 		list.addAll(round1.getHoles().reNumber(1).reIndex(1).toList());
 		list.addAll(round2.getHoles().reNumber(10).reIndex(2).toList());
-		return new HoleStream(list).validate().asList();
+		return new HoleStream(list).validate().toList();
 	}
 
 	public ShotStream allShots() {
@@ -168,11 +173,32 @@ public class HoleStream implements ObjectStream<Hole> {
 		return new HoleStream(results);
 	}
 
-	public HoleStream shuffleIndexesOdd() {
-	
+	public HoleStream shuffleNineHoleIndexesOdd() {
+		return shuffleNineHoleIndexes(1);
 	}
 
-	public HoleStream shuffleIndexesEven() {
+	public HoleStream shuffleNineHoleIndexesEven() {
+		return shuffleNineHoleIndexes(2);
+	}
 
+	private HoleStream shuffleNineHoleIndexes(int start) {
+		List<Hole> holes = toList();
+		if (new HoleStream(holes).isNineHoleRound()) {
+			return new HoleStream(holes).reIndex(start).sortByNumber();
+		}
+		return new HoleStream(holes);
+	}
+
+	public HoleStream shuffleEighteenHoleIndexes() {
+		List<Hole> holes = toList();
+		if (!new HoleStream(holes).isNineHoleRound()) {
+			Map<Boolean, List<Hole>> groups = holes.stream().collect(Collectors.partitioningBy(hole -> hole.getNumber() > 9));
+			List<List<Hole>> subsets = new ArrayList<>(groups.values());
+
+			List<Hole> result = new ArrayList<>(new HoleStream(subsets.get(0)).shuffleNineHoleIndexesOdd().toList());
+			result.addAll(new HoleStream(subsets.get(1)).shuffleNineHoleIndexesEven().toList());
+			return new HoleStream(result).sortByNumber();
+		}
+		return new HoleStream(holes);
 	}
 }

@@ -34,7 +34,7 @@ class LastNRoundsTrendingHandicap implements HandicapIndex {
 				.sortNewestToOldest()
 				.limit(maxSize)
 				.sortOldestToNewest()
-				.asList();
+				.toList();
 
 		BigDecimal indexCursor = BigDecimal.ZERO;
 		List<GolfRound> adjusted = new ArrayList<>();

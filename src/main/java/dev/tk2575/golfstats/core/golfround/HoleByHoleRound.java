@@ -54,7 +54,7 @@ class HoleByHoleRound implements GolfRound {
 		this.course = round.getCourse();
 		this.transport = round.getTransport();
 
-		this.holes = Hole.stream(holes).validate().sortByNumber().asList();
+		this.holes = Hole.stream(holes).validate().sortByNumber().toList();
 		this.tee = Tee.of(this.golfer, round.getTeeName(), round.getRating(), round.getSlope(), holes().getPar());
 
 		this.strokes = holes().totalStrokes();

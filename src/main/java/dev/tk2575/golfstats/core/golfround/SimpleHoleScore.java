@@ -5,6 +5,7 @@ import lombok.*;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE, toBuilder = true)
+@EqualsAndHashCode
 class SimpleHoleScore implements Hole {
 
 	private final Integer number;
