@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static dev.tk2575.Utils.readCSVFilesInDirectory;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
@@ -52,7 +53,7 @@ public class GolfRoundResourceManager {
 			rounds.addAll(new ShotByShotRoundCSVParser(files).parse());
 		}
 
-		return rounds.stream().sorted(Comparator.comparing((GolfRound each) -> each.getGolfer().getName()).thenComparing(GolfRound::getDate)).toList();
+		return rounds.stream().sorted(comparing((GolfRound each) -> each.getGolfer().getName()).thenComparing(GolfRound::getDate)).toList();
 	}
 
 	static List<GolfRound> join(@NonNull List<GolfRound> simpleRounds, @NonNull List<Hole19Round> hole19Rounds) {
@@ -71,7 +72,7 @@ public class GolfRoundResourceManager {
 			String logMessage = String.join("-", simpleRound.getDate().toString(), simpleRound.getCourse().getName());
 			log.debug(logMessage);
 
-			if ("2016-05-22-Oaks North (East/South)".equals(logMessage)) {
+			if ("2015-05-10-Balboa Park (9)".equals(logMessage)) {
 				log.debug("found it");
 			}
 
@@ -89,10 +90,11 @@ public class GolfRoundResourceManager {
 							partialRound = new ArrayList<>(Hole.stream(holes).shuffleNineHoleIndexesOdd().toList());
 						}
 						else {
-							partialRound.addAll(Hole.stream(holes).shuffleNineHoleIndexesEven().toList());
+							partialRound = combine(partialRound, Hole.stream(holes).shuffleNineHoleIndexesEven().toList());
 						}
 						if (partialRound.size() == 18) {
 							results.add(GolfRound.of(new RoundMeta(simpleRound), partialRound));
+							partialRound = null;
 							i++;
 						}
 					}
@@ -119,6 +121,18 @@ public class GolfRoundResourceManager {
 
 		return results;
 
+	}
+
+	private static List<Hole> combine(List<Hole> firstNine, List<Hole> secondNine) {
+		List<Hole> results = new ArrayList<>(firstNine);
+		results.sort(comparing(Hole::getNumber));
+		results.addAll(
+				secondNine.stream()
+						.sorted(comparing(Hole::getNumber))
+						.map(each -> each.getNumber() < 10 ? each.setNumber(each.getNumber() + 9) : each)
+						.toList()
+		);
+		return results;
 	}
 
 	private static List<Hole> cleanHolesData(Hole19Round hole19Round) {
