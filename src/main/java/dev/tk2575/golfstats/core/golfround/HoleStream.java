@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,7 +57,15 @@ public class HoleStream implements ObjectStream<Hole> {
 	}
 
 	public boolean duplicateIndexes() {
-		return this.stream.collect(groupingBy(Hole::getIndex, counting())).values().stream().anyMatch(l -> l > 1);
+		return duplicateFieldValue(Hole::getIndex);
+	}
+
+	public boolean duplicateNumbers() {
+		return duplicateFieldValue(Hole::getNumber);
+	}
+
+	private boolean duplicateFieldValue(Function<Hole, Integer> fieldReference) {
+		return this.stream.collect(groupingBy(fieldReference, counting())).values().stream().anyMatch(l -> l > 1);
 	}
 
 	public HoleStream sortByNumber() {

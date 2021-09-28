@@ -64,20 +64,4 @@ public class Hole19Round {
 	private HoleStream holes() {
 		return Hole.stream(getHoles());
 	}
-
-	public boolean sameAs(GolfRound simpleRound) {
-		if (!getStartedAt().toLocalDate().equals(simpleRound.getDate())) {
-			return false;
-		}
-
-		if (!simpleRound.getGolfer().getName().equalsIgnoreCase("Tom")) {
-			return false;
-		}
-
-		if (!simpleRound.getCourse().getName().replace("The ", "").split("\\s+")[0].equalsIgnoreCase(getCourse().replace("The ", "").split("\\s+")[0])) {
-			return false;
-		}
-
-		return true;
-	}
 }

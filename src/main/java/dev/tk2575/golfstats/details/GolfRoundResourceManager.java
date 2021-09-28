@@ -9,12 +9,10 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -61,95 +59,98 @@ public class GolfRoundResourceManager {
 			return simpleRounds;
 		}
 
-		List<GolfRound> results = new ArrayList<>();
-		List<Hole> partialRound = null;
-		GolfRound simpleRound;
-		Hole19Round hole19Round;
-		//expects arguments to already be sorted
-		int i = 0, j = 0;
-		while (i < simpleRounds.size()) {
-			simpleRound = simpleRounds.get(i);
-			String logMessage = String.join("-", simpleRound.getDate().toString(), simpleRound.getCourse().getName());
-			log.debug(logMessage);
+		Map<String, List<Hole19Round>> hole19Map =
+				hole19Rounds.stream()
+						.filter(each -> !each.getHoles().isEmpty())
+						.collect(groupingBy(GolfRoundResourceManager::roundKey));
 
-			if ("2015-05-10-Balboa Park (9)".equals(logMessage)) {
+		List<GolfRound> results = new ArrayList<>();
+		List<Hole19Round> roundList;
+		String key;
+
+		for (GolfRound simpleRound : simpleRounds) {
+			key = roundKey(simpleRound);
+			roundList = hole19Map.get(key);
+
+			if ("2020-06-26-Newton Commonwealth Golf Course".equals(key)) {
 				log.debug("found it");
 			}
 
-			if (j < hole19Rounds.size()) {
-				hole19Round = hole19Rounds.get(j);
-				if (hole19Round.getHoles().isEmpty()) {
-					j++;
-				}
-
-				else if (hole19Round.sameAs(simpleRound)) {
-					List<Hole> holes = cleanHolesData(hole19Round);
-
-					if (!simpleRound.isNineHoleRound() && hole19Round.isNineHoleRound()) {
-						if (partialRound == null) {
-							partialRound = new ArrayList<>(Hole.stream(holes).shuffleNineHoleIndexesOdd().toList());
-						}
-						else {
-							partialRound = combine(partialRound, Hole.stream(holes).shuffleNineHoleIndexesEven().toList());
-						}
-						if (partialRound.size() == 18) {
-							results.add(GolfRound.of(new RoundMeta(simpleRound), partialRound));
-							partialRound = null;
-							i++;
-						}
-					}
-					else {
-						results.add(GolfRound.of(new RoundMeta(simpleRound), holes));
-						i++;
-					}
-					j++;
-				}
-				else {
-					if (simpleRound.getDate().isBefore(hole19Round.getStartedAt().toLocalDate())) {
-						i++;
-					}
-					else {
-						j++;
-					}
-				}
+			if (isValid(roundList, key)) {
+				results.add(GolfRound.of(new RoundMeta(simpleRound), cleanHoleData(roundList)));
+				hole19Map.remove(key);
 			}
 			else {
 				results.add(simpleRound);
-				i++;
 			}
 		}
 
+		//TODO what's left in hole19Map?
+		log.info("Found the following rounds orphaned in Hole 19 export");
+		hole19Map.values().stream().flatMap(Collection::stream).forEach(each -> log.info(roundKey(each)));
+
 		return results;
 
 	}
 
-	private static List<Hole> combine(List<Hole> firstNine, List<Hole> secondNine) {
-		List<Hole> results = new ArrayList<>(firstNine);
-		results.sort(comparing(Hole::getNumber));
-		results.addAll(
-				secondNine.stream()
-						.sorted(comparing(Hole::getNumber))
-						.map(each -> each.getNumber() < 10 ? each.setNumber(each.getNumber() + 9) : each)
-						.toList()
-		);
-		return results;
-	}
-
-	private static List<Hole> cleanHolesData(Hole19Round hole19Round) {
-		List<Hole> holes = hole19Round.getHoles();
-
-		if (holes.size() > 9 && holes.size() < 18) {
-			holes = new ArrayList<>(holes.stream().limit(9).toList());
+	private static boolean isValid(List<Hole19Round> roundList, String key) {
+		if (roundList == null) {
+			log.warn(String.format("Could not find Hole19 data for %s", key));
+			return false;
+		}
+		if (roundList.size() > 2) {
+			log.warn(String.format("Found more than two rounds for %s, skipping", key));
+			return false;
 		}
 
+		long holeCount = roundList.stream().map(Hole19Round::getHoles).mapToLong(Collection::size).sum();
+		if (holeCount == 0) {
+			log.warn(String.format("Hole19 export did not include any hole data for %s", key));
+			return false;
+		}
+		if (holeCount > 18) {
+			log.warn(String.format("Found more than 18 holes for %s, skipping", key));
+			return false;
+		}
+		return true;
+	}
+
+	private static List<Hole> cleanHoleData(List<Hole19Round> input) {
+		List<Hole> holes = new ArrayList<>(input.stream().map(Hole19Round::getHoles).flatMap(Collection::stream).toList());
+		if (holes.size() > 9 && holes.size() < 18) {
+			holes = new ArrayList<>(holes.subList(0,9));
+		}
+		if (new HoleStream(holes).duplicateNumbers()) {
+			holes = reassignHoleNumbers(holes);
+		}
 		if (holes.stream().map(Hole::getIndex).anyMatch(index -> index == 0)) {
 			holes = randomlyAssignIndexes(holes);
 		}
-
 		if (new HoleStream(holes).duplicateIndexes()) {
 			holes = new HoleStream(holes).shuffleEighteenHoleIndexes().toList();
 		}
 		return holes;
+	}
+
+	//FIXME
+	//round keys need to be specific enough to separate Temecula Creek Inn rounds on the same day but combine Ramblewood rounds on the same day
+
+	private static String roundKey(Hole19Round round) {
+		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse());
+	}
+
+	private static String roundKey(GolfRound round) {
+		return String.join("-", round.getDate().toString(), round.getCourse().getName());
+	}
+
+	private static List<Hole> reassignHoleNumbers(List<Hole> holes) {
+		List<Hole> results = new ArrayList<>(holes.subList(0,9).stream().toList());
+		results.addAll(
+				holes.subList(9,holes.size()).stream()
+						.map(each -> each.getNumber() < 10 ? each.setNumber(each.getNumber() + 9) : each)
+						.toList()
+		);
+		return results;
 	}
 
 	private static List<Hole> randomlyAssignIndexes(List<Hole> holes) {
