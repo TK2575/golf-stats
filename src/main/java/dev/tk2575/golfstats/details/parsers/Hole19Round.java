@@ -74,7 +74,7 @@ public class Hole19Round {
 			return false;
 		}
 
-		if (!simpleRound.getCourse().getName().split("\\s+")[0].equalsIgnoreCase(getCourse().split("\\s+")[0])) {
+		if (!simpleRound.getCourse().getName().replace("The ", "").split("\\s+")[0].equalsIgnoreCase(getCourse().replace("The ", "").split("\\s+")[0])) {
 			return false;
 		}
 
