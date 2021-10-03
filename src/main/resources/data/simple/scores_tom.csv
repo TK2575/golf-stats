@@ -10,7 +10,7 @@ date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways
 8/11/2014,McCullough's Emerald Golf Links,White,67.8,119,71,,Cart,95,5,13,3,36,FALSE,Tom
 8/15/2014,Sand Barrens Golf Club (South-North),,34.9,125,36,,Cart,45,7,7,2,18,TRUE,Tom
 8/27/2014,Pine Meadows Golf Club,White,33.5,105,35,2:23,Cart,51,3,6,0,18,TRUE,Tom
-8/30/2014,Butter Brook Golf Course,White,68.6,120,72,4:56,Cart,93,10,13,4,34,FALSE,Tom
+8/30/2014,Butter Brook Golf Club,White,68.6,120,72,4:56,Cart,93,10,13,4,34,FALSE,Tom
 8/31/2014,Lyman Orchards Golf Club (Player),White,68.9,129,71,5:27,Cart,91,6,13,5,36,FALSE,Tom
 9/13/2014,Marine Park Golf Course,White,35.6,125,35,2:54,Cart,54,2,7,0,18,TRUE,Tom
 9/14/2014,Ramblewood Country Club (Red-White),White,35.2,124,36,2:28,Cart,51,4,7,0,15,TRUE,Tom
@@ -134,4 +134,4 @@ date,course,tees,rating,slope,par,duration,transport,score,fairways_hit,fairways
 8/22/2020,Leo J Martin Memorial Golf Course,Blue,34.6,116,36,2:15,Walk (Push),42,3,7,6,19,TRUE,Tom
 8/26/2020,Wayland Country Club,Blue,68.5,118,70,4:00,Walk (Push),81,3,14,6,33,FALSE,Tom
 8/30/2020,Lyman Orchards Golf Club (Apple Nine),Back,28.2,87,29,2:00,Walk,37,1,2,7,20,TRUE,Tom
-8/31/2020,Sandy Burr Country Club, White,68.3,124,72,4:05,Walk (Push),83,8,14,5,31,FALSE,Tom
+8/31/2020,Sandy Burr Country Club,White,68.3,124,72,4:05,Walk (Push),83,8,14,5,31,FALSE,Tom

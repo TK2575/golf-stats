@@ -72,10 +72,6 @@ public class GolfRoundResourceManager {
 			key = roundKey(simpleRound);
 			roundList = hole19Map.get(key);
 
-			if ("2020-06-26-Newton Commonwealth Golf Course".equals(key)) {
-				log.debug("found it");
-			}
-
 			if (isValid(roundList, key)) {
 				results.add(GolfRound.of(new RoundMeta(simpleRound), cleanHoleData(roundList)));
 				hole19Map.remove(key);
@@ -131,9 +127,6 @@ public class GolfRoundResourceManager {
 		}
 		return holes;
 	}
-
-	//FIXME
-	//round keys need to be specific enough to separate Temecula Creek Inn rounds on the same day but combine Ramblewood rounds on the same day
 
 	private static String roundKey(Hole19Round round) {
 		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse());

@@ -1,20 +1,22 @@
 package dev.tk2575.golfstats.details.parsers;
 
-import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @ToString
 public class Hole19Round {
+	private static final ZoneId EST_TIMEZONE = ZoneId.of("America/New_York");
+
 	private String shareId;
 	private String startedAt;
 	private String endedAt;
@@ -47,11 +49,11 @@ public class Hole19Round {
 	}
 
 	public LocalDateTime getStartedAt() {
-		return LocalDateTime.parse(this.startedAt, dateTimeFormatter());
+		return ZonedDateTime.parse(this.startedAt, dateTimeFormatter()).withZoneSameInstant(EST_TIMEZONE).toLocalDateTime();
 	}
 
 	public LocalDateTime getEndedAt() {
-		return LocalDateTime.parse(this.endedAt, dateTimeFormatter());
+		return ZonedDateTime.parse(this.endedAt, dateTimeFormatter()).withZoneSameInstant(EST_TIMEZONE).toLocalDateTime();
 	}
 
 	public List<Hole> getHoles() {
