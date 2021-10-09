@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.core.course;
 
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +13,9 @@ public interface Course {
 
 	String getLocation();
 
-	Collection<Tee> getTees();
+	List<Tee> getTees();
+
+	Course setTees(@NonNull List<Tee> tees);
 
 	static Course of(String courseName) {
 		return new SimpleCourse(courseName);

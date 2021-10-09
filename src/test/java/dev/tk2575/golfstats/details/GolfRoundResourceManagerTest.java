@@ -36,16 +36,25 @@ class GolfRoundResourceManagerTest {
 			join = joinRoundsMap.get(roundKey);
 			assertNotNull(join);
 			assertEquals(each.getStrokes(), join.getStrokes());
-			if (join.getHoles().isEmpty()) {
-				System.out.println("Could not find hole data for " + roundKey);
-			}
 		}
 
-
+		for (Hole19Round each : hole19Rounds) {
+			String roundKey = roundKey(each);
+			System.out.println(roundKey);
+			join = joinRoundsMap.get(roundKey);
+			assertNotNull(join);
+			if (each.getHoles().size() == join.getHoleCount()) {
+				assertEquals(each.getStrokes(), join.getStrokes());
+			}
+		}
 	}
 
 	private String roundKey(GolfRound round) {
-		return String.join("-", round.getDate().toString(), round.getCourse().getName());
+		return String.join("-", round.getDate().toString(), round.getGolfer().getName(), round.getCourse().getName());
+	}
+
+	private String roundKey(Hole19Round round) {
+		return String.join("-", round.getStartedAt().toLocalDate().toString(), "Tom", round.getCourse());
 	}
 
 }

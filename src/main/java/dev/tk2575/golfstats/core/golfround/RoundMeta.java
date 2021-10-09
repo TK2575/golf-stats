@@ -8,6 +8,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -33,6 +34,17 @@ public class RoundMeta {
 		this.slope = round.getSlope();
 		this.teeName = round.getTee().getName();
 		this.transport = round.getTransport();
+	}
+
+	public RoundMeta(@NonNull Golfer golfer, @NonNull LocalDateTime started, @NonNull LocalDateTime ended, @NonNull Course course, @NonNull Tee tee) {
+		this.date = started.toLocalDate();
+		this.duration = Duration.between(started, ended);
+		this.golfer = golfer;
+		this.course = course;
+		this.rating = tee.getRating();
+		this.slope = tee.getSlope();
+		this.teeName = tee.getName();
+		this.transport = "Unknown";
 	}
 
 	static RoundMeta compositeOf(GolfRound round1, GolfRound round2) {

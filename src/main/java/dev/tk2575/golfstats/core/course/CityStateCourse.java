@@ -8,10 +8,13 @@ import java.util.List;
 
 import static dev.tk2575.Utils.isNullOrBlank;
 
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 class CityStateCourse implements Course {
 
-	@Getter private final String name;
-	@Getter private final List<Tee> tees;
+	@Getter
+	private final String name;
+	@Getter
+	private final List<Tee> tees;
 	private final String city;
 	private final String stateAbbrev;
 
@@ -33,5 +36,10 @@ class CityStateCourse implements Course {
 	@Override
 	public String getLocation() {
 		return String.format("%s, %s", this.city, this.stateAbbrev);
+	}
+
+	@Override
+	public Course setTees(@NonNull List<Tee> tees) {
+		return this.toBuilder().tees(tees).build();
 	}
 }

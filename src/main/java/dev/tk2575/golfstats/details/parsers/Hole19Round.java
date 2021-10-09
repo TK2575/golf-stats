@@ -66,4 +66,8 @@ public class Hole19Round {
 	private HoleStream holes() {
 		return Hole.stream(getHoles());
 	}
+
+	public int getStrokes() {
+		return Hole.stream(getHoles()).totalStrokes();
+	}
 }

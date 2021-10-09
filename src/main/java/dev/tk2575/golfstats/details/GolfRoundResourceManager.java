@@ -1,5 +1,7 @@
 package dev.tk2575.golfstats.details;
 
+import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;
@@ -59,39 +61,89 @@ public class GolfRoundResourceManager {
 			return simpleRounds;
 		}
 
+		/*@formatter:off*/
 		Map<String, List<Hole19Round>> hole19Map =
 				hole19Rounds.stream()
 						.filter(each -> !each.getHoles().isEmpty())
 						.collect(groupingBy(GolfRoundResourceManager::roundKey));
+		/*@formatter:on*/
 
+		Map<String, Course> courseTeeMap = new HashMap<>();
+		//TODO add courses/tees to courseTeeMap not represented in simpleround data
 		List<GolfRound> results = new ArrayList<>();
-		List<Hole19Round> roundList;
-		String key;
 
 		for (GolfRound simpleRound : simpleRounds) {
-			key = roundKey(simpleRound);
-			roundList = hole19Map.get(key);
-
-			if (isValid(roundList, key)) {
-				results.add(GolfRound.of(new RoundMeta(simpleRound), cleanHoleData(roundList)));
-				hole19Map.remove(key);
+			if (simpleRound.getGolfer().getName().equalsIgnoreCase("Tom")) {
+				results.add(rightJoin(simpleRound, hole19Map));
 			}
 			else {
 				results.add(simpleRound);
 			}
+			courseTeeMap.put(roundTeeKey(simpleRound), simpleRound.getCourse().setTees(List.of(simpleRound.getTee())));
 		}
 
-		//TODO what's left in hole19Map?
-		log.info("Found the following rounds orphaned in Hole 19 export");
-		hole19Map.values().stream().flatMap(Collection::stream).forEach(each -> log.info(roundKey(each)));
+		GolfRound round;
+		Golfer tom = Golfer.newGolfer("Tom");
+		for (List<Hole19Round> holeList : hole19Map.values()) {
+			round = createRound(tom, holeList, courseTeeMap);
+			if (round != null) {
+				results.add(round);
+			}
+		}
 
 		return results;
-
 	}
 
-	private static boolean isValid(List<Hole19Round> roundList, String key) {
+	private static String roundKey(Hole19Round round) {
+		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse());
+	}
+
+	private static String roundKey(GolfRound round) {
+		return String.join("-", round.getDate().toString(), round.getCourse().getName());
+	}
+
+	private static String roundTeeKey(GolfRound round) {
+		return String.join("-", roundKey(round), round.getTee().getName());
+	}
+
+	private static String roundTeeKey(Hole19Round round) {
+		return String.join("-", roundKey(round), round.getTee());
+	}
+
+	private static GolfRound createRound(Golfer golfer, List<Hole19Round> holeList, Map<String, Course> courseTeeMap) {
+		GolfRound result = null;
+		if (isValid(holeList)) {
+			Hole19Round round = holeList.get(0);
+			Course course = courseTeeMap.get(roundTeeKey(round));
+			if (course != null) {
+				RoundMeta meta = new RoundMeta(golfer, round.getStartedAt(), round.getEndedAt(), course, course.getTees().get(0));
+				result = GolfRound.of(meta, cleanHoleData(holeList));
+			}
+		}
+		return result;
+	}
+
+	private static GolfRound rightJoin(GolfRound simpleRound, Map<String, List<Hole19Round>> hole19Map) {
+		String key = roundKey(simpleRound);
+		List<Hole19Round> roundList = hole19Map.get(key);
+		if (isValid(roundList, key)) {
+			hole19Map.remove(key);
+			return GolfRound.of(new RoundMeta(simpleRound), cleanHoleData(roundList));
+
+		}
+		return simpleRound;
+	}
+
+	private static boolean isValid(List<Hole19Round> roundList) {
+		if (roundList != null && !roundList.isEmpty()) {
+			return isValid(roundList, roundKey(roundList.get(0)));
+		}
+		return false;
+	}
+
+	private static boolean isValid(List<Hole19Round> roundList, @NonNull String key) {
 		if (roundList == null) {
-			log.warn(String.format("Could not find Hole19 data for %s", key));
+			log.debug(String.format("Could not find Hole19 data for %s", key));
 			return false;
 		}
 		if (roundList.size() > 2) {
@@ -101,7 +153,7 @@ public class GolfRoundResourceManager {
 
 		long holeCount = roundList.stream().map(Hole19Round::getHoles).mapToLong(Collection::size).sum();
 		if (holeCount == 0) {
-			log.warn(String.format("Hole19 export did not include any hole data for %s", key));
+			log.debug(String.format("Hole19 export did not include any hole data for %s", key));
 			return false;
 		}
 		if (holeCount > 18) {
@@ -114,7 +166,7 @@ public class GolfRoundResourceManager {
 	private static List<Hole> cleanHoleData(List<Hole19Round> input) {
 		List<Hole> holes = new ArrayList<>(input.stream().map(Hole19Round::getHoles).flatMap(Collection::stream).toList());
 		if (holes.size() > 9 && holes.size() < 18) {
-			holes = new ArrayList<>(holes.subList(0,9));
+			holes = new ArrayList<>(holes.subList(0, 9));
 		}
 		if (new HoleStream(holes).duplicateNumbers()) {
 			holes = reassignHoleNumbers(holes);
@@ -128,21 +180,9 @@ public class GolfRoundResourceManager {
 		return holes;
 	}
 
-	private static String roundKey(Hole19Round round) {
-		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse());
-	}
-
-	private static String roundKey(GolfRound round) {
-		return String.join("-", round.getDate().toString(), round.getCourse().getName());
-	}
-
 	private static List<Hole> reassignHoleNumbers(List<Hole> holes) {
-		List<Hole> results = new ArrayList<>(holes.subList(0,9).stream().toList());
-		results.addAll(
-				holes.subList(9,holes.size()).stream()
-						.map(each -> each.getNumber() < 10 ? each.setNumber(each.getNumber() + 9) : each)
-						.toList()
-		);
+		List<Hole> results = new ArrayList<>(holes.subList(0, 9).stream().toList());
+		results.addAll(holes.subList(9, holes.size()).stream().map(each -> each.getNumber() < 10 ? each.setNumber(each.getNumber() + 9) : each).toList());
 		return results;
 	}
 
