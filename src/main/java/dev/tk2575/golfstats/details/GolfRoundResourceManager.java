@@ -80,8 +80,16 @@ public class GolfRoundResourceManager {
 			else {
 				results.add(simpleRound);
 			}
-			//FIXME merge function to include all tees found by course, key by course (without tee)
-			courseTeeMap.put(courseTeeKey(simpleRound), simpleRound.getCourse().setTees(List.of(simpleRound.getTee())));
+
+			courseTeeMap.merge(
+					simpleRound.getCourse().getName().toLowerCase(),
+					simpleRound.getCourse(),
+					(c1, c2) -> {
+						List<Tee> tees = new ArrayList<>(c1.getTees());
+						tees.addAll(c2.getTees());
+						return c1.setTees(tees);
+					}
+					);
 		}
 
 		GolfRound round;
@@ -130,11 +138,20 @@ public class GolfRoundResourceManager {
 		GolfRound result = null;
 		if (isValid(holeList)) {
 			Hole19Round round = holeList.get(0);
-			//FIXME lookup by course, match tee if present, otherwise pick one
-			Course course = courseTeeMap.get(courseTeeKey(round));
+			Course course = courseTeeMap.get(round.getCourse().toLowerCase());
 			if (course != null) {
-				RoundMeta meta = new RoundMeta(golfer, round.getStartedAt(), round.getEndedAt(), course, course.getTees().get(0));
-				result = GolfRound.of(meta, cleanHoleData(holeList));
+				Tee tee = null;
+				Optional<Tee> teeByName = course.getTee(round.getTee());
+				if (teeByName.isPresent()) {
+					tee = teeByName.get();
+				}
+				else if (!course.getTees().isEmpty()) {
+					tee = course.getTees().get(0);
+				}
+				if (tee != null) {
+					RoundMeta meta = new RoundMeta(golfer, round.getStartedAt(), round.getEndedAt(), course, tee);
+					result = GolfRound.of(meta, cleanHoleData(holeList));
+				}
 			}
 		}
 		return result;

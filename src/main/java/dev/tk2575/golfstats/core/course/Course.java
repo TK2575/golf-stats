@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface Course {
 
@@ -52,4 +53,7 @@ public interface Course {
 		return getTees().stream().map(t -> t.handicapOf(golfers)).toList();
 	}
 
+    default Optional<Tee> getTee(@NonNull String tee) {
+		return getTees().stream().filter(each -> each.getName().toLowerCase().equals(tee.toLowerCase())).findAny();
+	}
 }
