@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.details;
 
 import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
@@ -10,6 +11,7 @@ import dev.tk2575.golfstats.details.parsers.*;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -40,7 +42,6 @@ public class GolfRoundResourceManager {
 		if (!files.isEmpty()) {
 			simpleRounds = new SimpleGolfRoundCSVParser(files).parse();
 		}
-
 		List<GolfRound> rounds = new ArrayList<>(join(simpleRounds, Hole19JsonParser.parse("data/hole19/hole19_export-tom.json")));
 
 		files = readCSVFilesInDirectory("data/hole-by-hole");
@@ -68,7 +69,7 @@ public class GolfRoundResourceManager {
 						.collect(groupingBy(GolfRoundResourceManager::roundKey));
 		/*@formatter:on*/
 
-		Map<String, Course> courseTeeMap = new HashMap<>();
+		Map<String, Course> courseTeeMap = missingCourseDetailsMap();
 		//TODO add courses/tees to courseTeeMap not represented in simpleround data
 		List<GolfRound> results = new ArrayList<>();
 
@@ -79,7 +80,8 @@ public class GolfRoundResourceManager {
 			else {
 				results.add(simpleRound);
 			}
-			courseTeeMap.put(roundTeeKey(simpleRound), simpleRound.getCourse().setTees(List.of(simpleRound.getTee())));
+			//FIXME merge function to include all tees found by course, key by course (without tee)
+			courseTeeMap.put(courseTeeKey(simpleRound), simpleRound.getCourse().setTees(List.of(simpleRound.getTee())));
 		}
 
 		GolfRound round;
@@ -95,26 +97,41 @@ public class GolfRoundResourceManager {
 	}
 
 	private static String roundKey(Hole19Round round) {
-		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse());
+		return String.join("-", round.getStartedAt().toLocalDate().toString(), round.getCourse()).toLowerCase();
 	}
 
 	private static String roundKey(GolfRound round) {
-		return String.join("-", round.getDate().toString(), round.getCourse().getName());
+		return String.join("-", round.getDate().toString(), round.getCourse().getName()).toLowerCase();
 	}
 
-	private static String roundTeeKey(GolfRound round) {
-		return String.join("-", roundKey(round), round.getTee().getName());
+	private static String courseTeeKey(GolfRound round) {
+		return String.join("-", round.getCourse().getName(), round.getTee().getName()).toLowerCase();
 	}
 
-	private static String roundTeeKey(Hole19Round round) {
-		return String.join("-", roundKey(round), round.getTee());
+	private static String courseTeeKey(Hole19Round round) {
+		return String.join("-", round.getCourse(), round.getTee()).toLowerCase();
+	}
+
+	private static String courseTeeKey(Course course, Tee tee) {
+		return String.join("-", course.getName(), tee.getName()).toLowerCase();
+	}
+
+	private static Map<String, Course> missingCourseDetailsMap() {
+		HashMap<String, Course> results = new HashMap<>();
+
+		Tee tee = Tee.of("white", new BigDecimal("58"), new BigDecimal("113"), 58, 2666L);
+		Course course = Course.of("Lake San Marcos CC (South)", List.of(tee), "San Marcos", "CA");
+		results.put(courseTeeKey(course, tee), course);
+
+		return results;
 	}
 
 	private static GolfRound createRound(Golfer golfer, List<Hole19Round> holeList, Map<String, Course> courseTeeMap) {
 		GolfRound result = null;
 		if (isValid(holeList)) {
 			Hole19Round round = holeList.get(0);
-			Course course = courseTeeMap.get(roundTeeKey(round));
+			//FIXME lookup by course, match tee if present, otherwise pick one
+			Course course = courseTeeMap.get(courseTeeKey(round));
 			if (course != null) {
 				RoundMeta meta = new RoundMeta(golfer, round.getStartedAt(), round.getEndedAt(), course, course.getTees().get(0));
 				result = GolfRound.of(meta, cleanHoleData(holeList));
