@@ -155,8 +155,8 @@ public interface GolfRound {
 		return new HoleByHoleRound(round, holes);
 	}
 
-	static GolfRound of(RoundMeta meta, Integer par, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
-		return new SimpleGolfRound(meta, par, strokes, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+	static GolfRound of(RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+		return new SimpleGolfRound(meta, strokes, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

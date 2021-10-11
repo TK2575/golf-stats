@@ -30,6 +30,10 @@ public interface Course {
 		return new CityStateCourse(name, tees, city, stateAbbrev);
 	}
 
+	static Course of(String name, Tee tee, String city, String stateAbbrev) {
+		return new CityStateCourse(name, List.of(tee), city, stateAbbrev);
+	}
+
 	static Course of(String courseName, List<Tee> tees) {
 		return new SimpleCourse(courseName, tees);
 	}

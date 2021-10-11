@@ -3,6 +3,7 @@ package dev.tk2575.golfstats.core.course.tee;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Getter
 class TeeWithYardage extends SimpleTee {

@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
@@ -75,12 +76,14 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 
 	private GolfRound recordSimpleRound(final Golfer golfer, String[] row) {
 		var date = LocalDate.parse(row[0], DATE_FORMAT);
-		var course = Course.of(row[1]);
-
+		var courseName = Utils.toTitleCase(row[1]);
 		var teeName = Utils.toTitleCase(row[2]);
 		var rating = new BigDecimal(row[3]);
 		var slope = new BigDecimal(row[4]);
 		var par = Integer.valueOf(row[5]);
+
+		var tee = Tee.of(teeName, rating, slope, par);
+		var course = Course.of(courseName, tee);
 
 		var duration = row[6] == null || row[6].isBlank()
 		                ? Duration.ZERO
@@ -95,8 +98,8 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 		var nineHoleRound = Boolean.parseBoolean(row[13]);
 		var golferString = Utils.toTitleCase(row[14]);
 
-		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, rating, slope, teeName, transport);
-		return GolfRound.of(meta, par, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, tee, transport);
+		return GolfRound.of(meta, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 
 }

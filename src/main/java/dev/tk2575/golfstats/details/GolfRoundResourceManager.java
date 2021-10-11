@@ -70,7 +70,6 @@ public class GolfRoundResourceManager {
 		/*@formatter:on*/
 
 		Map<String, Course> courseTeeMap = missingCourseDetailsMap();
-		//TODO add courses/tees to courseTeeMap not represented in simpleround data
 		List<GolfRound> results = new ArrayList<>();
 
 		for (GolfRound simpleRound : simpleRounds) {
@@ -86,6 +85,7 @@ public class GolfRoundResourceManager {
 					simpleRound.getCourse(),
 					(c1, c2) -> {
 						List<Tee> tees = new ArrayList<>(c1.getTees());
+
 						tees.addAll(c2.getTees());
 						return c1.setTees(tees);
 					}
@@ -112,24 +112,12 @@ public class GolfRoundResourceManager {
 		return String.join("-", round.getDate().toString(), round.getCourse().getName()).toLowerCase();
 	}
 
-	private static String courseTeeKey(GolfRound round) {
-		return String.join("-", round.getCourse().getName(), round.getTee().getName()).toLowerCase();
-	}
-
-	private static String courseTeeKey(Hole19Round round) {
-		return String.join("-", round.getCourse(), round.getTee()).toLowerCase();
-	}
-
-	private static String courseTeeKey(Course course, Tee tee) {
-		return String.join("-", course.getName(), tee.getName()).toLowerCase();
-	}
-
 	private static Map<String, Course> missingCourseDetailsMap() {
 		HashMap<String, Course> results = new HashMap<>();
 
 		Tee tee = Tee.of("white", new BigDecimal("58"), new BigDecimal("113"), 58, 2666L);
 		Course course = Course.of("Lake San Marcos CC (South)", List.of(tee), "San Marcos", "CA");
-		results.put(courseTeeKey(course, tee), course);
+		results.put(course.getName().toLowerCase(), course);
 
 		return results;
 	}
@@ -147,6 +135,7 @@ public class GolfRoundResourceManager {
 				}
 				else if (!course.getTees().isEmpty()) {
 					tee = course.getTees().get(0);
+					course = course.setTees(List.of(tee));
 				}
 				if (tee != null) {
 					RoundMeta meta = new RoundMeta(golfer, round.getStartedAt(), round.getEndedAt(), course, tee);
@@ -192,6 +181,10 @@ public class GolfRoundResourceManager {
 		}
 		if (holeCount > 18) {
 			log.warn(String.format("Found more than 18 holes for %s, skipping", key));
+			return false;
+		}
+		if (holeCount < 9) {
+			log.warn(String.format("Found less than 9 holes for %s, skipping", key));
 			return false;
 		}
 		return true;

@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.core.course.tee;
 
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -34,6 +35,10 @@ public interface Tee {
 
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par) {
 		return new SimpleTee(teeName, courseRating, slope, par);
+	}
+
+	static Tee of(@NonNull String teeName, @NonNull BigDecimal courseRating, @NonNull BigDecimal slope) {
+		return new TeeWithoutPar(teeName, courseRating, slope);
 	}
 
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par, Long yards) {
