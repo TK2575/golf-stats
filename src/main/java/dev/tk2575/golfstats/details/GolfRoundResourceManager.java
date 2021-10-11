@@ -84,10 +84,9 @@ public class GolfRoundResourceManager {
 					simpleRound.getCourse().getName().toLowerCase(),
 					simpleRound.getCourse(),
 					(c1, c2) -> {
-						List<Tee> tees = new ArrayList<>(c1.getTees());
-
+						Set<Tee> tees = new HashSet<>(c1.getTees());
 						tees.addAll(c2.getTees());
-						return c1.setTees(tees);
+						return c1.setTees(tees.stream().toList());
 					}
 					);
 		}
