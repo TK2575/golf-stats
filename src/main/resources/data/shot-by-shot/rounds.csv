@@ -42,3 +42,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 41,Tom,9/18/2021,Butter Brook GC,Westford,MA,White,68.6,120,11:27,16:19,Cart
 42,Tom,10/3/2021,Pine Meadows GC,Lexington,MA,Blue,67,105,7:15,9:28,Walk
 43,Tom,10/7/2021,Lexington GC,Lexington,MA,White,69.8,128,16:00,18:06,Walk
+44,Tom,10/11/2021,Patriot GC,Bedford,MA,White,66.4,125,9:14,11:07,Walk
