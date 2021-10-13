@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.details;
 
+import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.details.parsers.Hole19JsonParser;
 import dev.tk2575.golfstats.details.parsers.Hole19Round;
@@ -39,22 +40,24 @@ class GolfRoundResourceManagerTest {
 		}
 
 		for (Hole19Round each : hole19Rounds) {
-			String roundKey = roundKey(each);
-			System.out.println(roundKey);
-			join = joinRoundsMap.get(roundKey);
-			assertNotNull(join);
-			if (each.getHoles().size() == join.getHoleCount()) {
-				assertEquals(each.getStrokes(), join.getStrokes());
+			if (each.getHoles().size() == 9 || each.getHoles().size() == 18) {
+				String roundKey = roundKey(each);
+				System.out.println(roundKey);
+				join = joinRoundsMap.get(roundKey);
+				assertNotNull(join);
+				if (each.getHoles().size() == join.getHoleCount()) {
+					assertEquals(each.getStrokes(), join.getStrokes());
+				}
 			}
 		}
 	}
 
 	private String roundKey(GolfRound round) {
-		return String.join("-", round.getDate().toString(), round.getGolfer().getName(), round.getCourse().getName());
+		return String.join("-", round.getDate().toString(), round.getGolfer().getName(), round.getCourse().getName()).toLowerCase();
 	}
 
 	private String roundKey(Hole19Round round) {
-		return String.join("-", round.getStartedAt().toLocalDate().toString(), "Tom", round.getCourse());
+		return String.join("-", round.getStartedAt().toLocalDate().toString(), "Tom", round.getCourse()).toLowerCase();
 	}
 
 }
