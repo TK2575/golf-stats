@@ -14008,7 +14008,7 @@
             "input_mode": "simple",
             "scoring_mode": "stroke_play",
             "course": {
-                "name": "Ramblewood Country Club (White)"
+                "name": "Ramblewood Country Club (White-Blue)"
             },
             "tee": {
                 "name": "white"
@@ -24655,7 +24655,7 @@
             "input_mode": "simple",
             "scoring_mode": "stroke_play",
             "course": {
-                "name": "Riverwalk Golf Club (Sunset)"
+                "name": "Riverwalk Golf Club (Presidio-Mission)"
             },
             "tee": {
                 "name": "middle (m)"

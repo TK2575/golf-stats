@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.details;
 
-import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.details.parsers.Hole19JsonParser;
 import dev.tk2575.golfstats.details.parsers.Hole19Round;
@@ -40,7 +39,7 @@ class GolfRoundResourceManagerTest {
 		}
 
 		for (Hole19Round each : hole19Rounds) {
-			if (each.getHoles().size() == 9 || each.getHoles().size() == 18) {
+			if (each.getHoles().size() >= 9) {
 				String roundKey = roundKey(each);
 				System.out.println(roundKey);
 				join = joinRoundsMap.get(roundKey);
