@@ -83,4 +83,29 @@ public interface Tee {
 		return result.setScale(0, HALF_UP).intValue();
 	}
 
+	static BigDecimal correctCourseRating(@NonNull Integer par, @NonNull BigDecimal rating) {
+		if (rating.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new IllegalArgumentException("rating must be a positive non-zero value");
+		}
+		if (par <= 0) {
+			throw new IllegalArgumentException("par must be a positive non-zero value");
+		}
+
+		final BigDecimal ratingOverPar = rating.divide(new BigDecimal(par), 1, HALF_UP);
+		final BigDecimal two = BigDecimal.valueOf(2);
+
+		BigDecimal distanceFromOne = ratingOverPar.subtract(BigDecimal.ONE).abs();
+		BigDecimal distanceFromTwo = ratingOverPar.subtract(two).abs();
+		BigDecimal distanceFromPointFive = ratingOverPar.subtract(new BigDecimal(".5")).abs();
+		BigDecimal min = distanceFromOne.min(distanceFromTwo.min(distanceFromPointFive));
+
+		if (min.compareTo(distanceFromTwo) == 0) {
+			return rating.divide(two, 1, HALF_UP);
+		}
+		if (min.compareTo(distanceFromPointFive) == 0) {
+			return rating.multiply(two);
+		}
+		return rating;
+	}
+
 }

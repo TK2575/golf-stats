@@ -25,7 +25,7 @@ public class PerformanceSummary {
 	private final List<GolfRound> golfRounds;
 
 	public PerformanceSummary(Collection<GolfRound> roundsUnsorted) {
-		HandicapIndex index = HandicapIndex.newIndex(GolfRound.stream(roundsUnsorted).compileTo18HoleRounds().toList());
+		HandicapIndex index = HandicapIndex.newIndex(roundsUnsorted);
 		this.golfRounds = index.getAdjustedRounds();
 		this.golfer = rounds().golferNames();
 		this.handicapIndex = index.getValue();
