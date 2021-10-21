@@ -54,9 +54,6 @@ public interface Tee {
 	}
 
 	static Tee compositeOf(Tee tee1, Tee tee2) {
-		if (tee1.equals(tee2)) {
-			return tee1;
-		}
 		return new CompositeTee(tee1, tee2);
 	}
 
