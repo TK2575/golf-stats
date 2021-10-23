@@ -33,7 +33,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public BigDecimal meanDifferential() {
-		List<GolfRound> rounds = asList();
+		List<GolfRound> rounds = toList();
 		if (rounds.isEmpty()) { return BigDecimal.ZERO; }
 
 		return rounds.stream()
@@ -47,7 +47,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		GolfRound pendingNineHoleRound = null;
 		GolfRound thisRound;
 
-		for (GolfRound round : this.sortOldestToNewest().asList()) {
+		for (GolfRound round : this.sortOldestToNewest().toList()) {
 			thisRound = null;
 			if (round.isNineHoleRound()) {
 				if (pendingNineHoleRound == null) {
@@ -80,20 +80,20 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	public Optional<GolfRound> newestRound() {
 		return this.empty
 				? Optional.empty()
-				: Optional.of(this.sortNewestToOldest().asList().get(0));
+				: Optional.of(this.sortNewestToOldest().toList().get(0));
 	}
 
 	public Optional<GolfRound> oldestRound() {
 		return this.empty
 				? Optional.empty()
-				: Optional.of(this.sortOldestToNewest().asList().get(0));
+				: Optional.of(this.sortOldestToNewest().toList().get(0));
 	}
 
 	//TODO can methods that re-collect the stream to list be refactored to
 	// pure stream operations? perhaps some functional interface to avoid
 	// code duplication?
 	public GolfRoundStream lowestDifferentials() {
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		long subsetSize = (long) (rounds.size() * .4);
 		return new GolfRoundStream(rounds.stream()
 		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential))
@@ -101,7 +101,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 	}
 
 	public GolfRoundStream highestDifferentials() {
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		long subsetSize = (long) (rounds.size() * .4);
 		return new GolfRoundStream(rounds.stream()
 		                                 .sorted(Comparator.comparing(GolfRound::getScoreDifferential).reversed())
@@ -110,7 +110,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public BigDecimal fairwaysInRegulation() {
 		if (this.empty) { return BigDecimal.ZERO; }
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		long fairwaysInRegulation = rounds.stream().mapToLong(GolfRound::getFairwaysInRegulation).sum();
 		long fairways = rounds.stream().mapToLong(GolfRound::getFairways).sum();
 		return BigDecimal.valueOf(fairwaysInRegulation).divide(BigDecimal.valueOf(fairways), 2, RoundingMode.HALF_UP);
@@ -118,7 +118,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public BigDecimal greensInRegulation() {
 		if (this.empty) { return BigDecimal.ZERO; }
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		final long greensInRegulation = rounds.stream().mapToLong(GolfRound::getGreensInRegulation).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
@@ -126,7 +126,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public BigDecimal puttsPerHole() {
 		if (this.empty) { return BigDecimal.ZERO; }
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
 		final long holes = GolfRound.stream(rounds).getHoles();
 		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
@@ -134,7 +134,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 
 	public Long minutesPerRound() {
 		if (this.empty) { return 0L; }
-		final List<GolfRound> rounds = this.asList();
+		final List<GolfRound> rounds = this.toList();
 		final Duration duration = rounds.stream()
 		                                .map(GolfRound::getDuration)
 		                                .filter(d -> !d.isZero())

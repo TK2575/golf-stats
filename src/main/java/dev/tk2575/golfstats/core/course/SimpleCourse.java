@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @ToString
 @AllArgsConstructor
+@Builder(toBuilder = true, access = AccessLevel.PRIVATE)
 class SimpleCourse implements Course {
 
 	private static final String UNKNOWN = "UNKNOWN";
@@ -27,5 +28,10 @@ class SimpleCourse implements Course {
 		this.name = name;
 		this.location = UNKNOWN;
 		this.tees = tees;
+	}
+
+	@Override
+	public Course setTees(@NonNull List<Tee> tees) {
+		return this.toBuilder().tees(tees).build();
 	}
 }

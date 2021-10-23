@@ -48,12 +48,12 @@ class SimpleGolfRound implements GolfRound {
 
 	private final boolean nineHoleRound;
 
-	SimpleGolfRound(@NonNull RoundMeta meta, Integer par, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
+	SimpleGolfRound(@NonNull RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
 		this.date = meta.getDate();
 		this.duration = meta.getDuration();
 		this.golfer = meta.getGolfer();
 		this.course = meta.getCourse();
-		this.tee = Tee.of(meta.getTeeName(), meta.getRating(), meta.getSlope(), par);
+		this.tee = meta.getTee();
 		this.transport = meta.getTransport();
 		this.strokes = strokes;
 		this.strokesAdjusted = this.strokes;

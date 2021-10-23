@@ -50,7 +50,7 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	private boolean isSecondStrokeFairway() {
 		if (isEmpty()) { return false; }
-		List<Shot> shotList = this.asList();
+		List<Shot> shotList = this.toList();
 		if (shotList.get(0).getCount() > 1) { return false; }
 		return shotList.get(1).getLie().isFairway();
 	}
@@ -75,7 +75,7 @@ public class ShotStream implements ObjectStream<Shot> {
 	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
 		List<Shot> shots = new ArrayList<>();
 		Shot shot = null;
-		for (Shot result : asList()) {
+		for (Shot result : toList()) {
 			if (shot != null) {
 				shots.add(computer.analyzeShot(shot, result));
 			}

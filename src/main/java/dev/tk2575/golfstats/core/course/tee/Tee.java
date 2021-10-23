@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.core.course.tee;
 
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.handicapindex.StablefordQuota;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -36,6 +37,10 @@ public interface Tee {
 		return new SimpleTee(teeName, courseRating, slope, par);
 	}
 
+	static Tee of(@NonNull String teeName, @NonNull BigDecimal courseRating, @NonNull BigDecimal slope) {
+		return new TeeWithoutPar(teeName, courseRating, slope);
+	}
+
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par, Long yards) {
 		return new TeeWithYardage(teeName, courseRating, slope, par, yards);
 	}
@@ -49,9 +54,6 @@ public interface Tee {
 	}
 
 	static Tee compositeOf(Tee tee1, Tee tee2) {
-		if (tee1.equals(tee2)) {
-			return tee1;
-		}
 		return new CompositeTee(tee1, tee2);
 	}
 
@@ -76,6 +78,31 @@ public interface Tee {
 		//course handicap formula assumes 18 hole rounds, so divide by two for nine hole rounds
 		if (getHoleCount() <= 9) result = result.divide(BigDecimal.valueOf(2L), 2, HALF_UP);
 		return result.setScale(0, HALF_UP).intValue();
+	}
+
+	static BigDecimal correctCourseRating(@NonNull Integer par, @NonNull BigDecimal rating) {
+		if (rating.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new IllegalArgumentException("rating must be a positive non-zero value");
+		}
+		if (par <= 0) {
+			throw new IllegalArgumentException("par must be a positive non-zero value");
+		}
+
+		final BigDecimal ratingOverPar = rating.divide(new BigDecimal(par), 1, HALF_UP);
+		final BigDecimal two = BigDecimal.valueOf(2);
+
+		BigDecimal distanceFromOne = ratingOverPar.subtract(BigDecimal.ONE).abs();
+		BigDecimal distanceFromTwo = ratingOverPar.subtract(two).abs();
+		BigDecimal distanceFromPointFive = ratingOverPar.subtract(new BigDecimal(".5")).abs();
+		BigDecimal min = distanceFromOne.min(distanceFromTwo.min(distanceFromPointFive));
+
+		if (min.compareTo(distanceFromTwo) == 0) {
+			return rating.divide(two, 1, HALF_UP);
+		}
+		if (min.compareTo(distanceFromPointFive) == 0) {
+			return rating.multiply(two);
+		}
+		return rating;
 	}
 
 }

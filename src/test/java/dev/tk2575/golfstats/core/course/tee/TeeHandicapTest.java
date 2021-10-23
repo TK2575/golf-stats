@@ -5,8 +5,10 @@ import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
+import static java.math.RoundingMode.HALF_UP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TeeHandicapTest {
@@ -58,6 +60,25 @@ class TeeHandicapTest {
 		Tee handicap = tee.handicapOf(golfer);
 
 		assertEquals(8, handicap.getHandicapStrokes().get(golfer.getKey()));
+	}
+
+	@Test
+	void testCorrectRating() {
+		int par = 32;
+		BigDecimal courseRating = new BigDecimal("30.7");
+		assertEquals(courseRating, Tee.correctCourseRating(par, courseRating));
+
+		par = 72;
+		courseRating = new BigDecimal("68.9");
+		assertEquals(courseRating, Tee.correctCourseRating(par, courseRating));
+
+		par = 36;
+		courseRating = new BigDecimal("68.9");
+		assertEquals(courseRating.divide(new BigDecimal("2"), 1, HALF_UP), Tee.correctCourseRating(par, courseRating));
+
+		par = 71;
+		courseRating = new BigDecimal("35.2");
+		assertEquals(courseRating.multiply(new BigDecimal("2")), Tee.correctCourseRating(par, courseRating));
 	}
 
 }

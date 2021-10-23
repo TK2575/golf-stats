@@ -5,9 +5,9 @@ import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -19,24 +19,28 @@ public class RoundMeta {
 
 	private final Golfer golfer;
 	private final Course course;
-	private final BigDecimal rating;
-	private final BigDecimal slope;
-	private final String teeName;
+	private final Tee tee;
 	private final String transport;
 
-	RoundMeta(GolfRound round) {
+	public RoundMeta(@NonNull GolfRound round) {
 		this.date = round.getDate();
 		this.duration = round.getDuration();
 		this.golfer = round.getGolfer();
 		this.course = round.getCourse();
-		this.rating = round.getRating();
-		this.slope = round.getSlope();
-		this.teeName = round.getTee().getName();
+		this.tee = round.getTee();
 		this.transport = round.getTransport();
 	}
 
+	public RoundMeta(@NonNull Golfer golfer, @NonNull LocalDateTime started, @NonNull LocalDateTime ended, @NonNull Course course, @NonNull Tee tee) {
+		this.date = started.toLocalDate();
+		this.duration = Duration.between(started, ended);
+		this.golfer = golfer;
+		this.course = course;
+		this.tee = tee;
+		this.transport = "Unknown";
+	}
+
 	static RoundMeta compositeOf(GolfRound round1, GolfRound round2) {
-		Tee compositeTee = Tee.compositeOf(round1.getTee(), round2.getTee());
 		String transport = round1.getTransport().equalsIgnoreCase(round2.getTransport())
 				? round1.getTransport()
 				: "Various";
@@ -46,9 +50,7 @@ public class RoundMeta {
 				.duration(round1.getDuration().plus(round2.getDuration()))
 				.golfer(round2.getGolfer())
 				.course(Course.compositeOf(round1.getCourse(), round2.getCourse()))
-				.rating(compositeTee.getRating())
-				.slope(compositeTee.getSlope())
-				.teeName(compositeTee.getName())
+				.tee(Tee.compositeOf(round1.getTee(), round2.getTee()))
 				.transport(transport)
 				.build();
 	}

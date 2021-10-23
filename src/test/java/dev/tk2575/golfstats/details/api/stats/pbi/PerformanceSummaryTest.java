@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.details.api.stats.pbi;
 
 import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
@@ -18,8 +19,9 @@ class PerformanceSummaryTest {
 
 	@Test
 	void lessThan18HolesPlayed() {
-		RoundMeta meta = new RoundMeta(LocalDate.now(), Duration.ofHours(2), Golfer.newGolfer("Tom"), Course.of("Balboa GC"), new BigDecimal("69"), new BigDecimal("128"), "Blue", "Walk");
-		GolfRound round = GolfRound.of(meta, 36, 36, 7, 7, 9, 18, true);
+		Tee tee = Tee.of("Blue", new BigDecimal("69"), new BigDecimal("128"), 36);
+		RoundMeta meta = new RoundMeta(LocalDate.now(), Duration.ofHours(2), Golfer.newGolfer("Tom"), Course.of("Balboa GC", tee), tee, "Walk");
+		GolfRound round = GolfRound.of(meta, 36, 7, 7, 9, 18, true);
 		assertNotNull(new PerformanceSummary(List.of(round)));
 	}
 

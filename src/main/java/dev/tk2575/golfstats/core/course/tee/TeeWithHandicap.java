@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -49,5 +50,28 @@ class TeeWithHandicap implements Tee {
 			results.put(golfer.getKey(), result.setScale(0, HALF_UP).intValue());
 		}
 		return results;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == null) {
+			return false;
+		}
+		if (!Tee.class.isAssignableFrom(object.getClass())) {
+			return false;
+		}
+		Tee other = (Tee) object;
+		if (getRating().compareTo(other.getRating()) != 0) {
+			return false;
+		}
+		if (getSlope().compareTo(other.getSlope()) != 0) {
+			return false;
+		}
+		return Objects.equals(getPar(), other.getPar());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(rating, slope, par);
 	}
 }

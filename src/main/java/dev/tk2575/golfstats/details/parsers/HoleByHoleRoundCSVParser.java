@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.details.parsers;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
+import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
@@ -80,17 +81,19 @@ public class HoleByHoleRoundCSVParser extends CSVParser {
 		var golferString = Utils.toTitleCase(row[1]);
 		var golfer = this.golfers.computeIfAbsent(golferString, Golfer::newGolfer);
 		var date = LocalDate.parse(row[2], DATE_FORMAT);
-		var course = Course.of(row[3], row[4], row[5]);
+
 		var teeName = Utils.toTitleCase(row[6]);
 		var rating = new BigDecimal(row[7]);
 		var slope = new BigDecimal(row[8]);
+		var tee = Tee.of(teeName, rating, slope);
+		var course = Course.of(row[3], tee, row[4], row[5]);
 		var durationString = row[9];
 		var duration = durationString == null || durationString.isBlank()
 				? Duration.ZERO
 				: Duration.between(LocalTime.MIN, LocalTime.parse(durationString, DURATION_FORMAT));
 		var transport = Utils.toTitleCase(row[10]);
 
-		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, rating, slope, teeName, transport));
+		this.roundMetas.put(id, new RoundMeta(date, duration, golfer, course, tee, transport));
 	};
 
     private final BiConsumer<Integer, String[]> holeParser = (id, row) -> {

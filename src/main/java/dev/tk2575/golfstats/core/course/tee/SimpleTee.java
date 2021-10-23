@@ -3,6 +3,7 @@ package dev.tk2575.golfstats.core.course.tee;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -22,14 +23,30 @@ class SimpleTee implements Tee {
 		this.name = name;
 		this.slope = slope;
 		this.par = par;
-		this.rating = correctCourseRating(this.par, rating);
+		this.rating = Tee.correctCourseRating(this.par, rating);
 		this.holeCount = this.par < 54 ? 9 : 18;
 	}
 
-	private BigDecimal correctCourseRating(Integer par, BigDecimal rating) {
-		if (rating.subtract(BigDecimal.valueOf(par)).compareTo(BigDecimal.TEN) > 0) {
-			return rating.divide(BigDecimal.valueOf(2), 1, HALF_UP);
+	@Override
+	public boolean equals(Object object) {
+		if (object == null) {
+			return false;
 		}
-		return rating;
+		if (!Tee.class.isAssignableFrom(object.getClass())) {
+			return false;
+		}
+		Tee other = (Tee) object;
+		if (getRating().compareTo(other.getRating()) != 0) {
+			return false;
+		}
+		if (getSlope().compareTo(other.getSlope()) != 0) {
+			return false;
+		}
+		return Objects.equals(getPar(), other.getPar());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(rating, slope, par);
 	}
 }

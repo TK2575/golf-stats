@@ -24,7 +24,7 @@ class ShotByShotHole implements Hole {
 		this.index = hole.getIndex();
 		this.par = hole.getPar();
 		this.handicapStrokes = handicapStrokes;
-		this.shots = hole.getShots().asList();
+		this.shots = hole.getShots().toList();
 	}
 
 	ShotByShotHole(Integer number, Integer index, Integer par, Collection<Shot> shots, ShotsGainedComputation computer) {
@@ -32,7 +32,7 @@ class ShotByShotHole implements Hole {
 		this.index = index;
 		this.par = par;
 		this.handicapStrokes = 0;
-		this.shots = Shot.stream(shots).categorize(this).computeStrokesGained(computer).asList();
+		this.shots = Shot.stream(shots).categorize(this).computeStrokesGained(computer).toList();
 	}
 
 	@Override

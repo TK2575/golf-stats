@@ -2,9 +2,11 @@ package dev.tk2575.golfstats.core.course;
 
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface Course {
 
@@ -12,7 +14,9 @@ public interface Course {
 
 	String getLocation();
 
-	Collection<Tee> getTees();
+	List<Tee> getTees();
+
+	Course setTees(@NonNull List<Tee> tees);
 
 	static Course of(String courseName) {
 		return new SimpleCourse(courseName);
@@ -24,6 +28,10 @@ public interface Course {
 
 	static Course of(String name, List<Tee> tees, String city, String stateAbbrev) {
 		return new CityStateCourse(name, tees, city, stateAbbrev);
+	}
+
+	static Course of(String name, Tee tee, String city, String stateAbbrev) {
+		return new CityStateCourse(name, List.of(tee), city, stateAbbrev);
 	}
 
 	static Course of(String courseName, List<Tee> tees) {
@@ -49,4 +57,7 @@ public interface Course {
 		return getTees().stream().map(t -> t.handicapOf(golfers)).toList();
 	}
 
+    default Optional<Tee> getTee(@NonNull String tee) {
+		return getTees().stream().filter(each -> each.getName().toLowerCase().equals(tee.toLowerCase())).findAny();
+	}
 }
