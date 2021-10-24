@@ -44,4 +44,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 43,Tom,10/7/2021,Lexington GC,Lexington,MA,White,69.8,128,16:00,18:06,Walk
 44,Tom,10/11/2021,Patriot GC,Bedford,MA,White,66.4,125,9:14,11:07,Walk
 45,Tom,10/16/2021,Red Tail GC,Devens,MA,Gold,68.5,126,10:40,15:43,Cart
-46,Tom,10/124/2021,Fresh Pond GC,Cambridge,MA,White,33.7,117,8:50,11:09,Walk
+46,Tom,10/24/2021,Fresh Pond GC,Cambridge,MA,White,33.7,117,8:50,11:09,Walk
