@@ -46,3 +46,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 45,Tom,10/16/2021,Red Tail GC,Devens,MA,Gold,68.5,126,10:40,15:43,Cart
 46,Tom,10/24/2021,Fresh Pond GC,Cambridge,MA,White,33.7,117,8:50,11:09,Walk
 47,Tom,10/28/2021,Wayland CC,Wayland,MA,White,66.3,114,14:16,16:06,Walk
+48,Tom,11/7/2021,Pine Meadows GC,Lexington,MA,White,35.5,105,13:49,15:54,Walk
