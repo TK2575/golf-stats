@@ -169,7 +169,7 @@ public class GolfRoundResourceManager {
 			return false;
 		}
 		if (roundList.size() > 2) {
-			log.warn(String.format("Found more than two rounds for %s, skipping", key));
+			log.debug(String.format("Found more than two rounds for %s, skipping", key));
 			return false;
 		}
 
@@ -179,11 +179,11 @@ public class GolfRoundResourceManager {
 			return false;
 		}
 		if (holeCount > 18) {
-			log.warn(String.format("Found more than 18 holes for %s, skipping", key));
+			log.debug(String.format("Found more than 18 holes for %s, skipping", key));
 			return false;
 		}
 		if (holeCount < 9) {
-			log.warn(String.format("Found less than 9 holes for %s, skipping", key));
+			log.debug(String.format("Found less than 9 holes for %s, skipping", key));
 			return false;
 		}
 		return true;
