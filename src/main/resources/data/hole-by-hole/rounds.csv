@@ -28,3 +28,4 @@ id,golfer,date,course,city,state,tees,rating,slope,duration,transport
 28,Will,9/18/2021,Butter Brook GC,Westford,MA,White,68.6,120,4:52,Cart
 29,Will,10/16/2021,Red Tail GC,Devens,MA,Gold,68.5,126,5:03,Cart
 30,Will,10/28/2021,Wayland CC,Wayland,MA,White,66.3,114,1:50,Walk
+31,Will,11/14/2021,Sandy Burr CC,Wayland,MA,White,34.3,121,1:53,Walk
