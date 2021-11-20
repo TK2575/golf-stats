@@ -7,8 +7,10 @@ public class HoledShot implements Shot {
 		return Lie.hole();
 	}
 
+	//FIXME this feels wrong, only used by strokes gained,
+	// might be able to do that calculation and categorization earlier
 	@Override
-	public Distance getDistance() {
+	public Distance getDistanceFromTarget() {
 		return Distance.zero();
 	}
 
@@ -16,6 +18,9 @@ public class HoledShot implements Shot {
 	public MissAngle getMissAngle() {
 		return MissAngle.center();
 	}
+
+	@Override
+	public Distance getMissDistance() { return Distance.zero(); }
 
 	@Override
 	public ShotCategory getShotCategory() { return ShotCategory.unknown(); }

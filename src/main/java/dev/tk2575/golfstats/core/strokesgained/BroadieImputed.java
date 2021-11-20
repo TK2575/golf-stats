@@ -42,7 +42,7 @@ class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	String shotKey(Shot shot) {
-		return shot.getLie().getAbbrev() + shot.getDistance().getValue();
+		return shot.getLie().getAbbrev() + shot.getDistanceFromTarget().getValue();
 	}
 
 	private BroadieImputed() {

@@ -22,73 +22,73 @@ class ShotTest {
 
 	@Test
 	void testShorthandEntry() {
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.tee())
-		                       .distance(Distance.yards(455))
-		                       .missAngle(MissAngle.center())
+		                       .distanceFromTarget(Distance.yards(455))
+		                       .priorShotMissAngle(MissAngle.center())
 		                       .count(1)
 		                       .build(), Shot.parse("T455"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.tee())
-		                       .distance(Distance.yards(455))
-		                       .missAngle(MissAngle.center())
+		                       .distanceFromTarget(Distance.yards(455))
+		                       .priorShotMissAngle(MissAngle.center())
 		                       .count(3)
 		                       .build(), Shot.parse("T455x3"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.recovery())
-		                       .distance(Distance.yards(186))
-		                       .missAngle(MissAngle.center())
+		                       .distanceFromTarget(Distance.yards(186))
+		                       .priorShotMissAngle(MissAngle.center())
 		                       .count(1)
 		                       .build(), Shot.parse("Y186"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.recovery())
-		                       .distance(Distance.yards(186))
-		                       .missAngle(MissAngle.center())
+		                       .distanceFromTarget(Distance.yards(186))
+		                       .priorShotMissAngle(MissAngle.center())
 		                       .count(2)
 		                       .build(), Shot.parse("Y186x2"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.rough())
-		                       .distance(Distance.yards(122))
-		                       .missAngle(MissAngle.missLeft())
+		                       .distanceFromTarget(Distance.yards(122))
+		                       .priorShotMissAngle(MissAngle.missLeft())
 		                       .count(1)
 		                       .build(), Shot.parse("R122L"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.rough())
-		                       .distance(Distance.yards(122))
-		                       .missAngle(MissAngle.missLeft())
+		                       .distanceFromTarget(Distance.yards(122))
+		                       .priorShotMissAngle(MissAngle.missLeft())
 		                       .count(1)
 		                       .build(), Shot.parse("R122-L"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.fairway())
-		                       .distance(Distance.yards(6))
-		                       .missAngle(MissAngle.missDegrees(12))
+		                       .distanceFromTarget(Distance.yards(6))
+		                       .priorShotMissAngle(MissAngle.missDegrees(12))
 		                       .count(1)
 		                       .build(), Shot.parse("F6-12"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.green())
-		                       .distance(Distance.feet(27))
-		                       .missAngle(MissAngle.missDegrees(4))
+		                       .distanceFromTarget(Distance.feet(27))
+		                       .priorShotMissAngle(MissAngle.missDegrees(4))
 		                       .count(1)
 		                       .build(), Shot.parse("G27-4"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.green())
-		                       .distance(Distance.feet(13))
-		                       .missAngle(MissAngle.missDegrees(7))
+		                       .distanceFromTarget(Distance.feet(13))
+		                       .priorShotMissAngle(MissAngle.missDegrees(7))
 		                       .count(3)
 		                       .build(), Shot.parse("G13-7x3"));
 
-		assertEquals(SimpleShot.builder()
+		assertEquals(ShotAbbreviation.builder()
 		                       .lie(Lie.sand())
-		                       .distance(Distance.yards(18))
-		                       .missAngle(MissAngle.missDegrees(4))
+		                       .distanceFromTarget(Distance.yards(18))
+		                       .priorShotMissAngle(MissAngle.missDegrees(4))
 		                       .count(1)
 		                       .build(), Shot.parse("S18-4"));
 	}

@@ -20,8 +20,8 @@ public class ShotAnalysis {
 		this.hole = hole;
 		this.lie = shot.getLie().getLabel();
 		this.category = shot.getShotCategory().getLabel();
-		this.distanceValue = shot.getDistance().getValue();
-		this.distanceUnit = shot.getDistance().getLengthUnit();
+		this.distanceValue = shot.getDistanceFromTarget().getValue();
+		this.distanceUnit = shot.getDistanceFromTarget().getLengthUnit();
 		this.strokesGained = shot.getStrokesGained();
 	}
 }

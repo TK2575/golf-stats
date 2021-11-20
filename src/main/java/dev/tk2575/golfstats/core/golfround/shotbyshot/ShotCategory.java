@@ -12,7 +12,7 @@ public interface ShotCategory {
 		if (shot.getLie().isGreen()) {
 			return new GreenShotCategory();
 		}
-		if (shot.getDistance().isLessThanOrEqualToYards(30)) {
+		if (shot.getDistanceFromTarget().isLessThanOrEqualToYards(30)) {
 			return new AroundGreenShotCategory();
 		}
 		if (shot.getLie().isTee() && hole.getPar() > 3) {

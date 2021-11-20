@@ -8,6 +8,7 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotAbbreviation;
 import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -95,12 +96,12 @@ public class ShotByShotRoundCSVParser extends CSVParser {
 		var holeIndex = Integer.valueOf(row[2]);
 		var par = Integer.valueOf(row[3]);
 
-		List<Shot> shots = Arrays.stream(row[4].split("\\."))
+		List<ShotAbbreviation> shotAbbreviations = Arrays.stream(row[4].split("\\."))
 				.sequential()
-				.map(Shot::parse)
+				.map(ShotAbbreviation::parse)
 				.toList();
 
-		Hole hole = Hole.of(number, holeIndex, par, shots);
+		Hole hole = Hole.of(number, holeIndex, par, Shot.compile(shotAbbreviations));
 		this.holes.merge(id, List.of(hole), (prior, current) -> {
 			List<Hole> result = new ArrayList<>(prior);
 			result.addAll(current);

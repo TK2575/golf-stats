@@ -2,7 +2,7 @@ package dev.tk2575.golfstats.core.strokesgained;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Distance;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Lie;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.SimpleShot;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotAbbreviation;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -64,9 +64,9 @@ class BroadieImputedTest {
 
 	@Test
 	void testShotsGained() {
-		SimpleShot first = SimpleShot.builder().lie(Lie.tee()).distance(Distance.yards(330)).count(1).build();
-		SimpleShot second = SimpleShot.builder().lie(Lie.fairway()).distance(Distance.yards(64)).count(1).build();
-		SimpleShot third = SimpleShot.builder().lie(Lie.green()).distance(Distance.feet(8)).count(2).build();
+		ShotAbbreviation first = ShotAbbreviation.builder().lie(Lie.tee()).distanceFromTarget(Distance.yards(330)).count(1).build();
+		ShotAbbreviation second = ShotAbbreviation.builder().lie(Lie.fairway()).distanceFromTarget(Distance.yards(64)).count(1).build();
+		ShotAbbreviation third = ShotAbbreviation.builder().lie(Lie.green()).distanceFromTarget(Distance.feet(8)).count(2).build();
 
 		BroadieImputed svc = BroadieImputed.getInstance();
 		assertEquals(new BigDecimal("0.12"), svc.analyzeShot(first, second).getStrokesGained());

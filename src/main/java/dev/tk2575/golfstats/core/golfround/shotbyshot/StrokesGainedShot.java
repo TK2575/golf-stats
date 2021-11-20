@@ -9,8 +9,9 @@ import java.math.BigDecimal;
 public class StrokesGainedShot implements Shot {
 
 	private final Lie lie;
-	private final Distance distance;
+	private final Distance distanceFromTarget;
 	private final MissAngle missAngle;
+	private final Distance missDistance;
 	private final Integer count;
 	private final ShotCategory shotCategory;
 	private final BigDecimal strokesGainedBaseline;
@@ -18,8 +19,9 @@ public class StrokesGainedShot implements Shot {
 
 	public StrokesGainedShot(Shot shot, BigDecimal strokesGainedBaseline, BigDecimal strokesGained) {
 		this.lie = shot.getLie();
-		this.distance = shot.getDistance();
+		this.distanceFromTarget = shot.getDistanceFromTarget();
 		this.missAngle = shot.getMissAngle();
+		this.missDistance = shot.getDistanceFromTarget();
 		this.count = shot.getCount();
 		this.strokesGainedBaseline = strokesGainedBaseline;
 		this.strokesGained = strokesGained;
