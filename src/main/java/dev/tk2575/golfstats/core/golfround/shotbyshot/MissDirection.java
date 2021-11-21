@@ -7,6 +7,7 @@ import lombok.*;
 @ToString
 class MissDirection implements MissAngle {
 
+	private int angleDegrees;
 	private boolean leftMiss;
 	private boolean rightMiss;
 
@@ -17,9 +18,16 @@ class MissDirection implements MissAngle {
 
 		this.leftMiss = false;
 		this.rightMiss = false;
+		this.angleDegrees = 0;
 
-		if (missDirection == 'l') this.leftMiss = true;
-		if (missDirection == 'r') this.rightMiss = true;
+		if (missDirection == 'l') {
+			this.leftMiss = true;
+			this.angleDegrees = 270;
+		}
+		else if (missDirection == 'r') {
+			this.rightMiss = true;
+			this.angleDegrees = 90;
+		}
 	}
 
 

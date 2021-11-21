@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 class MissClockFace implements MissAngle {
 
-	private final int missAngle;
+	private final int angleDegrees;
 	private final boolean leftMiss;
 	private final boolean rightMiss;
 	private final boolean shortMiss;
@@ -18,7 +18,7 @@ class MissClockFace implements MissAngle {
 			throw new IllegalArgumentException(clockFace + " is not a valid clockFace");
 		}
 
-		this.missAngle = clockFace == 12 ? 0 : clockFace * 30;
+		this.angleDegrees = clockFace == 12 ? 0 : clockFace * 30;
 		this.leftMiss = clockFace > 6 && clockFace < 12;
 		this.rightMiss = clockFace < 6;
 		this.longMiss = clockFace < 3 || clockFace > 9;

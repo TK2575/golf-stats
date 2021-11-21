@@ -22,7 +22,7 @@ public class StrokesGainedShot implements Shot {
 		this.lie = shot.getLie();
 		this.distanceFromTarget = shot.getDistanceFromTarget();
 		this.missAngle = shot.getMissAngle();
-		this.missDistance = shot.getDistanceFromTarget();
+		this.missDistance = shot.getMissDistance();
 		this.resultLie = shot.getResultLie();
 		this.count = shot.getCount();
 		this.strokesGainedBaseline = strokesGainedBaseline;
