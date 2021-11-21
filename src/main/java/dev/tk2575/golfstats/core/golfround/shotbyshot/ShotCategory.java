@@ -12,6 +12,9 @@ public interface ShotCategory {
 		if (shot.getLie().isGreen()) {
 			return new GreenShotCategory();
 		}
+		if (shot.getLie().isRecovery()) {
+			return new RecoveryShotCategory();
+		}
 		if (shot.getDistanceFromTarget().isLessThanOrEqualToYards(30)) {
 			return new AroundGreenShotCategory();
 		}

@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.details.api.stats;
 
-import dev.tk2575.golfstats.core.golfround.shotbyshot.MissAngle;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import lombok.*;
 
@@ -15,6 +14,7 @@ public class ShotAnalysis {
 	private final String distanceUnit;
 	private final BigDecimal strokesGained;
 	private final String resultLie;
+	private final String missType;
 	private final long missDistanceValue;
 	private final String missDistanceUnit;
 	private final long missAngle;
@@ -29,6 +29,7 @@ public class ShotAnalysis {
 		this.distanceUnit = shot.getDistanceFromTarget().getLengthUnit();
 		this.strokesGained = shot.getStrokesGained();
 		this.resultLie = shot.getResultLie().getLabel();
+		this.missType = shot.getMissAngle().getMissType();
 		this.missDistanceValue = shot.getMissDistance().getValue();
 		this.missDistanceUnit = shot.getMissDistance().getLengthUnit();
 		this.missAngle = shot.getMissAngle().getAngleDegrees();

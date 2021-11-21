@@ -40,4 +40,9 @@ class MissDirection implements MissAngle {
 	public boolean isLongMiss() {
 		return false;
 	}
+
+	@Override
+	public String getMissType() {
+		return "Direction";
+	}
 }

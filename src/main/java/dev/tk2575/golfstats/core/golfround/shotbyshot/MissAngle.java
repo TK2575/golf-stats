@@ -39,6 +39,8 @@ public interface MissAngle {
 
 	boolean isLongMiss();
 
+	String getMissType();
+
 	default String getDescription() {
 		StringBuilder sb = new StringBuilder();
 
@@ -48,7 +50,6 @@ public interface MissAngle {
 		if (isLeftMiss()) sb.append("Left");
 		else if (isRightMiss()) sb.append("Right");
 
-		String result = sb.toString().trim();
-		return result.isBlank() ? "Center" : result;
+		return sb.toString().trim();
 	}
 }
