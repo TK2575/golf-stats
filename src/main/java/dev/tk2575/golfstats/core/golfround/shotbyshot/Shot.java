@@ -14,17 +14,18 @@ public interface Shot {
 
 	static List<Shot> compile(@NonNull List<ShotAbbreviation> list) {
 		List<Shot> results = new ArrayList<>();
-		ShotAbbreviation current;
-		ShotAbbreviation next = null;
+		ShotAbbreviation current, next;
+
 		for (int i = 0; i < list.size(); i++) {
 			current = list.get(i);
-			next = list.get(i+1);
-			if (current == null || next == null) {
-				throw new IllegalArgumentException("Shot abbreviation cannot be null");
+			if (i+1 >= list.size()) {
+				results.add(holed(current));
 			}
-			results.add(of(current, next));
+			else {
+				next = list.get(i+1);
+				results.add(of(current, next));
+			}
 		}
-		results.add(holed(next));
 		return results;
 	}
 
@@ -32,7 +33,7 @@ public interface Shot {
 		return new SimpleShot(current, next);
 	}
 
-	static Shot holed(ShotAbbreviation shot) {
+	static Shot holed(@NonNull ShotAbbreviation shot) {
 		return SimpleShot.holed(shot);
 	}
 
@@ -43,6 +44,8 @@ public interface Shot {
 	MissAngle getMissAngle();
 
 	Distance getMissDistance();
+
+	Lie getResultLie();
 
 	Integer getCount();
 
@@ -64,9 +67,5 @@ public interface Shot {
 
 	static Shot strokesGained(Shot shot, BigDecimal strokesGainedBaseline, BigDecimal strokesGained) {
 		return new StrokesGainedShot(shot, strokesGainedBaseline, strokesGained);
-	}
-
-	static Shot holed() {
-		return new HoledShot();
 	}
 }

@@ -12,6 +12,7 @@ public class StrokesGainedShot implements Shot {
 	private final Distance distanceFromTarget;
 	private final MissAngle missAngle;
 	private final Distance missDistance;
+	private final Lie resultLie;
 	private final Integer count;
 	private final ShotCategory shotCategory;
 	private final BigDecimal strokesGainedBaseline;
@@ -22,6 +23,7 @@ public class StrokesGainedShot implements Shot {
 		this.distanceFromTarget = shot.getDistanceFromTarget();
 		this.missAngle = shot.getMissAngle();
 		this.missDistance = shot.getDistanceFromTarget();
+		this.resultLie = shot.getResultLie();
 		this.count = shot.getCount();
 		this.strokesGainedBaseline = strokesGainedBaseline;
 		this.strokesGained = strokesGained;

@@ -73,16 +73,7 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
-		List<Shot> shots = new ArrayList<>();
-		Shot shot = null;
-		for (Shot result : toList()) {
-			if (shot != null) {
-				shots.add(computer.analyzeShot(shot, result));
-			}
-			shot = result;
-		}
-		shots.add(computer.analyzeHoledShot(shot));
-		return new ShotStream(shots);
+		return new ShotStream(this.stream.map(computer::analyzeShot).toList());
 
 	}
 

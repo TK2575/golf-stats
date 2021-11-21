@@ -1,6 +1,6 @@
 package dev.tk2575.golfstats.core.golfround.shotbyshot;
 
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 public class SimpleShot implements Shot {
@@ -8,6 +8,7 @@ public class SimpleShot implements Shot {
     private final Distance distanceFromTarget;
     private final MissAngle missAngle;
     private final Distance missDistance;
+	private final Lie resultLie;
     private final Integer count;
 
     SimpleShot(ShotAbbreviation shot, ShotAbbreviation result) {
@@ -15,10 +16,11 @@ public class SimpleShot implements Shot {
         this.distanceFromTarget = shot.getDistanceFromTarget();
         this.missAngle = result.getPriorShotMissAngle();
         this.missDistance = result.getDistanceFromTarget();
+	    this.resultLie = result.getLie();
         this.count = shot.getCount();
     }
 
-    static SimpleShot holed(ShotAbbreviation shot) {
+    static SimpleShot holed(@NonNull ShotAbbreviation shot) {
         return new SimpleShot(shot);
     }
 
@@ -27,6 +29,7 @@ public class SimpleShot implements Shot {
         this.distanceFromTarget = shot.getDistanceFromTarget();
         this.missAngle = MissAngle.center();
         this.missDistance = Distance.zero();
+	    this.resultLie = Lie.hole();
         this.count = shot.getCount();
     }
 }

@@ -11,6 +11,7 @@ public class CategorizedShot implements Shot {
 	private final MissAngle missAngle;
 	private final Distance missDistance;
 	private final Integer count;
+	private final Lie resultLie;
 	private final ShotCategory shotCategory;
 
 	public CategorizedShot(Hole hole, Shot shot) {
@@ -19,6 +20,7 @@ public class CategorizedShot implements Shot {
 		this.missAngle = shot.getMissAngle();
 		this.missDistance = shot.getMissDistance();
 		this.count = shot.getCount();
+		this.resultLie = shot.getResultLie();
 		this.shotCategory = ShotCategory.parse(hole, this);
 	}
 }
