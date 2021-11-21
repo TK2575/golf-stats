@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.core.strokesgained;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Distance;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Lie;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotAbbreviation;
 import org.junit.jupiter.api.Test;
 
@@ -68,10 +69,14 @@ class BroadieImputedTest {
 		ShotAbbreviation second = ShotAbbreviation.builder().lie(Lie.fairway()).distanceFromTarget(Distance.yards(64)).count(1).build();
 		ShotAbbreviation third = ShotAbbreviation.builder().lie(Lie.green()).distanceFromTarget(Distance.feet(8)).count(2).build();
 
+		Shot one = Shot.of(first, second);
+		Shot two = Shot.of(second, third);
+		Shot three = Shot.holed(third);
+
 		BroadieImputed svc = BroadieImputed.getInstance();
-		assertEquals(new BigDecimal("0.12"), svc.analyzeShot(first, second).getStrokesGained());
-		assertEquals(new BigDecimal("0.21"), svc.analyzeShot(second, third).getStrokesGained());
-		assertEquals(new BigDecimal("-0.50"), svc.analyzeHoledShot(third).getStrokesGained());
+		assertEquals(new BigDecimal("0.12"), svc.analyzeShot(one, two).getStrokesGained());
+		assertEquals(new BigDecimal("0.21"), svc.analyzeShot(two, three).getStrokesGained());
+		assertEquals(new BigDecimal("-0.50"), svc.analyzeHoledShot(three).getStrokesGained());
 	}
 
 }
