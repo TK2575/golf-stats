@@ -34,15 +34,19 @@ class BroadieImputed implements ShotsGainedComputation {
 	}
 
 	@Override
-	public Shot analyzeShot(Shot shot, Shot result) {
+	public Shot analyzeShot(Shot shot) {
 		BigDecimal baseline = strokesGainedMap.get(shotKey(shot));
-		BigDecimal strokesGained = Utils.roundToTwoDecimalPlaces(baseline.subtract(strokesGainedMap.get(shotKey(result)))
+		BigDecimal strokesGained = Utils.roundToTwoDecimalPlaces(baseline.subtract(strokesGainedMap.get(resultKey(shot)))
 		                              .subtract(BigDecimal.valueOf(shot.getCount())));
 		return Shot.strokesGained(shot, baseline, strokesGained);
 	}
 
 	String shotKey(Shot shot) {
-		return shot.getLie().getAbbrev() + shot.getDistance().getValue();
+		return shot.getLie().getAbbrev() + shot.getDistanceFromTarget().getValue();
+	}
+
+	String resultKey(Shot shot) {
+		return shot.getResultLie().getAbbrev() + shot.getMissDistance().getValue();
 	}
 
 	private BroadieImputed() {

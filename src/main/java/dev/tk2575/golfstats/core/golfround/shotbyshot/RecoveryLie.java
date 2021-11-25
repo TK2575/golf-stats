@@ -15,4 +15,7 @@ public class RecoveryLie implements Lie {
 	public String getAbbrev() {
 		return "y";
 	}
+
+	@Override
+	public boolean isRecovery() { return true; }
 }

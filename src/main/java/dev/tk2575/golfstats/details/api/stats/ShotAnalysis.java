@@ -13,15 +13,27 @@ public class ShotAnalysis {
 	private final long distanceValue;
 	private final String distanceUnit;
 	private final BigDecimal strokesGained;
-	//TODO miss angle
-	// need to transpose parsed miss angles to the prior shot during object construction
+	private final String resultLie;
+	private final String missType;
+	private final long missDistanceValue;
+	private final String missDistanceUnit;
+	private final long missAngle;
+	private final String missDescription;
+	private final long count;
 
 	public ShotAnalysis(int hole, Shot shot) {
 		this.hole = hole;
 		this.lie = shot.getLie().getLabel();
 		this.category = shot.getShotCategory().getLabel();
-		this.distanceValue = shot.getDistance().getValue();
-		this.distanceUnit = shot.getDistance().getLengthUnit();
+		this.distanceValue = shot.getDistanceFromTarget().getValue();
+		this.distanceUnit = shot.getDistanceFromTarget().getLengthUnit();
 		this.strokesGained = shot.getStrokesGained();
+		this.resultLie = shot.getResultLie().getLabel();
+		this.missType = shot.getMissAngle().getMissType();
+		this.missDistanceValue = shot.getMissDistance().getValue();
+		this.missDistanceUnit = shot.getMissDistance().getLengthUnit();
+		this.missAngle = shot.getMissAngle().getAngleDegrees();
+		this.missDescription = shot.getMissAngle().getDescription();
+		this.count = shot.getCount();
 	}
 }

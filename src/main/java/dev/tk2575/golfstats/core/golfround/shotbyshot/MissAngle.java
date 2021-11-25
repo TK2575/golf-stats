@@ -29,9 +29,7 @@ public interface MissAngle {
 		return new MissClockFace(angleShorthand);
 	}
 
-	default int getAngleDegrees() {
-		return -1;
-	}
+	int getAngleDegrees();
 
 	boolean isLeftMiss();
 
@@ -40,4 +38,18 @@ public interface MissAngle {
 	boolean isShortMiss();
 
 	boolean isLongMiss();
+
+	String getMissType();
+
+	default String getDescription() {
+		StringBuilder sb = new StringBuilder();
+
+		if (isShortMiss()) sb.append("Short ");
+		else if (isLongMiss()) sb.append("Long ");
+
+		if (isLeftMiss()) sb.append("Left");
+		else if (isRightMiss()) sb.append("Right");
+
+		return sb.toString().trim();
+	}
 }

@@ -8,9 +8,5 @@ public interface ShotsGainedComputation {
 		return BroadieImputed.getInstance();
 	}
 
-	Shot analyzeShot(Shot shot, Shot result);
-
-	default Shot analyzeHoledShot(Shot shot) {
-		return analyzeShot(shot, Shot.holed());
-	}
+	Shot analyzeShot(Shot shot);
 }

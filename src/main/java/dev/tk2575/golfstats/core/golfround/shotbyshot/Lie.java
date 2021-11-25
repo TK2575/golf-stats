@@ -62,6 +62,8 @@ public interface Lie {
 		return false;
 	}
 
+	default boolean isRecovery() { return false; }
+
 	default boolean isFairway() { return false; }
 
 	default boolean isTee() { return false; }
