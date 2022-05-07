@@ -70,12 +70,12 @@ public class Utils {
 		return value.setScale(1, HALF_UP);
 	}
 
-	public static String convertToTSV(String[] data) {
-		return printAsDelimitedValues(data, "\t");
+	public static String convertToTSV(Collection<String> data) {
+		return printAsDelimitedValues("\t", data);
 	}
 
-	public static String convertToCSV(String[] data) {
-		return printAsDelimitedValues(data, ",");
+	public static String convertToCSV(Collection<String> data) {
+		return printAsDelimitedValues(",", data);
 	}
 
 	public static String toTitleCase(String text) {
@@ -153,8 +153,8 @@ public class Utils {
 		return files;
 	}
 
-	private static String printAsDelimitedValues(String[] data, String delimiter) {
-		return Stream.of(data)
+	private static String printAsDelimitedValues(String delimiter, Collection<String> data) {
+		return data.stream()
 		             .map(Utils::escapeSpecialCharacters)
 		             .collect(Collectors.joining(delimiter));
 	}
