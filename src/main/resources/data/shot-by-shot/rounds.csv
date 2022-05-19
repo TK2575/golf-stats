@@ -50,4 +50,5 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 49,Tom,11/9/2021,George Wright GC,Hyde Park,MA,White,69.9,129,11:55,16:17,Walk (Push)
 50,Tom,11/14/2021,Sandy Burr CC,Wayland,MA,White,34.3,121,12:57,14:50,Walk
 51,Tom,11/18/2021,Wayland CC,Wayland,MA,White,66.3,114,12:25,14:38,Walk
-52,Tom,5/17/22,Pine Meadows GC,Lexington,MA,Blue,67,105,12:23,14:22,Walk
+52,Tom,5/17/2022,Pine Meadows GC,Lexington,MA,Blue,67,105,12:23,14:22,Walk
+53,Tom,5/19/2022,Wellesley CC,Wellesley Hills,MA,White,71.0,129,9:25,13:16,Walk (Push)
