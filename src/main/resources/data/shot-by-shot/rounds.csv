@@ -53,3 +53,5 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 52,Tom,5/17/2022,Pine Meadows GC,Lexington,MA,Blue,67,105,12:23,14:22,Walk
 53,Tom,5/19/2022,Wellesley CC,Wellesley Hills,MA,White,71.0,129,9:25,13:16,Walk (Push)
 54,Tom,5/23/2022,Pine Meadows GC,Lexington,MA,Blue,67,105,6:45,8:28,Walk
+55,Tom,6/24/2022,Fresh Pond GC,Cambridge,MA,White,33.7,117,9:50,12:07,Walk (Push)
+56,Tom,6/26/2022,Maynard GC,Maynard,MA,Blue-White,35.0,130,7:58,10:05,Walk
