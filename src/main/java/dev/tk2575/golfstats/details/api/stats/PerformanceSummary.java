@@ -17,7 +17,10 @@ public class PerformanceSummary {
 	private final String golfer;
 	private final BigDecimal handicapIndex;
 
-	@JsonIgnore @ToString.Exclude
+	@ToString.Exclude
+	private final List<BigDecimal> recentDifferentials;
+
+	@ToString.Exclude
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
 
 	@JsonIgnore
@@ -30,6 +33,12 @@ public class PerformanceSummary {
 		this.golfer = rounds().golferNames();
 		this.handicapIndex = index.getValue();
 		this.handicapRevisionHistory = index.getRevisionHistory();
+		this.recentDifferentials =
+				this.golfRounds.stream()
+						.sorted(Comparator.comparing(GolfRound::getDate).reversed())
+						.limit(20)
+						.map(GolfRound::getScoreDifferential)
+						.toList();
 	}
 
 	private GolfRoundStream rounds() {

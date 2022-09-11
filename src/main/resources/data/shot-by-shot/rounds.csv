@@ -55,3 +55,6 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 54,Tom,5/23/2022,Pine Meadows GC,Lexington,MA,Blue,67,105,6:45,8:28,Walk
 55,Tom,6/24/2022,Fresh Pond GC,Cambridge,MA,White,33.7,117,9:50,12:07,Walk (Push)
 56,Tom,6/26/2022,Maynard GC,Maynard,MA,Blue-White,35.0,130,7:58,10:05,Walk
+57,Tom,9/3/2022,Weston GC,Weston,MA,White,70.1,130,14:58,19:02,Walk (Push)
+58,Tom,9/9/2022,Leo J Martin GC,Weston,MA,Blue,34.0,112,6:40,8:30,Walk
+59,Tom,9/11/2022,Quail Ridge CC,Acton,MA,White-Blue,34.2,128,9:15,11:32,Walk
