@@ -21,7 +21,7 @@ public class PerformanceSummary {
 	private final List<BigDecimal> recentDifferentials;
 
 	@ToString.Exclude
-	private final Map<LocalDate, BigDecimal> handicapRevisionHistory;
+	private final Map<LocalDate, BigDecimal> handicapRevisionHistory = new TreeMap<>(Collections.reverseOrder());
 
 	@JsonIgnore
 	@ToString.Exclude
@@ -32,7 +32,7 @@ public class PerformanceSummary {
 		this.golfRounds = index.getAdjustedRounds();
 		this.golfer = rounds().golferNames();
 		this.handicapIndex = index.getValue();
-		this.handicapRevisionHistory = index.getRevisionHistory();
+		this.handicapRevisionHistory.putAll(index.getRevisionHistory());
 		this.recentDifferentials =
 				this.golfRounds.stream()
 						.sorted(Comparator.comparing(GolfRound::getDate).reversed())
