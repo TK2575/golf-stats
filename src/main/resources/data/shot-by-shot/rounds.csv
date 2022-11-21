@@ -63,3 +63,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 62,Tom,9/25/2022,Newton Commonwealth GC,Newton,MA,Blue,33.3,119,7:06,9:34,Walk
 63,Tom,10/6/2022,George Wright GC,Hyde Park,MA,Blue,71.9,133,6:28,9:49,Walk
 64,Tom,10/7/2022,Robert T. Lynch GC,Brookline,MA,White,34.2,117,14:48,16:55,Walk
+65,Tom,10/30/2022,Weston GC,Weston,MA,Blue,71.9,133,13:25,15:45,Walk

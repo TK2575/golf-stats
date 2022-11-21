@@ -36,3 +36,4 @@ id,golfer,date,course,city,state,tees,rating,slope,duration,transport
 36,Will,9/11/2022,Quail Ridge CC,Acton,MA,White-Blue,34.2,128,2:17,Walk (Push)
 37,Will,9/17/2022,Widow's Walk GC,Scituate,MA,White-Silver,68.7,132,4:26,Cart
 38,Will,10/7/2022,Robert T. Lynch GC,Brookline,MA,White,34.2,117,2:08,Walk (Push)
+39,Tom,10/30/2022,Weston GC,Weston, MA,Blue,71.9,133,2:32,Walk
