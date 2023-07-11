@@ -21,6 +21,7 @@ public class RoundSummary {
 	private final int par;
 	private final BigDecimal rating;
 	private final BigDecimal slope;
+	private final int handicap;
 	private final BigDecimal handicapDifferential;
 	private final BigDecimal incomingHandicapIndex;
 	private final BigDecimal resultantHandicapIndex;
@@ -48,6 +49,7 @@ public class RoundSummary {
 		this.netScore = round.getNetScore();
 		this.rating = round.getRating();
 		this.slope = round.getSlope();
+		this.handicap = round.getStrokesAdjusted() - round.getNetStrokes();
 		this.handicapDifferential = round.getScoreDifferential();
 		this.incomingHandicapIndex = round.getIncomingHandicapIndex();
 		this.resultantHandicapIndex = resultantHandicapIndex;
@@ -72,6 +74,7 @@ public class RoundSummary {
 		this.par = other.par;
 		this.rating = other.rating;
 		this.slope = other.slope;
+		this.handicap = other.handicap;
 		this.handicapDifferential = other.handicapDifferential;
 		this.incomingHandicapIndex = other.incomingHandicapIndex;
 		this.resultantHandicapIndex = other.resultantHandicapIndex;
