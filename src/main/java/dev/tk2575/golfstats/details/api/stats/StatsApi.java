@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.details.GolfRoundResourceManager;
+import dev.tk2575.golfstats.details.api.PerformanceDetail;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class StatsApi {
 				.toList();
 		/*@formatter:on*/
 	}
-
+	
 	@RequestMapping(value = "recentShots.tsv", produces = "text/tsv")
 	public String recentShots() {
 		List<List<String>> rows = new ArrayList<>();

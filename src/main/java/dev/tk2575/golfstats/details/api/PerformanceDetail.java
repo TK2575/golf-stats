@@ -1,6 +1,8 @@
-package dev.tk2575.golfstats.details.api.stats;
+package dev.tk2575.golfstats.details.api;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.details.api.stats.PerformanceSummary;
+import dev.tk2575.golfstats.details.api.stats.RoundDetail;
 import lombok.*;
 
 import java.math.BigDecimal;
