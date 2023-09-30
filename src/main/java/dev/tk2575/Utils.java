@@ -137,6 +137,7 @@ public class Utils {
 			List<String> fileNames =
 					new BufferedReader(new InputStreamReader(directoryStream))
 							.lines()
+							.filter(each -> !each.contains(" "))
 							.filter(each -> each.endsWith(".csv"))
 							.toList();
 
