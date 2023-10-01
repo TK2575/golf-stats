@@ -68,3 +68,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 67,Tom,6/25/2023,Oaks North (North-East),San Diego,CA,White,55.6,88,7:30,10:38,Walk
 68,Tom,7/4/2023,Mt. Woodson GC,Ramona,CA,White,66.5,125,8:30,12:45,Cart
 69,Tom,7/10/2023,Sea 'n Air,San Diego,CA,Blue,70.0,123,9:45,14:15,Walk
+70,Tom,9/17/2023,Boulder Oaks GC,Escondido,CA,Blue,65.5,112,9:07,13:32,Cart

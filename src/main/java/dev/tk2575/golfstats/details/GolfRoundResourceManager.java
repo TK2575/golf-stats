@@ -12,8 +12,6 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -24,68 +22,39 @@ import static java.util.stream.Collectors.groupingBy;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Log4j2
 public class GolfRoundResourceManager {
-	
-	private static final Map<String, String> FILE_PATHS = Map.of(
-			"hole19", "data/hole19/hole19_export-tom.json",
-			"simple", "data/simple",
-			"hole-by-hole", "data/hole-by-hole",
-			"shot-by-shot", "data/shot-by-shot"
-	);
 
 	public static GolfRoundResourceManager getInstance() {
 		return instance;
 	}
 
 	public Map<String, List<GolfRound>> getRoundsByGolfer() {
-		maybeReloadFiles();
 		return this.golfRoundsFromFiles.stream().collect(groupingBy(each -> each.getGolfer().getName()));
 	}
 
-	private void maybeReloadFiles() {
-		if (this.lastFileReadTime == null) {
-			reloadFiles();
-		}
-		if (findMaxFileLastUpdateTime().isAfter(this.lastFileReadTime)) {
-			reloadFiles();
-		}
-	}
-
-	private LocalDateTime findMaxFileLastUpdateTime() {
-		//TODO return the max updated time for all files in FILE_PATHS
-		return LocalDateTime.now();
-	}
-
-	private void reloadFiles() {
-		this.golfRoundsFromFiles = readGolfRoundsFromFiles();
-		this.lastFileReadTime = LocalDateTime.now();
-	}
-
 	private static final GolfRoundResourceManager instance = new GolfRoundResourceManager();
-	private List<GolfRound> golfRoundsFromFiles;
-	private LocalDateTime lastFileReadTime = null;
+
+	//TODO support changes to file without requiring restart
+	private final List<GolfRound> golfRoundsFromFiles = readGolfRoundsFromFiles();
 
 	private List<GolfRound> readGolfRoundsFromFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory(FILE_PATHS.get("simple"));
+		List<CSVFile> files = readCSVFilesInDirectory("data/simple");
 		List<GolfRound> simpleRounds = new ArrayList<>();
 		if (!files.isEmpty()) {
 			simpleRounds = new SimpleGolfRoundCSVParser(files).parse();
 		}
-		List<GolfRound> rounds = new ArrayList<>(join(simpleRounds, Hole19JsonParser.parse(FILE_PATHS.get("hole19"))));
+		List<GolfRound> rounds = new ArrayList<>(join(simpleRounds, Hole19JsonParser.parse("data/hole19/hole19_export-tom.json")));
 
-		files = readCSVFilesInDirectory(FILE_PATHS.get("hole-by-hole"));
+		files = readCSVFilesInDirectory("data/hole-by-hole");
 		if (!files.isEmpty()) {
 			rounds.addAll(new HoleByHoleRoundCSVParser(files).parse());
 		}
 
-		files = readCSVFilesInDirectory(FILE_PATHS.get("shot-by-shot"));
+		files = readCSVFilesInDirectory("data/shot-by-shot");
 		if (!files.isEmpty()) {
 			rounds.addAll(new ShotByShotRoundCSVParser(files).parse());
 		}
 
-		return rounds.stream()
-				.sorted(comparing((GolfRound each) -> each.getGolfer().getName())
-						.thenComparing(GolfRound::getDate))
-				.toList();
+		return rounds.stream().sorted(comparing((GolfRound each) -> each.getGolfer().getName()).thenComparing(GolfRound::getDate)).toList();
 	}
 
 	static List<GolfRound> join(@NonNull List<GolfRound> simpleRounds, @NonNull List<Hole19Round> hole19Rounds) {
