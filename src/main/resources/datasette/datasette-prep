@@ -1,0 +1,10 @@
+#!/bin/bash
+
+rounds=$(curl localhost:8080/datasette/rounds)
+holes=$(curl localhost:8080/datasette/holes)
+shots=$(curl localhost:8080/datasette/shots)
+
+sqlite-utils create-database golf-stats.db
+echo "$rounds" | sqlite-utils insert golf-stats.db rounds -
+echo "$holes" | sqlite-utils insert golf-stats.db holes -
+echo "$shots" | sqlite-utils insert golf-stats.db shots -
