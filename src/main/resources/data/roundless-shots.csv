@@ -1,0 +1,10 @@
+id,golfer,date,course,city,state,transport,par,shots
+1,Tom,9/17/23,Boulder Oaks GC,Escondido,CA,Cart,3,t138
+2,Tom,10/29/23,Boulder Oaks GC,Escondido,CA,Cart,3,t142.r10-9.g10-12
+3,Tom,6/5/21,Golden Pheasant GC,Lumberton,NJ,Cart,5,t517.f270.y180r.f180.r11-8.g6-6
+4,Tom,6/5/21,Golden Pheasant GC,Lumberton,NJ,Cart,3,t120.g36-6x2
+5,Tom,6/5/21,Golden Pheasant GC,Lumberton,NJ,Cart,4,t350.r60l.g30-12x3
+6,Tom,6/5/21,Golden Pheasant GC,Lumberton,NJ,Cart,4,t416.y178lx3.f128.f30-7.g6-11
+7,Tom,11/7/22,Unicorn GC,Stoneham,MA,Walk,4,t351.r176r.r6-12.g9-12x2
+8,Tom,11/7/22,Unicorn GC,Stoneham,MA,Walk,4,t297.r54r.r13-1.g3-3x2
+9,Tom,11/7/22,Unicorn GC,Stoneham,MA,Walk,4,t278.f184.r91l.r15-7.g11-6x2
