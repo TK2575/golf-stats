@@ -70,3 +70,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 69,Tom,7/10/2023,Sea 'n Air,San Diego,CA,Blue,70.0,123,9:45,14:15,Walk
 70,Tom,9/17/2023,Boulder Oaks GC,Escondido,CA,Blue,65.5,112,9:07,13:32,Cart
 71,Tom,10/29/2023,Boulder Oaks GC,Escondido,CA,Blue,65.5,112,7:12,11:00,Cart
+72,Tom,12/17/2023,Oaks North (East),San Diego,CA,White,28.0,86,14:35,16:24,Walk
