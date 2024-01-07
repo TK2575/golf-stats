@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.details.api.stats;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
@@ -23,7 +22,6 @@ public class PerformanceSummary {
 	@ToString.Exclude
 	private final Map<LocalDate, BigDecimal> handicapRevisionHistory = new TreeMap<>(Collections.reverseOrder());
 
-	@JsonIgnore
 	@ToString.Exclude
 	private final List<GolfRound> golfRounds;
 

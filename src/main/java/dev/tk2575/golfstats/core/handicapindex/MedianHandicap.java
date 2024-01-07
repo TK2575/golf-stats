@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.core.handicapindex;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import lombok.*;
 
@@ -14,7 +13,6 @@ class MedianHandicap implements HandicapIndex {
 	private final BigDecimal value;
 	private final long roundCount;
 
-	@JsonIgnore
 	@ToString.Exclude
 	private final List<GolfRound> adjustedRounds;
 

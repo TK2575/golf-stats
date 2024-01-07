@@ -15,8 +15,17 @@ public class HandicapCalculation {
 	private final Integer strokes;
 	private final Integer quota;
 
-	public HandicapCalculation(@NonNull TeeDTO teeDTO, @NonNull String golfer, @NonNull String indexLabel, @NonNull BigDecimal indexValue) {
-		Tee tee = Tee.of(teeDTO.getName(), teeDTO.getRating(), teeDTO.getSlope(), teeDTO.getPar());
+	public HandicapCalculation(@NonNull TeeDTO teeDTO, 
+							   @NonNull String golfer, 
+							   @NonNull String indexLabel, 
+							   @NonNull BigDecimal indexValue) 
+	{
+		Tee tee = Tee.of(
+				teeDTO.getName(), 
+				teeDTO.getRating(), 
+				teeDTO.getSlope(), 
+				teeDTO.getPar()
+		);
 		this.teeName = tee.getName();
 		this.golfer = golfer;
 		this.indexLabel = indexLabel;

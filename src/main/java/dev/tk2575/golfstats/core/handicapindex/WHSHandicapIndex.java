@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.core.handicapindex;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import lombok.*;
 
@@ -15,7 +14,6 @@ class WHSHandicapIndex implements HandicapIndex {
 	private final long roundCount;
 
 	@ToString.Exclude
-	@JsonIgnore
 	private final List<GolfRound> adjustedRounds;
 
 	private final Map<LocalDate, BigDecimal> revisionHistory = new TreeMap<>();

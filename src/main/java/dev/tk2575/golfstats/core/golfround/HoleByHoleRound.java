@@ -1,6 +1,5 @@
 package dev.tk2575.golfstats.core.golfround;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
@@ -44,7 +43,6 @@ class HoleByHoleRound implements GolfRound {
 	private final Map<Integer, BigDecimal> strokesGainedByHole;
 
 	@ToString.Exclude
-	@JsonIgnore
 	private final Collection<Hole> holes;
 
 	HoleByHoleRound(@NonNull RoundMeta round, @NonNull Collection<Hole> holes) {
