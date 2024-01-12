@@ -12,6 +12,10 @@ public interface Distance {
 	Long getValue();
 
 	String getLengthUnit();
+	
+	Long getLengthInYards();
+	
+	Long getLengthInFeet();
 
 	static Distance feet(long value) {
 		return new FeetDistance(value);

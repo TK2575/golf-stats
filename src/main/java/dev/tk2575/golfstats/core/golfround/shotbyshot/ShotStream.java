@@ -40,7 +40,7 @@ public class ShotStream implements ObjectStream<Shot> {
 		return this.stream.filter(shot -> shot.getLie().isTee()).findFirst();
 	}
 
-	private ShotStream greenShots() {
+	public ShotStream greenShots() {
 		return new ShotStream(this.stream.filter(shot -> shot.getLie().isGreen()), this.empty);
 	}
 
@@ -60,8 +60,12 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	public Map<String, BigDecimal> strokesGainedByShotType() {
-		return this.stream.collect(Collectors.toUnmodifiableMap(shot -> shot.getShotCategory()
-		                                                                    .getLabel(), Shot::getStrokesGained, BigDecimal::add));
+		return this.stream.collect(
+				Collectors.toUnmodifiableMap(shot -> 
+						shot.getShotCategory().getLabel(), 
+						Shot::getStrokesGained, 
+						BigDecimal::add)
+		);
 	}
 
 	public BigDecimal teeShotStrokesGainedBaseline() {
@@ -74,7 +78,6 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
 		return new ShotStream(this.stream.map(computer::analyzeShot).toList());
-
 	}
 
 	public ShotStream categorize(Hole hole) {

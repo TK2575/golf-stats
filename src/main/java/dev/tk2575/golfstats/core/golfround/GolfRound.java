@@ -73,21 +73,21 @@ public interface GolfRound {
 	}
 
 	default BigDecimal getPuttsPerHole() {
-		return Utils.divideInts(getPutts(), getHoleCount());
+		return Utils.divide(getPutts(), getHoleCount());
 	}
 
 	default BigDecimal getFairwayInRegulationRate() {
-		return Utils.divideInts(getFairwaysInRegulation(), getFairways());
+		return Utils.divide(getFairwaysInRegulation(), getFairways());
 	}
 
 	default BigDecimal getGreensInRegulationRate() {
-		return Utils.divideInts(getGreensInRegulation(), getHoleCount());
+		return Utils.divide(getGreensInRegulation(), getHoleCount());
 	}
 
 	default BigDecimal getMinutesPerHole() {
 		return getDuration() == null
 		       ? BigDecimal.ZERO
-		       : Utils.divideInts(Math.toIntExact(getDuration().toMinutes()), getHoleCount());
+		       : Utils.divide(Math.toIntExact(getDuration().toMinutes()), getHoleCount());
 	}
 
 	default BigDecimal getRating() {
