@@ -108,6 +108,23 @@ public interface GolfRound {
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
 
+	default Map<String, BigDecimal> getStrokesGainedByCategory() {
+		return getHoles().strokesGainedByShotType();
+	}
+	
+	default Long countBirdiesOrBetter() {
+		return getHoles().filter(hole -> hole.getScore() < 0).count();
+	}
+
+	default Long countDoubleBogeysOrWorse() {
+		return getHoles().filter(hole -> hole.getScore() >= 2).count();
+	}
+
+	default Long getBirdieVsDoubleRatio() {
+		// ratio of birdies or better to double bogeys or worse
+		return countBirdiesOrBetter() - countDoubleBogeysOrWorse();
+	}
+
 	static GolfRound compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
 		if (round1.equals(round2)) {
 			throw new IllegalArgumentException("these rounds are the same");

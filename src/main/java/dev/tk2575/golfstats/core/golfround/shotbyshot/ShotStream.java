@@ -43,6 +43,10 @@ public class ShotStream implements ObjectStream<Shot> {
 	public ShotStream greenShots() {
 		return new ShotStream(this.stream.filter(shot -> shot.getLie().isGreen()), this.empty);
 	}
+	
+	public ShotStream teeShots() {
+		return new ShotStream(this.stream.filter(shot -> shot.getLie().isTee()), this.empty);
+	}
 
 	public boolean isFairwayInRegulation(boolean fairwayPresent) {
 		return fairwayPresent && isSecondStrokeFairway();

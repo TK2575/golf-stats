@@ -1,16 +1,22 @@
 package dev.tk2575.golfstats.details.api.stats;
 
+import dev.tk2575.MovingAverage;
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.details.GolfRoundResourceManager;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -76,10 +82,10 @@ public class StatsApi {
 
   @RequestMapping(value = "rounds", produces = "text/csv")
   public String rounds() {
-		//TODO combine 9 hole rounds?
-		List<RoundTableRow> rows = getTomStats().stream()
+		List<RoundTableRow> rows = getTomStats()
+				.compileTo18HoleRounds()
+				.sortNewestToOldest()
 				.map(RoundTableRow::new)
-				.sorted(Comparator.comparing(RoundTableRow::getDate).reversed())
 				.toList();
 		
 		StringBuilder sb = new StringBuilder();
@@ -91,7 +97,7 @@ public class StatsApi {
 	@RequestMapping(value = "putting", produces = "text/csv")
 	public String putting() {
 		//TODO bin distances?
-		List<PuttingDistanceStat> stats = getTomStats().stream()
+		List<PuttingDistanceStat> stats = getTomStats()
 				.flatMap(round -> round.getHoles().allShots().greenShots())
 				.collect(Collectors.groupingBy(shot -> shot.getDistanceFromTarget().getLengthInFeet()))
 				.values().stream().map(PuttingDistanceStat::new)
@@ -102,9 +108,56 @@ public class StatsApi {
 		stats.forEach(stat -> sb.append(Utils.convertToCSV(stat.values())).append("\n"));
 		return sb.toString();
 	}
+	
+	@RequestMapping(value = "rolling", produces = "text/csv")
+	public String rolling(@RequestParam(defaultValue = "10") int window) {
+		List<RollingStat> results = new ArrayList<>();
+		Map<String, MovingAverage> movingAverages = new HashMap<>();
+		List<GolfRound> rounds = getTomStats()
+				.compileTo18HoleRounds()
+				.sortOldestToNewest()
+				.toList();
 
-	private static List<GolfRound> getTomStats() {
-		return GolfRoundResourceManager.getInstance().getRoundsByGolfer().get("Tom");
+		//strokes gained, all categories, per 18 hole round
+		new GolfRoundStream(rounds)
+				.forEachOrdered(round -> round.getStrokesGainedByCategory().forEach((cat, sg) -> {
+			var mAvg = movingAverages.getOrDefault(cat, new MovingAverage(window));
+			var next = mAvg.next(sg);
+			results.add(
+					new RollingStat(
+							"Strokes Gained: " + cat, 
+							next.getValue(), 
+							round.getDate(), 
+							next.getKey()));
+			movingAverages.put(cat, mAvg);
+		}));
+
+		//TODO driving distance (p75)
+
+		//birdie or better vs double or worse rate
+		var mAvg = new MovingAverage(window);
+		rounds.forEach(round -> {
+			var next = mAvg.next(new BigDecimal(round.getBirdieVsDoubleRatio()));
+			results.add(
+					new RollingStat(
+							"Birdie vs Double Ratio", 
+							next.getValue(), 
+							round.getDate(), 
+							next.getKey()));
+		});
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(Utils.convertToCSV(RollingStat.headers())).append("\n");
+		results.stream()
+				.sorted(Comparator.comparing(RollingStat::getName).thenComparing(RollingStat::getSequence))
+				.forEachOrdered(stat -> sb.append(Utils.convertToCSV(stat.values())).append("\n"));
+		return sb.toString();
+	}
+
+	private static GolfRoundStream getTomStats() {
+		return new GolfRoundStream(
+				GolfRoundResourceManager.getInstance().getRoundsByGolfer().get("Tom")
+		);
 	}
 	
 
