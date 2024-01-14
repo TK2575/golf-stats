@@ -39,6 +39,17 @@ public class Utils {
 	public static BigDecimal divide(Number numerator, Number divisor, int scale) {
 		return new BigDecimal(numerator.toString()).divide(new BigDecimal(divisor.toString()), scale, HALF_UP);
 	}
+	
+	public static Long percentile(@NonNull Collection<Long> samples, long percentile) {
+		if (samples.isEmpty()) {
+			throw new IllegalArgumentException("cannot compute percentile of empty list");
+		}
+		
+		var items = new ArrayList<>(samples);
+		items.sort(Comparator.naturalOrder());
+		int index = (int) Math.ceil(percentile / 100.0 * items.size());
+		return items.get(index - 1);
+	}
 
 	public static Long mean(Long int1, Long int2) {
 		if (int1.equals(int2)) return int1;

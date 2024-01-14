@@ -30,7 +30,6 @@ class MissDirection implements MissAngle {
 		}
 	}
 
-
 	@Override
 	public boolean isShortMiss() {
 		return false;

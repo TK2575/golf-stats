@@ -18,6 +18,10 @@ public interface Shot {
 
 	Distance getMissDistance();
 
+	default Distance getDistance() {
+		return Distance.difference(getDistanceFromTarget(), getMissDistance());
+	}
+
 	Lie getResultLie();
 
 	Integer getCount();

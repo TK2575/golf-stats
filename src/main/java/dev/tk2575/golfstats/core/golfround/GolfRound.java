@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static dev.tk2575.Utils.percentile;
 import static dev.tk2575.Utils.roundToOneDecimalPlace;
 import static java.math.RoundingMode.HALF_UP;
 
@@ -107,6 +108,11 @@ public interface GolfRound {
 	default Long getYards() { return getTee().getYards(); }
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
+
+	default Long getP75DrivingDistance() {
+		List<Long> drives = getHoles().allShots().teeShots().map(shot -> shot.getDistance().getLengthInYards()).toList();
+		return drives.isEmpty() ? 0L : percentile(drives, 75);
+	}
 
 	default Map<String, BigDecimal> getStrokesGainedByCategory() {
 		return getHoles().strokesGainedByShotType();

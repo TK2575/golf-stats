@@ -111,40 +111,43 @@ public class StatsApi {
 	
 	@RequestMapping(value = "rolling", produces = "text/csv")
 	public String rolling(@RequestParam(defaultValue = "10") int window) {
-		List<RollingStat> results = new ArrayList<>();
-		Map<String, MovingAverage> movingAverages = new HashMap<>();
 		List<GolfRound> rounds = getTomStats()
 				.compileTo18HoleRounds()
 				.sortOldestToNewest()
 				.toList();
-
-		//strokes gained, all categories, per 18 hole round
-		new GolfRoundStream(rounds)
-				.forEachOrdered(round -> round.getStrokesGainedByCategory().forEach((cat, sg) -> {
-			var mAvg = movingAverages.getOrDefault(cat, new MovingAverage(window));
-			var next = mAvg.next(sg);
-			results.add(
-					new RollingStat(
-							"Strokes Gained: " + cat, 
-							next.getValue(), 
-							round.getDate(), 
-							next.getKey()));
-			movingAverages.put(cat, mAvg);
-		}));
-
-		//TODO driving distance (p75)
-
-		//birdie or better vs double or worse rate
-		var mAvg = new MovingAverage(window);
-		rounds.forEach(round -> {
-			var next = mAvg.next(new BigDecimal(round.getBirdieVsDoubleRatio()));
-			results.add(
-					new RollingStat(
-							"Birdie vs Double Ratio", 
-							next.getValue(), 
-							round.getDate(), 
-							next.getKey()));
-		});
+		
+		List<RollingStat> results = new ArrayList<>();
+		Map<String, MovingAverage> movingAverages = new HashMap<>();
+		var driveAvg = new MovingAverage(window);
+		var birdieAvg = new MovingAverage(window);
+		
+		for (GolfRound round : rounds) {
+			//driving distance
+			var driveDist = round.getP75DrivingDistance();
+			if (driveDist > 0) {
+				results.add(new RollingStat(
+						"p75 Driving Distance", 
+						driveAvg.next(new BigDecimal(driveDist)), 
+						round));
+			}
+			
+			//birdie or better rate
+			results.add(new RollingStat(
+					"Birdie vs Double Ratio", 
+					birdieAvg.next(new BigDecimal(round.getBirdieVsDoubleRatio())), 
+					round)
+			);
+			
+			//strokes gained
+			for (Map.Entry<String, BigDecimal> entry : round.getStrokesGainedByCategory().entrySet()) {
+				var mAvg = movingAverages.getOrDefault(entry.getKey(), new MovingAverage(window));
+				results.add(new RollingStat(
+						"Strokes Gained: " + entry.getKey(), 
+						mAvg.next(entry.getValue()), 
+						round));
+				movingAverages.put(entry.getKey(), mAvg);
+			}
+		}
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(Utils.convertToCSV(RollingStat.headers())).append("\n");

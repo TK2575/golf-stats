@@ -50,7 +50,7 @@ public class RoundTableRow {
         "Date",
         "Course",
         "Score",
-        "Net",
+        "To Par",
         "TOT",
         "OTT",
         "APP",

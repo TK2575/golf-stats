@@ -9,6 +9,11 @@ public interface Distance {
 		else { return yards(value); }
 	}
 
+	static Distance difference(Distance distanceFromTarget, Distance missDistance) {
+		//TODO adjust difference based on miss angle
+		return Distance.yards(distanceFromTarget.getLengthInYards() - missDistance.getLengthInYards());
+	}
+
 	Long getValue();
 
 	String getLengthUnit();
