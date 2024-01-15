@@ -23,6 +23,26 @@ public interface ShotCategory {
 		}
 		return new ApproachShotCategory();
 	}
+	
+	static ShotCategory tee() {
+		return new TeeShotCategory();
+	}
+	
+	static ShotCategory approach() {
+		return new ApproachShotCategory();
+	}
+	
+	static ShotCategory aroundGreen() {
+		return new AroundGreenShotCategory();
+	}
+	
+	static ShotCategory green() {
+		return new GreenShotCategory();
+	}
+	
+	static ShotCategory recovery() {
+		return new RecoveryShotCategory();
+	}
 
 	String getLabel();
 

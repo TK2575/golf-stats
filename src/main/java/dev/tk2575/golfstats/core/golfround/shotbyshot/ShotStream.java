@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static dev.tk2575.Utils.percentile;
+
 @Getter
 @AllArgsConstructor
 public class ShotStream implements ObjectStream<Shot> {
@@ -30,6 +32,10 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public Integer totalNetStrokes(Integer par, Integer handicapStrokes) {
 		return totalStrokesAdjusted(par, handicapStrokes) - handicapStrokes;
+	}
+	
+	public Long p75DrivingDistance() {
+		return percentile(this.teeShots().map(shot -> shot.getDistance().getLengthInYards()).toList(), 75L);
 	}
 
 	public Integer getPutts() {
