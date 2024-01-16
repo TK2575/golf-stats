@@ -11,6 +11,7 @@ public interface Distance {
 
 	static Distance difference(Distance distanceFromTarget, Distance missDistance) {
 		//TODO adjust difference based on miss angle
+		//TODO match distance unit (green = feet, else yards)
 		return Distance.yards(distanceFromTarget.getLengthInYards() - missDistance.getLengthInYards());
 	}
 

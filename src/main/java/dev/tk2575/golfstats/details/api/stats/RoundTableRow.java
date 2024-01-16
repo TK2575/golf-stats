@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Getter
-public class RoundTableRow {
+public class RoundTableRow implements StatsApiValueSupplier {
   private final LocalDate date;
   private final String label;
   private final Integer strokes;
@@ -31,7 +31,8 @@ public class RoundTableRow {
   private final Optional<BigDecimal> sgShortGame;
   private final Optional<BigDecimal> sgPutting;
   private final Optional<BigDecimal> sgRecovery;
-  private final BigDecimal p75DrivingDistance;
+  private final Long p75DrivingDistance;
+  private final Long longestDrive;
   private final Long greatShots;
   private final Long poorShots;
   private final BigDecimal differential;
@@ -50,8 +51,8 @@ public class RoundTableRow {
     this.sgShortGame = Optional.ofNullable(sgMap.get(ShotCategory.aroundGreen().getLabel()));
     this.sgPutting = Optional.ofNullable(sgMap.get(ShotCategory.green().getLabel()));
     this.sgRecovery = Optional.ofNullable(sgMap.get(ShotCategory.recovery().getLabel()));
-    
-    this.p75DrivingDistance = BigDecimal.valueOf(round.getP75DrivingDistance());
+    this.p75DrivingDistance = round.getP75DrivingDistance();
+    this.longestDrive = round.getLongestDrive();
     this.greatShots = round.getHoles().allShots()
         .filter(shot -> shot.getStrokesGained().compareTo(new BigDecimal("0.5")) >= 0).count();
     this.poorShots = round.getHoles().allShots()

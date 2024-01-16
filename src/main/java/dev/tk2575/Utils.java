@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.math.RoundingMode.HALF_UP;
@@ -26,10 +27,6 @@ public class Utils {
 
 	public static boolean isNullOrBlank(String string) {
 		return (string == null || string.isBlank());
-	}
-
-	public static <T> boolean isNullOrEmpty(Collection<T> collection) {
-		return (collection == null || collection.isEmpty());
 	}
 
 	public static BigDecimal divide(Number value, Number divisor) {
@@ -87,12 +84,20 @@ public class Utils {
 		return value.setScale(1, HALF_UP);
 	}
 
+	public static Function<Collection<String>, String> lookupDelimOperator(String fileType) {
+		if (fileType != null && fileType.equalsIgnoreCase("tsv")) {
+			return Utils::convertToTSV;
+		}
+    return Utils::convertToCSV;
+	}
+	
 	public static String convertToTSV(Collection<String> data) {
-		return printAsDelimitedValues("\t", data);
+		return printAsDelimitedValues("\t", data, 
+				List.of(Utils::escapeSpecialCharacters, Utils::escapeExcelFunctionCharacters));
 	}
 
 	public static String convertToCSV(Collection<String> data) {
-		return printAsDelimitedValues(",", data);
+		return printAsDelimitedValues(",", data, List.of(Utils::escapeSpecialCharacters));
 	}
 
 	public static String toTitleCase(String text) {
@@ -171,10 +176,12 @@ public class Utils {
 		return files;
 	}
 
-	private static String printAsDelimitedValues(String delimiter, Collection<String> data) {
+	private static String printAsDelimitedValues(String delimiter, 
+																							 Collection<String> data, 
+																							 List<Function<String,String>> transformers) {
 		return data.stream()
-		             .map(Utils::escapeSpecialCharacters)
-		             .collect(Collectors.joining(delimiter));
+				.map(each -> transformers.stream().reduce(Function.identity(), Function::andThen).apply(each))
+				.collect(Collectors.joining(delimiter));
 	}
 
 	private static String escapeSpecialCharacters(String data) {
@@ -185,5 +192,11 @@ public class Utils {
 		}
 		return escapedData;
 	}
-
+	
+	private static String escapeExcelFunctionCharacters(String data) {
+		if (data.startsWith("=") || data.startsWith("+")) {
+			return "'" + data;
+		}
+		return data;
+	}
 }

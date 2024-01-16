@@ -12,6 +12,8 @@ public interface Shot {
 
 	Lie getLie();
 
+	Integer getSequence();
+
 	Distance getDistanceFromTarget();
 
 	MissAngle getMissAngle();

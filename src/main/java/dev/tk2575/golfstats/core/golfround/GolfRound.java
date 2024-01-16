@@ -4,6 +4,7 @@ import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -56,6 +57,10 @@ public interface GolfRound {
 
 	default HoleStream getHoles() {
 		return HoleStream.empty();
+	}
+	
+	default ShotStream getShots() {
+		return getHoles().allShots();
 	}
 
 	default BigDecimal computeScoreDifferential() {
@@ -112,6 +117,11 @@ public interface GolfRound {
 	default Long getP75DrivingDistance() {
 		List<Long> drives = getHoles().allShots().teeShots().map(shot -> shot.getDistance().getLengthInYards()).toList();
 		return drives.isEmpty() ? 0L : percentile(drives, 75);
+	}
+	
+	default Long getLongestDrive() {
+		return getHoles().allShots().teeShots()
+				.map(shot -> shot.getDistance().getLengthInYards()).max(Long::compareTo).orElse(0L);
 	}
 
 	default Map<String, BigDecimal> getStrokesGainedByCategory() {

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
-public class PuttingDistanceStat {
+public class PuttingDistanceStat implements StatsApiValueSupplier {
   private final Integer distance;
   private final BigDecimal makePercentage;
   private final BigDecimal threePuttPercentage;

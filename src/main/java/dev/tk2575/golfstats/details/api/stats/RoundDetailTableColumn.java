@@ -48,7 +48,7 @@ public class RoundDetailTableColumn {
   }
   
   public String getDrivingDistance() {
-    return drivingDistance == null ? "" : drivingDistance.toPlainString();
+    return drivingDistance == null ? "-" : drivingDistance.toPlainString();
   }
   
   public static List<RoundDetailTableColumn> compile(GolfRound source) {
@@ -102,26 +102,30 @@ public class RoundDetailTableColumn {
     this.drivingDistance = BigDecimal.valueOf(new HoleStream(holes).allShots().p75DrivingDistance());
   }
 
-  public static String toCSV(List<RoundDetailTableColumn> columns) {
-    Map<Integer, String> results = new TreeMap<>();
+  public static List<RoundDetailTableRow> toRows(List<RoundDetailTableColumn> columns) {
+    Map<Integer, List<String>> results = new TreeMap<>();
     for (int i = 0; i < HEADERS.size(); i++) {
-      results.put(i+1, HEADERS.get(i));
+      results.put(i+1, List.of(HEADERS.get(i)));
     }
-    BinaryOperator<String> appendDelim = (oldValue, newValue) -> oldValue + "," + newValue;
+    BinaryOperator<List<String>> mergeLists = (oldValue, newValue) -> {
+      var list = new ArrayList<>(oldValue);
+      list.addAll(newValue);
+      return list;
+    };
     for (RoundDetailTableColumn column : columns) {
-      results.merge(1, column.getHeader(), appendDelim);
-      results.merge(2, column.getPar().toString(), appendDelim);
-      results.merge(3, column.getStrokes().toString(), appendDelim);
-      results.merge(4, column.getStrokesGainedTotal(), appendDelim);
-      results.merge(5, column.getStrokesGainedTee(), appendDelim);
-      results.merge(6, column.getStrokesGainedApproach(), appendDelim);
-      results.merge(7, column.getStrokesGainedAroundGreen(), appendDelim);
-      results.merge(8, column.getStrokesGainedPutting(), appendDelim);
-      results.merge(9, column.getGreenInRegulation(), appendDelim);
-      results.merge(10, column.getFairwayHit(), appendDelim);
-      results.merge(11, column.getDrivingDistance(), appendDelim);
+      results.merge(1, List.of(column.getHeader()), mergeLists);
+      results.merge(2, List.of(column.getPar().toString()), mergeLists);
+      results.merge(3, List.of(column.getStrokes().toString()), mergeLists);
+      results.merge(4, List.of(column.getStrokesGainedTotal()), mergeLists);
+      results.merge(5, List.of(column.getStrokesGainedTee()), mergeLists);
+      results.merge(6, List.of(column.getStrokesGainedApproach()), mergeLists);
+      results.merge(7, List.of(column.getStrokesGainedAroundGreen()), mergeLists);
+      results.merge(8, List.of(column.getStrokesGainedPutting()), mergeLists);
+      results.merge(9, List.of(column.getGreenInRegulation()), mergeLists);
+      results.merge(10, List.of(column.getFairwayHit()), mergeLists);
+      results.merge(11, List.of(column.getDrivingDistance()), mergeLists);
     }
-    return String.join("\n", results.values());
+    return results.values().stream().map(RoundDetailTableRow::new).toList();
   }
   
   private static final List<String> HEADERS = List.of(

@@ -51,7 +51,11 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 	
 	public ShotStream teeShots() {
-		return new ShotStream(this.stream.filter(shot -> shot.getLie().isTee()), this.empty);
+		return new ShotStream(this.stream.filter(
+				//TODO create a ShotCategory equality to avoid this string comparison
+				shot -> shot.getShotCategory().getLabel().equals(ShotCategory.tee().getLabel())), 
+				this.empty
+		);
 	}
 
 	public boolean isFairwayInRegulation(boolean fairwayPresent) {
@@ -88,6 +92,12 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
 		return new ShotStream(this.stream.map(computer::analyzeShot).toList());
+	}
+
+	public ShotStream significantShots() {
+		return new ShotStream(this.stream.filter(
+				shot -> shot.getStrokesGained().abs().compareTo(new BigDecimal("0.5")) >= 0
+		).toList());
 	}
 
 	public ShotStream categorize(Hole hole) {

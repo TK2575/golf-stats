@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Getter
-public class RollingStat {
+public class RollingStat implements StatsApiValueSupplier {
     private final String name;
     private final Long sequence;
     private final LocalDate date;
