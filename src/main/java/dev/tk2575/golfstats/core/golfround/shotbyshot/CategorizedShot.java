@@ -7,6 +7,7 @@ import lombok.*;
 public class CategorizedShot implements Shot {
 
 	private final Lie lie;
+	private final Integer sequence;
 	private final Distance distanceFromTarget;
 	private final MissAngle missAngle;
 	private final Distance missDistance;
@@ -16,6 +17,7 @@ public class CategorizedShot implements Shot {
 
 	public CategorizedShot(Hole hole, Shot shot) {
 		this.lie = shot.getLie();
+		this.sequence = shot.getSequence();
 		this.distanceFromTarget = shot.getDistanceFromTarget();
 		this.missAngle = shot.getMissAngle();
 		this.missDistance = shot.getMissDistance();

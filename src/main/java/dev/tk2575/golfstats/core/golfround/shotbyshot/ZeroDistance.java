@@ -11,4 +11,14 @@ public class ZeroDistance implements Distance {
 	public String getLengthUnit() {
 		return "";
 	}
+
+	@Override
+	public Long getLengthInYards() {
+		return getValue();
+	}
+
+	@Override
+	public Long getLengthInFeet() {
+		return getValue();
+	}
 }

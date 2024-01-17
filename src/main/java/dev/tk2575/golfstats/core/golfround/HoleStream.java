@@ -79,6 +79,14 @@ public class HoleStream implements ObjectStream<Hole> {
 	public Hole byNumber(Integer number) {
 		return this.stream.filter(hole -> hole.getNumber().equals(number)).findAny().orElseThrow(NoSuchElementException::new);
 	}
+	
+	public HoleStream frontNine() {
+		return new HoleStream(this.stream.filter(hole -> hole.getNumber() <= 9).toList()).sortByNumber();
+	}
+	
+	public HoleStream backNine() {
+		return new HoleStream(this.stream.filter(hole -> hole.getNumber() > 9).toList()).sortByNumber();
+	}
 
 	public HoleStream applyNetDoubleBogey(Tee tee, Golfer golfer) {
 		Integer handicapStrokes = tee.handicapOf(golfer).getHandicapStrokesForGolfer(golfer);

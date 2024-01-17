@@ -23,14 +23,11 @@ import static java.util.stream.Collectors.groupingBy;
 @Log4j2
 public class GolfRoundResourceManager {
 
-	public static GolfRoundResourceManager getInstance() {
-		return instance;
-	}
-
 	public Map<String, List<GolfRound>> getRoundsByGolfer() {
 		return this.golfRoundsFromFiles.stream().collect(groupingBy(each -> each.getGolfer().getName()));
 	}
 
+	@Getter
 	private static final GolfRoundResourceManager instance = new GolfRoundResourceManager();
 
 	//TODO support changes to file without requiring restart

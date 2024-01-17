@@ -12,11 +12,17 @@ public interface Shot {
 
 	Lie getLie();
 
+	Integer getSequence();
+
 	Distance getDistanceFromTarget();
 
 	MissAngle getMissAngle();
 
 	Distance getMissDistance();
+
+	default Distance getDistance() {
+		return Distance.difference(getDistanceFromTarget(), getMissDistance());
+	}
 
 	Lie getResultLie();
 

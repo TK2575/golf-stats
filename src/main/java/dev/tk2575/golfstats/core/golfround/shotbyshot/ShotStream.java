@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static dev.tk2575.Utils.percentile;
+
 @Getter
 @AllArgsConstructor
 public class ShotStream implements ObjectStream<Shot> {
@@ -31,6 +33,10 @@ public class ShotStream implements ObjectStream<Shot> {
 	public Integer totalNetStrokes(Integer par, Integer handicapStrokes) {
 		return totalStrokesAdjusted(par, handicapStrokes) - handicapStrokes;
 	}
+	
+	public Long p75DrivingDistance() {
+		return percentile(this.teeShots().map(shot -> shot.getDistance().getLengthInYards()).toList(), 75L);
+	}
 
 	public Integer getPutts() {
 		return greenShots().sumInteger(Shot::getCount);
@@ -40,8 +46,16 @@ public class ShotStream implements ObjectStream<Shot> {
 		return this.stream.filter(shot -> shot.getLie().isTee()).findFirst();
 	}
 
-	private ShotStream greenShots() {
+	public ShotStream greenShots() {
 		return new ShotStream(this.stream.filter(shot -> shot.getLie().isGreen()), this.empty);
+	}
+	
+	public ShotStream teeShots() {
+		return new ShotStream(this.stream.filter(
+				//TODO create a ShotCategory equality to avoid this string comparison
+				shot -> shot.getShotCategory().getLabel().equals(ShotCategory.tee().getLabel())), 
+				this.empty
+		);
 	}
 
 	public boolean isFairwayInRegulation(boolean fairwayPresent) {
@@ -60,8 +74,12 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	public Map<String, BigDecimal> strokesGainedByShotType() {
-		return this.stream.collect(Collectors.toUnmodifiableMap(shot -> shot.getShotCategory()
-		                                                                    .getLabel(), Shot::getStrokesGained, BigDecimal::add));
+		return this.stream.collect(
+				Collectors.toUnmodifiableMap(shot -> 
+						shot.getShotCategory().getLabel(), 
+						Shot::getStrokesGained, 
+						BigDecimal::add)
+		);
 	}
 
 	public BigDecimal teeShotStrokesGainedBaseline() {
@@ -74,7 +92,12 @@ public class ShotStream implements ObjectStream<Shot> {
 
 	public ShotStream computeStrokesGained(ShotsGainedComputation computer) {
 		return new ShotStream(this.stream.map(computer::analyzeShot).toList());
+	}
 
+	public ShotStream significantShots() {
+		return new ShotStream(this.stream.filter(
+				shot -> shot.getStrokesGained().abs().compareTo(new BigDecimal("0.5")) >= 0
+		).toList());
 	}
 
 	public ShotStream categorize(Hole hole) {

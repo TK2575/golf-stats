@@ -96,12 +96,13 @@ public class ShotByShotRoundCSVParser extends CSVParser {
 		var holeIndex = Integer.valueOf(row[2]);
 		var par = Integer.valueOf(row[3]);
 
-		List<ShotAbbreviation> shotAbbreviations = Arrays.stream(row[4].split("\\."))
-				.sequential()
-				.map(ShotAbbreviation::parse)
-				.toList();
+		String[] rawAbbrevs = row[4].split("\\.");
+		List<ShotAbbreviation> abbrevs = new ArrayList<>();
+		for (int i = 0; i < rawAbbrevs.length; i++) {
+			abbrevs.add(ShotAbbreviation.parse(rawAbbrevs[i], i+1));
+		}
 
-		Hole hole = Hole.of(number, holeIndex, par, Shot.compile(shotAbbreviations));
+		Hole hole = Hole.of(number, holeIndex, par, Shot.compile(abbrevs));
 		this.holes.merge(id, List.of(hole), (prior, current) -> {
 			List<Hole> result = new ArrayList<>(prior);
 			result.addAll(current);

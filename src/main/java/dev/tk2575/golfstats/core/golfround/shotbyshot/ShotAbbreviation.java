@@ -12,16 +12,17 @@ import java.util.regex.Pattern;
 public class ShotAbbreviation {
 
 	private final Lie lie;
+	private final Integer sequence;
 	private final Distance distanceFromTarget;
 	private final MissAngle priorShotMissAngle;
 	private final Integer count;
 
-	public static ShotAbbreviation of(char lieChar, long distance, char missDirection, int missAngle, int count) {
+	public static ShotAbbreviation of(char lieChar, int sequence, long distance, char missDirection, int missAngle, int count) {
 		Lie lie = Lie.parse(lieChar);
-		return new ShotAbbreviation(lie, Distance.parse(lie, distance), MissAngle.parse(missDirection, missAngle), count);
+		return new ShotAbbreviation(lie, sequence, Distance.parse(lie, distance), MissAngle.parse(missDirection, missAngle), count);
 	}
 
-	public static ShotAbbreviation parse(String shorthand) {
+	public static ShotAbbreviation parse(String shorthand, int sequence) {
 		if (!validate(shorthand)) {
 			throw new IllegalArgumentException(shorthand + " does not match expected shorthand pattern");
 		}
@@ -74,7 +75,7 @@ public class ShotAbbreviation {
 			}
 		}
 
-		return of(lie, distance, missDirection, missAngle, count);
+		return of(lie, sequence, distance, missDirection, missAngle, count);
 	}
 
 	protected static boolean validate(String shorthand) {

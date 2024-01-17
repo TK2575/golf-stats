@@ -14,4 +14,14 @@ public class YardsDistance implements Distance {
 	public String getLengthUnit() {
 		return "yards";
 	}
+
+	@Override
+	public Long getLengthInYards() {
+		return getValue();
+	}
+
+	@Override
+	public Long getLengthInFeet() {
+		return getValue() * 3;
+	}
 }

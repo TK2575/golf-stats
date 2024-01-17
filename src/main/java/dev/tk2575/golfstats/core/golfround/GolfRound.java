@@ -4,6 +4,7 @@ import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static dev.tk2575.Utils.percentile;
 import static dev.tk2575.Utils.roundToOneDecimalPlace;
 import static java.math.RoundingMode.HALF_UP;
 
@@ -56,6 +58,10 @@ public interface GolfRound {
 	default HoleStream getHoles() {
 		return HoleStream.empty();
 	}
+	
+	default ShotStream getShots() {
+		return getHoles().allShots();
+	}
 
 	default BigDecimal computeScoreDifferential() {
 		BigDecimal firstTerm = BigDecimal.valueOf(113)
@@ -73,21 +79,21 @@ public interface GolfRound {
 	}
 
 	default BigDecimal getPuttsPerHole() {
-		return Utils.divideInts(getPutts(), getHoleCount());
+		return Utils.divide(getPutts(), getHoleCount());
 	}
 
 	default BigDecimal getFairwayInRegulationRate() {
-		return Utils.divideInts(getFairwaysInRegulation(), getFairways());
+		return Utils.divide(getFairwaysInRegulation(), getFairways());
 	}
 
 	default BigDecimal getGreensInRegulationRate() {
-		return Utils.divideInts(getGreensInRegulation(), getHoleCount());
+		return Utils.divide(getGreensInRegulation(), getHoleCount());
 	}
 
 	default BigDecimal getMinutesPerHole() {
 		return getDuration() == null
 		       ? BigDecimal.ZERO
-		       : Utils.divideInts(Math.toIntExact(getDuration().toMinutes()), getHoleCount());
+		       : Utils.divide(Math.toIntExact(getDuration().toMinutes()), getHoleCount());
 	}
 
 	default BigDecimal getRating() {
@@ -107,6 +113,33 @@ public interface GolfRound {
 	default Long getYards() { return getTee().getYards(); }
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }
+
+	default Long getP75DrivingDistance() {
+		List<Long> drives = getHoles().allShots().teeShots().map(shot -> shot.getDistance().getLengthInYards()).toList();
+		return drives.isEmpty() ? 0L : percentile(drives, 75);
+	}
+	
+	default Long getLongestDrive() {
+		return getHoles().allShots().teeShots()
+				.map(shot -> shot.getDistance().getLengthInYards()).max(Long::compareTo).orElse(0L);
+	}
+
+	default Map<String, BigDecimal> getStrokesGainedByCategory() {
+		return getHoles().strokesGainedByShotType();
+	}
+	
+	default Long countBirdiesOrBetter() {
+		return getHoles().filter(hole -> hole.getScore() < 0).count();
+	}
+
+	default Long countDoubleBogeysOrWorse() {
+		return getHoles().filter(hole -> hole.getScore() >= 2).count();
+	}
+
+	default Long getBirdieVsDoubleRatio() {
+		// ratio of birdies or better to double bogeys or worse
+		return countBirdiesOrBetter() - countDoubleBogeysOrWorse();
+	}
 
 	static GolfRound compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
 		if (round1.equals(round2)) {
