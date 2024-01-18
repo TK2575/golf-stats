@@ -9,10 +9,28 @@ public interface Distance {
 		else { return yards(value); }
 	}
 
-	static Distance difference(Distance distanceFromTarget, Distance missDistance) {
-		//TODO adjust difference based on miss angle
-		//TODO match distance unit (green = feet, else yards)
-		return Distance.yards(distanceFromTarget.getLengthInYards() - missDistance.getLengthInYards());
+	static Distance shotDistance(Distance distanceFromTarget, Distance missDistance, MissAngle missAngle) {
+		if (missAngle.getAngleDegrees().isEmpty()) {
+			return distanceFromTarget.subtract(missDistance);
+		} 
+		int missAngleDegrees = missAngle.getAngleDegrees().get();
+		if (missAngleDegrees == 0) {
+			return distanceFromTarget.add(missDistance);
+		}
+		if (missAngleDegrees == 180) {
+			return distanceFromTarget.subtract(missDistance);
+		}
+		return distanceFromTarget.computeLawOfCosineDistance(missDistance, missAngleDegrees);
+	}
+
+	default Distance computeLawOfCosineDistance(Distance missDistance, Integer missAngle) {
+		double target = getValue(); // y
+		double miss = convertToSameUnit(missDistance).getValue(); // x
+		var oppositeAngle = (missAngle > 180 ? missAngle - 180 : 180 - missAngle); // a -> b
+		//z^2 = x^2 + y^2 - 2xyCos(b)
+		double shotDistSqrd = 
+				Math.pow(miss,2) + Math.pow(target,2) - (2 * miss * target * Math.cos(Math.toRadians(oppositeAngle))); 
+		return ofSameUnit(Math.round(Math.sqrt(shotDistSqrd)));
 	}
 
 	Long getValue();
@@ -22,6 +40,14 @@ public interface Distance {
 	Long getLengthInYards();
 	
 	Long getLengthInFeet();
+	
+	Distance add(Distance distance);
+	
+	Distance subtract(Distance distance);
+	
+	Distance convertToSameUnit(Distance distance);
+	
+	Distance ofSameUnit(long value);
 
 	static Distance feet(long value) {
 		return new FeetDistance(value);
@@ -35,14 +61,5 @@ public interface Distance {
 		return new ZeroDistance();
 	}
 
-	default boolean isLessThanOrEqualToYards(int yards) {
-		//TODO switch to enum or something not string checking i.e. currency
-		if (getLengthUnit().equalsIgnoreCase("yards")) {
-			return yards > getValue();
-		}
-		if (getLengthUnit().equalsIgnoreCase("feet")) {
-			return yards > getValue() * 3;
-		}
-		throw new IllegalStateException(String.format("Not configured to compare distances of %s length unit", getLengthUnit()));
-	}
+	boolean isLessThanOrEqualToYards(int yards);
 }

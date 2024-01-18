@@ -21,4 +21,29 @@ public class ZeroDistance implements Distance {
 	public Long getLengthInFeet() {
 		return getValue();
 	}
+
+	@Override
+	public Distance add(Distance distance) {
+		return this;
+	}
+
+	@Override
+	public Distance subtract(Distance distance) {
+		return this;
+	}
+
+	@Override
+	public Distance convertToSameUnit(Distance distance) {
+		return this;
+	}
+
+	@Override
+	public Distance ofSameUnit(long value) {
+		return this;
+	}
+
+	@Override
+	public boolean isLessThanOrEqualToYards(int yards) {
+		return true;
+	}
 }

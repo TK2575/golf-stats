@@ -21,7 +21,7 @@ public interface Shot {
 	Distance getMissDistance();
 
 	default Distance getDistance() {
-		return Distance.difference(getDistanceFromTarget(), getMissDistance());
+		return Distance.shotDistance(getDistanceFromTarget(), getMissDistance(), getMissAngle());
 	}
 
 	Lie getResultLie();

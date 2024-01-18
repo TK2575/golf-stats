@@ -24,4 +24,29 @@ public class YardsDistance implements Distance {
 	public Long getLengthInFeet() {
 		return getValue() * 3;
 	}
+
+	@Override
+	public Distance add(Distance distance) {
+		return Distance.yards(getValue() + distance.getLengthInYards());
+	}
+
+	@Override
+	public Distance subtract(Distance distance) {
+		return Distance.yards(getValue() - distance.getLengthInYards());
+	}
+
+	@Override
+	public Distance convertToSameUnit(Distance distance) {
+		return Distance.yards(distance.getLengthInYards());
+	}
+
+	@Override
+	public Distance ofSameUnit(long value) {
+		return Distance.yards(value);
+	}
+
+	@Override
+	public boolean isLessThanOrEqualToYards(int yards) {
+		return yards >= getValue();
+	}
 }

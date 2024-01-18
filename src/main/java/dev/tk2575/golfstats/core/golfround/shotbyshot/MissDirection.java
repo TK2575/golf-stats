@@ -2,12 +2,12 @@ package dev.tk2575.golfstats.core.golfround.shotbyshot;
 
 import lombok.*;
 
+import java.util.Optional;
+
 @Getter
 @EqualsAndHashCode
 @ToString
 class MissDirection implements MissAngle {
-
-	private int angleDegrees;
 	private boolean leftMiss;
 	private boolean rightMiss;
 
@@ -18,15 +18,12 @@ class MissDirection implements MissAngle {
 
 		this.leftMiss = false;
 		this.rightMiss = false;
-		this.angleDegrees = 0;
 
 		if (missDirection == 'l') {
 			this.leftMiss = true;
-			this.angleDegrees = 270;
 		}
 		else if (missDirection == 'r') {
 			this.rightMiss = true;
-			this.angleDegrees = 90;
 		}
 	}
 
@@ -41,7 +38,7 @@ class MissDirection implements MissAngle {
 	}
 
 	@Override
-	public String getMissType() {
-		return "Direction";
+	public Optional<Integer> getAngleDegrees() {
+		return Optional.empty();
 	}
 }

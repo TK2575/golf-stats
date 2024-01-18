@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.core.golfround.shotbyshot;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface MissAngle {
@@ -29,7 +30,7 @@ public interface MissAngle {
 		return new MissClockFace(angleShorthand);
 	}
 
-	int getAngleDegrees();
+	Optional<Integer> getAngleDegrees();
 
 	boolean isLeftMiss();
 
@@ -38,9 +39,7 @@ public interface MissAngle {
 	boolean isShortMiss();
 
 	boolean isLongMiss();
-
-	String getMissType();
-
+	
 	default String getDescription() {
 		StringBuilder sb = new StringBuilder();
 

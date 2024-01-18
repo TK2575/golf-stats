@@ -30,7 +30,8 @@ public class GolfRoundResourceManager {
 	@Getter
 	private static final GolfRoundResourceManager instance = new GolfRoundResourceManager();
 
-	//TODO support changes to file without requiring restart
+	//TODO need golf round input validator, rather than waiting on 500 error on stats api
+	// support changes to file without requiring restart
 	private final List<GolfRound> golfRoundsFromFiles = readGolfRoundsFromFiles();
 
 	private List<GolfRound> readGolfRoundsFromFiles() {

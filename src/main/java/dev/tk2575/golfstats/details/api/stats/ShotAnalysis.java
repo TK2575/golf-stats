@@ -18,10 +18,9 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 	private final String shotDistanceUnit;
 	private final BigDecimal strokesGained;
 	private final String resultLie;
-	private final String missType;
 	private final long missDistanceValue;
 	private final String missDistanceUnit;
-	private final long missAngle;
+	private final String missAngle;
 	private final String missDescription;
 	private final long count;
 
@@ -36,10 +35,12 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 		this.shotDistanceUnit = shot.getDistance().getLengthUnit();
 		this.strokesGained = shot.getStrokesGained();
 		this.resultLie = shot.getResultLie().getLabel();
-		this.missType = shot.getMissAngle().getMissType();
 		this.missDistanceValue = shot.getMissDistance().getValue();
 		this.missDistanceUnit = shot.getMissDistance().getLengthUnit();
-		this.missAngle = shot.getMissAngle().getAngleDegrees();
+		this.missAngle = 
+				shot.getMissAngle().getAngleDegrees().isEmpty() 
+						? "" 
+						: String.valueOf(shot.getMissAngle().getAngleDegrees().get());
 		this.missDescription = shot.getMissAngle().getDescription();
 		this.count = shot.getCount();
 	}
@@ -56,7 +57,6 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 				"Shot Distance Unit",
 				"SG",
 				"Result Lie",
-				"Miss Type",
 				"Miss Distance",
 				"Unit",
 				"Miss Angle",
@@ -77,10 +77,9 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 				shotDistanceUnit,
 				strokesGained.toPlainString(),
 				resultLie,
-				missType,
 				String.valueOf(missDistanceValue),
 				missDistanceUnit,
-				String.valueOf(missAngle),
+				missAngle,
 				missDescription,
 				String.valueOf(count)
 		);

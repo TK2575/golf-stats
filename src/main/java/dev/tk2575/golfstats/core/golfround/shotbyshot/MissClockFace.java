@@ -2,6 +2,8 @@ package dev.tk2575.golfstats.core.golfround.shotbyshot;
 
 import lombok.*;
 
+import java.util.Optional;
+
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -24,9 +26,10 @@ class MissClockFace implements MissAngle {
 		this.longMiss = clockFace < 2 || clockFace > 10;
 		this.shortMiss = clockFace > 4 && clockFace < 8;
 	}
-
+	
 	@Override
-	public String getMissType() {
-		return "Angle";
+	public Optional<Integer> getAngleDegrees() {
+		return Optional.of(angleDegrees);
 	}
+	
 }
