@@ -7,7 +7,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Getter
@@ -17,9 +21,13 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
   private final BigDecimal threePuttPercentage;
   private final BigDecimal averagePutts;
   private final Integer count;
+
+  private final BigDecimal strokesGained;
+
+  private final BigDecimal avgStrokesGained;
   
-  public PuttingDistanceStat(@NonNull List<Shot> shots) {
-    this.distance = shots.get(0).getDistanceFromTarget().getValue().intValue();
+  public PuttingDistanceStat(@NonNull List<Shot> shots, Long bin) {
+    this.distance = bin.intValue();
     this.makePercentage = Utils.divide(
         shots.stream().filter(shot -> shot.getCount() == 1).count(), 
         shots.size(), 
@@ -36,10 +44,40 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
         4
     );
     this.count = shots.size();
+    this.strokesGained = shots.stream().map(Shot::getStrokesGained).reduce(BigDecimal.ZERO, BigDecimal::add);
+    this.avgStrokesGained = Utils.divide(
+            shots.stream().map(Shot::getStrokesGained).reduce(BigDecimal.ZERO, BigDecimal::add),
+            this.count);
+  }
+  
+  public PuttingDistanceStat(@NonNull List<Shot> shots) {
+    this(shots, shots.get(0).getDistanceFromTarget().getValue());
   }
 
   public static List<String> headers() {
-    return List.of("Distance", "Make %", "3-Putt %", "Avg Putts", "Count");
+    return List.of("Distance", "Make %", "3-Putt %", "Avg Putts", "Count", "Strokes Gained", "Avg SG");
+  }
+  
+  public static Function<Shot, Long> distance() {
+    return shot -> shot.getDistanceFromTarget().getLengthInFeet();
+  }
+
+  public static Function<Shot, Long> binDistance() {
+    return shot -> {
+      var dist = shot.getDistanceFromTarget().getLengthInFeet();
+      if (dist <= 10) return dist;
+      if (dist <= 15) return 15L;
+      if (dist <= 20) return 20L;
+      if (dist <= 30) return 30L;
+      return 40L;
+    };
+  }
+
+  public static List<PuttingDistanceStat> groupByBinnedDistances(List<Shot> putts) {
+    return putts.stream()
+        .collect(Collectors.groupingBy(PuttingDistanceStat.binDistance(), Collectors.toList()))
+        .entrySet().stream().map(e -> new PuttingDistanceStat(e.getValue(), e.getKey()))
+        .sorted(Comparator.comparing(PuttingDistanceStat::getDistance)).toList();
   }
 
   public List<String> values() {
@@ -48,6 +86,8 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
         makePercentage.toString(),
         threePuttPercentage.toString(),
         averagePutts.toString(),
-        count.toString());
+        count.toString(),
+        strokesGained.toPlainString(),
+        avgStrokesGained.toPlainString());
   }
 }

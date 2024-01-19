@@ -38,8 +38,13 @@ public class StatsApi {
   }
 
   @RequestMapping(value = "putting", produces = "text/csv")
-  public String getPutting(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(Optional.of(PuttingDistanceStat.headers()), getPuttingStats(), Utils.lookupDelimOperator(fileType));
+  public String getPutting(@RequestParam(defaultValue = "csv") String fileType,
+                           @RequestParam(defaultValue = "false") String binned) {
+    return generateDelimitedResponse(
+            Optional.of(PuttingDistanceStat.headers()),
+            getPuttingStats(Boolean.parseBoolean(binned)),
+            Utils.lookupDelimOperator(fileType)
+    );
   }
 
   @RequestMapping(value = "latest", produces = "text/csv")
@@ -124,13 +129,13 @@ public class StatsApi {
     ).toList();
   }
 
-  private List<PuttingDistanceStat> getPuttingStats() {
-    //TODO bin distances?
-    return getTomStats()
-        .flatMap(round -> round.getShots().greenShots())
-        .collect(Collectors.groupingBy(shot -> shot.getDistanceFromTarget().getLengthInFeet()))
-        .values().stream().map(PuttingDistanceStat::new)
-        .sorted(Comparator.comparing(PuttingDistanceStat::getDistance)).toList();
+  private List<PuttingDistanceStat> getPuttingStats(boolean binned) {
+    var groupingFunction = binned ? PuttingDistanceStat.binDistance() : PuttingDistanceStat.distance();
+
+    return getTomStats().flatMap(round -> round.getShots().greenShots())
+            .collect(Collectors.groupingBy(groupingFunction, Collectors.toList()))
+            .entrySet().stream().map(e -> new PuttingDistanceStat(e.getValue(), e.getKey()))
+            .sorted(Comparator.comparing(PuttingDistanceStat::getDistance)).toList();
   }
 
   private String generateDelimitedResponse(Optional<List<String>> headers,
