@@ -73,13 +73,6 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
     };
   }
 
-  public static List<PuttingDistanceStat> groupByBinnedDistances(List<Shot> putts) {
-    return putts.stream()
-        .collect(Collectors.groupingBy(PuttingDistanceStat.binDistance(), Collectors.toList()))
-        .entrySet().stream().map(e -> new PuttingDistanceStat(e.getValue(), e.getKey()))
-        .sorted(Comparator.comparing(PuttingDistanceStat::getDistance)).toList();
-  }
-
   public List<String> values() {
     return List.of(
         distance.toString(),

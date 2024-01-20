@@ -5,6 +5,7 @@ import dev.tk2575.golfstats.core.golfround.shotbyshot.ApproachShotCategory;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.AroundGreenShotCategory;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.GreenShotCategory;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.RecoveryShotCategory;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotCategory;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.TeeShotCategory;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @RequiredArgsConstructor
 @Getter
@@ -53,10 +55,8 @@ public class RoundTableRow implements StatsApiValueSupplier {
     this.sgRecovery = Optional.ofNullable(sgMap.get(ShotCategory.recovery().getLabel()));
     this.p75DrivingDistance = round.getP75DrivingDistance();
     this.longestDrive = round.getLongestDrive();
-    this.greatShots = round.getHoles().allShots()
-        .filter(shot -> shot.getStrokesGained().compareTo(new BigDecimal("0.5")) >= 0).count();
-    this.poorShots = round.getHoles().allShots()
-        .filter(shot -> shot.getStrokesGained().compareTo(new BigDecimal("-0.5")) <= 0).count();
+    this.greatShots = round.getShots().countGreatShots();
+    this.poorShots = round.getShots().countBadShots();
     this.differential = round.getScoreDifferential();
     this.resultantHandicapIndex = Optional.ofNullable(index.getRevisionHistory()
         .getOrDefault(round.getDate(), round.getIncomingHandicapIndex()));

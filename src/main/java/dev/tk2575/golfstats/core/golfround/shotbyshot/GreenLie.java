@@ -7,11 +7,6 @@ import lombok.*;
 public class GreenLie implements Lie {
 
 	@Override
-	public boolean isGreen() {
-		return true;
-	}
-
-	@Override
 	public String getLabel() {
 		return "Green";
 	}

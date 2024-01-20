@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface Shot {
 
@@ -19,6 +20,14 @@ public interface Shot {
 	MissAngle getMissAngle();
 
 	Distance getMissDistance();
+	
+	default boolean isGreatShot() {
+		return this.getStrokesGained().compareTo(new BigDecimal("0.5")) >= 0;
+	}
+	
+	default boolean isBadShot() {
+		return this.getStrokesGained().compareTo(new BigDecimal("-0.5")) <= 0;
+	}
 
 	default Distance getDistance() {
 		return Distance.shotDistance(getDistanceFromTarget(), getMissDistance(), getMissAngle());

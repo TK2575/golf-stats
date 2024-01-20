@@ -9,19 +9,23 @@ public interface ShotCategory {
 	}
 
 	static ShotCategory parse(Hole hole, Shot shot) {
-		if (shot.getLie().isGreen()) {
+		if (shot.getLie().is(Lie.green())) {
 			return new GreenShotCategory();
 		}
-		if (shot.getLie().isRecovery()) {
+		if (shot.getLie().is(Lie.recovery())) {
 			return new RecoveryShotCategory();
 		}
 		if (shot.getDistanceFromTarget().isLessThanOrEqualToYards(30)) {
 			return new AroundGreenShotCategory();
 		}
-		if (shot.getLie().isTee() && hole.getPar() > 3) {
+		if (shot.getLie().is(Lie.tee()) && hole.getPar() > 3) {
 			return new TeeShotCategory();
 		}
 		return new ApproachShotCategory();
+	}
+	
+	default boolean is(ShotCategory other) {
+		return this.getLabel().equals(other.getLabel());
 	}
 	
 	static ShotCategory tee() {

@@ -120,7 +120,7 @@ public interface GolfRound {
 	}
 	
 	default Long getLongestDrive() {
-		return getHoles().allShots().teeShots()
+		return getShots().teeShots()
 				.map(shot -> shot.getDistance().getLengthInYards()).max(Long::compareTo).orElse(0L);
 	}
 
@@ -128,19 +128,6 @@ public interface GolfRound {
 		return getHoles().strokesGainedByShotType();
 	}
 	
-	default Long countBirdiesOrBetter() {
-		return getHoles().filter(hole -> hole.getScore() < 0).count();
-	}
-
-	default Long countDoubleBogeysOrWorse() {
-		return getHoles().filter(hole -> hole.getScore() >= 2).count();
-	}
-
-	default Long getBirdieVsDoubleRatio() {
-		// ratio of birdies or better to double bogeys or worse
-		return countBirdiesOrBetter() - countDoubleBogeysOrWorse();
-	}
-
 	static GolfRound compositeOf(@NonNull GolfRound round1, @NonNull GolfRound round2) {
 		if (round1.equals(round2)) {
 			throw new IllegalArgumentException("these rounds are the same");

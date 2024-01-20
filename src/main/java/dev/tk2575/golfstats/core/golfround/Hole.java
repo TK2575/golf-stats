@@ -65,6 +65,14 @@ public interface Hole {
 	default boolean isGreenInRegulation() {
 		return getPar() - 2 >= getStrokes() - getPutts();
 	}
+	
+	default boolean isBirdieOrBetter() {
+		return getScore() < 0;
+	}
+	
+	default boolean isDoubleBogeyOrWorse() {
+		return getScore() >= 2;
+	}
 
 	default BigDecimal getStrokesGainedBaseline() {
 		return getShots().teeShotStrokesGainedBaseline();

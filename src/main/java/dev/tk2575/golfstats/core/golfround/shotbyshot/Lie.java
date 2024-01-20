@@ -29,6 +29,10 @@ public interface Lie {
 	String getLabel();
 
 	String getAbbrev();
+	
+	default boolean is(Lie other) {
+		return getLabel().equals(other.getLabel());
+	}
 
 	static Lie tee() {
 		return new TeeLie();
@@ -57,14 +61,4 @@ public interface Lie {
 	static Lie hole() {
 		return new HoleLie();
 	}
-
-	default boolean isGreen() {
-		return false;
-	}
-
-	default boolean isRecovery() { return false; }
-
-	default boolean isFairway() { return false; }
-
-	default boolean isTee() { return false; }
 }

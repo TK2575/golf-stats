@@ -23,8 +23,25 @@ public class ShotStream implements ObjectStream<Shot> {
 		this.stream = shots.stream();
 		this.empty = shots.isEmpty();
 	}
+	
+	public ShotStream(Stream<Shot> shots) {
+		this(shots.toList());
+	}
 
 	public static ShotStream empty() { return new ShotStream(Stream.empty(), true); }
+	
+	public Long countGreatShots() {
+		return this.stream.filter(Shot::isGreatShot).count();
+	}
+	
+	public Long countBadShots() {
+		return this.stream.filter(Shot::isBadShot).count();
+	}
+	
+	public Long getGreatVsBadShots() {
+		List<Shot> list = this.stream.toList();
+		return new ShotStream(list).countGreatShots() - new ShotStream(list).countBadShots();
+	}
 
 	public Integer totalStrokesAdjusted(Integer par, Integer handicapStrokes) {
 		return Math.min(totalStrokes(), par + 2 + handicapStrokes);
@@ -43,21 +60,20 @@ public class ShotStream implements ObjectStream<Shot> {
 	}
 
 	private Optional<Shot> teeShot() {
-		return this.stream.filter(shot -> shot.getLie().isTee()).findFirst();
+		return this.stream.filter(shot -> shot.getLie().is(Lie.tee())).findFirst();
 	}
 
 	public ShotStream greenShots() {
-		return new ShotStream(this.stream.filter(shot -> shot.getLie().isGreen()), this.empty);
+		return new ShotStream(this.stream.filter(shot -> shot.getLie().is(Lie.green())), this.empty);
 	}
 	
 	public ShotStream teeShots() {
 		return new ShotStream(this.stream.filter(
-				//TODO create a ShotCategory equality to avoid this string comparison
-				shot -> shot.getShotCategory().getLabel().equals(ShotCategory.tee().getLabel())), 
+				shot -> shot.getShotCategory().is(ShotCategory.tee())), 
 				this.empty
 		);
 	}
-
+	
 	public boolean isFairwayInRegulation(boolean fairwayPresent) {
 		return fairwayPresent && isSecondStrokeFairway();
 	}
@@ -66,7 +82,7 @@ public class ShotStream implements ObjectStream<Shot> {
 		if (isEmpty()) { return false; }
 		List<Shot> shotList = this.toList();
 		if (shotList.get(0).getCount() > 1) { return false; }
-		return shotList.get(1).getLie().isFairway();
+		return shotList.get(1).getLie().is(Lie.fairway());
 	}
 
 	public Integer totalStrokes() {

@@ -15,7 +15,4 @@ public class TeeLie implements Lie {
 	public String getAbbrev() {
 		return "t";
 	}
-
-	@Override
-	public boolean isTee() { return true; }
 }

@@ -3,7 +3,7 @@ package dev.tk2575.golfstats.core.golfround.shotbyshot;
 public interface Distance {
 
 	static Distance parse(Lie lie, long value) {
-		if (lie.isGreen()) {
+		if (lie.is(Lie.green())) {
 			return feet(value);
 		}
 		else { return yards(value); }

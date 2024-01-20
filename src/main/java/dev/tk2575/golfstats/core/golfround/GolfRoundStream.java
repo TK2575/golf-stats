@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.core.golfround;
 
 import dev.tk2575.ObjectStream;
 import dev.tk2575.Utils;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -144,6 +145,10 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return duration.equals(Duration.ZERO) ? 0L : duration.toMinutes() / rounds.size();
 	}
 
+	public ShotStream shots() {
+		return new ShotStream(this.stream.flatMap(GolfRound::getShots));
+	}
+	
 	private long getHoles() {
 		return this.stream.mapToLong(GolfRound::getHoleCount).sum();
 	}

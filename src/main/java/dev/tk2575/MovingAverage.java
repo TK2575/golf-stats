@@ -15,11 +15,11 @@ public class MovingAverage {
   private BigDecimal sum = BigDecimal.ZERO;
   private long count = 0;
   
-  public Map.Entry<BigDecimal,Long> next(BigDecimal value) {
+  public Map.Entry<BigDecimal,Long> next(BigDecimal val) {
     count++;
-    queue.add(value);
+    queue.add(val);
     BigDecimal tail = count > windowSize ? queue.poll() : BigDecimal.ZERO;
-    sum = sum.add(value).subtract(tail);
+    sum = sum.add(val).subtract(tail);
     BigDecimal avg = sum.divide(BigDecimal.valueOf(Math.min(count, windowSize)), 4, RoundingMode.HALF_UP);
     return Map.entry(avg, count);
   }

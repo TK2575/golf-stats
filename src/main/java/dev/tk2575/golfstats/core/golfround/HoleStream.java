@@ -147,6 +147,19 @@ public class HoleStream implements ObjectStream<Hole> {
 	public ShotStream allShots() {
 		return Shot.stream(this.stream.flatMap(Hole::getShots).toList());
 	}
+	
+	public Long countBirdiesOrBetter() {
+		return this.stream.filter(Hole::isBirdieOrBetter).count();
+	}
+	
+	public Long countDoubleBogeysOrWorse() {
+		return this.stream.filter(Hole::isDoubleBogeyOrWorse).count();
+	}
+	
+	public Long getBirdieVsDoubleRatio() {
+		var list = this.toList();
+		return new HoleStream(list).countBirdiesOrBetter() - new HoleStream(list).countDoubleBogeysOrWorse();
+	}
 
 	public Map<Integer, BigDecimal> strokesGainedByHole() {
 		return empty
