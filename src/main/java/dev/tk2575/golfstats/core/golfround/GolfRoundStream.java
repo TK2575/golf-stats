@@ -121,7 +121,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		if (this.empty) { return BigDecimal.ZERO; }
 		final List<GolfRound> rounds = this.toList();
 		final long greensInRegulation = rounds.stream().mapToLong(GolfRound::getGreensInRegulation).sum();
-		final long holes = GolfRound.stream(rounds).getHoles();
+		final long holes = GolfRound.stream(rounds).countHoles();
 		return BigDecimal.valueOf(greensInRegulation).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
@@ -129,7 +129,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		if (this.empty) { return BigDecimal.ZERO; }
 		final List<GolfRound> rounds = this.toList();
 		final long putts = rounds.stream().mapToLong(GolfRound::getPutts).sum();
-		final long holes = GolfRound.stream(rounds).getHoles();
+		final long holes = GolfRound.stream(rounds).countHoles();
 		return BigDecimal.valueOf(putts).divide(BigDecimal.valueOf(holes), 2, RoundingMode.HALF_UP);
 	}
 
@@ -149,7 +149,7 @@ public class GolfRoundStream implements ObjectStream<GolfRound> {
 		return new ShotStream(this.stream.flatMap(GolfRound::getShots));
 	}
 	
-	private long getHoles() {
+	private long countHoles() {
 		return this.stream.mapToLong(GolfRound::getHoleCount).sum();
 	}
 
