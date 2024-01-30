@@ -39,6 +39,7 @@ public class RoundTableRow implements StatsApiValueSupplier {
   private final Long poorShots;
   private final BigDecimal differential;
   private final Optional<BigDecimal> resultantHandicapIndex;
+  private final Long yards;
   
   public RoundTableRow(@NonNull GolfRound round, HandicapIndex index) {
     this.date = round.getDate();
@@ -60,6 +61,7 @@ public class RoundTableRow implements StatsApiValueSupplier {
     this.differential = round.getScoreDifferential();
     this.resultantHandicapIndex = Optional.ofNullable(index.getRevisionHistory()
         .getOrDefault(round.getDate(), round.getIncomingHandicapIndex()));
+    this.yards = round.getYards();
   }
 
   public static List<String> headers() {
@@ -78,7 +80,8 @@ public class RoundTableRow implements StatsApiValueSupplier {
         "Great Shots",
         "Poor Shots",
         "Differential",
-        "Handicap Index");
+        "Handicap Index",
+        "Yards");
   }
 
   public List<String> values() {
@@ -97,7 +100,8 @@ public class RoundTableRow implements StatsApiValueSupplier {
         greatShots.toString(),
         poorShots.toString(),
         differential.toPlainString(),
-        resultantHandicapIndex.map(BigDecimal::toPlainString).orElse("")
+        resultantHandicapIndex.map(BigDecimal::toPlainString).orElse(""),
+        yards.toString()
       );
   }
 }

@@ -110,6 +110,7 @@ public interface GolfRound {
 
 	default Integer getScore() { return getStrokes() - getPar(); }
 
+	//TODO verify, should be: use shots gained, then tee yards, then default to 0
 	default Long getYards() { return getTee().getYards(); }
 
 	default BigDecimal getStrokesGained() { return BigDecimal.ZERO; }

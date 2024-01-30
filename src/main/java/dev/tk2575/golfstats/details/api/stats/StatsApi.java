@@ -45,7 +45,7 @@ public class StatsApi {
 
   @RequestMapping(value = "putting", produces = "text/csv")
   public String getPutting(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "false") String binned) {
+                           @RequestParam(defaultValue = "true") String binned) {
     return generateDelimitedResponse(
         Optional.of(PuttingDistanceStat.headers()),
         getPuttingStats(Boolean.parseBoolean(binned)),
