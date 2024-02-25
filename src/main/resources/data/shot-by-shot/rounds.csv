@@ -75,3 +75,4 @@ id,golfer,date,course,city,state,tees,rating,slope,start,end,transport
 74,Tom,1/14/2024,Cottonwood GC,El Cajon,CA,White,70.0,117,12:30,17:21,Walk
 75,Tom,1/27/2024,Boulder Oaks GC,Escondido,CA,White,62.7,105,7:20,11:55,Cart
 76,Tom,2/4/2024,Oaks North (South-North),San Diego,CA,White,57.3,92,6:50,9:58,Walk
+77,Tom,2/19/2024,Boulder Oaks GC,Escondido,CA,Blue,65.5,112,6:37,9:25,Cart
