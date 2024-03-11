@@ -1,13 +1,7 @@
-package dev.tk2575.golfstats.details.api.stats;
+package dev.tk2575.golfstats.core.stats;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.ApproachShotCategory;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.AroundGreenShotCategory;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.GreenShotCategory;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.RecoveryShotCategory;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotCategory;
-import dev.tk2575.golfstats.core.golfround.shotbyshot.TeeShotCategory;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 @RequiredArgsConstructor
 @Getter

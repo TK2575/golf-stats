@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.api.stats;
+package dev.tk2575.golfstats.core.stats;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
@@ -7,11 +7,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Getter

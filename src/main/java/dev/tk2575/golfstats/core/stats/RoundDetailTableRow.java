@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.api.stats;
+package dev.tk2575.golfstats.core.stats;
 
 import lombok.RequiredArgsConstructor;
 

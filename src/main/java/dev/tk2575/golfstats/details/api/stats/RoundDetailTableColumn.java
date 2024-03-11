@@ -4,6 +4,7 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotCategory;
+import dev.tk2575.golfstats.core.stats.RoundDetailTableRow;
 import lombok.Getter;
 
 import java.math.BigDecimal;
