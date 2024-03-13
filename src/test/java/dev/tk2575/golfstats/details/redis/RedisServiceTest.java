@@ -17,8 +17,6 @@ class RedisServiceTest {
   @BeforeEach
   void setUp() throws IOException {
     var server = RedisServer.newRedisServer().start();
-    log.info("Redis server started on host {}", server.getHost());
-    log.info("Redis server started on port {}", server.getBindPort());
     this.svc = new RedisService(server.getHost(), server.getBindPort());
   }
   
