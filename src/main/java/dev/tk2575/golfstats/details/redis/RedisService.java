@@ -1,9 +1,7 @@
 package dev.tk2575.golfstats.details.redis;
 
-import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPooled;
 
-@Component
 public class RedisService {
   private final JedisPooled jedis;
 
