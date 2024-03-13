@@ -41,7 +41,6 @@ class GolfRoundResourceManagerTest {
 		for (Hole19Round each : hole19Rounds) {
 			if (each.getHoles().size() >= 9) {
 				String roundKey = roundKey(each);
-				System.out.println(roundKey);
 				join = joinRoundsMap.get(roundKey);
 				assertNotNull(join);
 				if (each.getHoles().size() == join.getHoleCount()) {
