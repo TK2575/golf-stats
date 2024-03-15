@@ -1,0 +1,22 @@
+version: '3'
+services:
+    golf-stats:
+        container_name: golf-stats-app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: golf-stats:latest
+        ports:
+            - "18888:8080"
+        depends_on:
+            - redis
+        restart: on-failure
+    redis:
+        container_name: golf-stats-redis
+        image: redis:7.2.4-alpine
+        command: redis-server --save 10 1 --loglevel warning
+        volumes:
+            - $HOME/golf-stats-data:/data
+        restart: unless-stopped
+        ports:
+            - "16379:6379"
