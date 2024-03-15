@@ -10,6 +10,6 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "docker"
-    direectory: "docker/"
+    directory: "docker/"
     schedule:
       interval: "monthly"
