@@ -40,7 +40,11 @@ public class GolfRoundResourceManager {
 		if (!files.isEmpty()) {
 			simpleRounds = new SimpleGolfRoundCSVParser(files).parse();
 		}
-		List<GolfRound> rounds = new ArrayList<>(join(simpleRounds, Hole19JsonParser.parse("data/hole19/hole19_export-tom.json")));
+		
+		List<GolfRound> rounds = new ArrayList<>(join(
+				simpleRounds, 
+				Hole19JsonParser.parse("data/hole19/hole19_export-tom.json")
+		));
 
 		files = readCSVFilesInDirectory("data/hole-by-hole");
 		if (!files.isEmpty()) {
@@ -52,7 +56,9 @@ public class GolfRoundResourceManager {
 			rounds.addAll(new ShotByShotRoundCSVParser(files).parse());
 		}
 
-		return rounds.stream().sorted(comparing((GolfRound each) -> each.getGolfer().getName()).thenComparing(GolfRound::getDate)).toList();
+		return rounds.stream().sorted(
+				comparing((GolfRound each) -> each.getGolfer().getName())
+						.thenComparing(GolfRound::getDate)).toList();
 	}
 
 	static List<GolfRound> join(@NonNull List<GolfRound> simpleRounds, @NonNull List<Hole19Round> hole19Rounds) {

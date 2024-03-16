@@ -1,9 +1,11 @@
 package dev.tk2575.golfstats.details;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.details.parsers.Hole19JsonParser;
-import dev.tk2575.golfstats.details.parsers.Hole19Round;
-import dev.tk2575.golfstats.details.parsers.SimpleGolfRoundCSVParser;
+import dev.tk2575.golfstats.details.imports.CSVFile;
+import dev.tk2575.golfstats.details.imports.GolfRoundImporter;
+import dev.tk2575.golfstats.details.imports.Hole19JsonParser;
+import dev.tk2575.golfstats.details.imports.Hole19Round;
+import dev.tk2575.golfstats.details.imports.SimpleGolfRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.*;
 
-class GolfRoundResourceManagerTest {
+class GolfRoundImporterTest {
 
 	@Test
 	void testJoin() {
@@ -26,7 +28,7 @@ class GolfRoundResourceManagerTest {
 		List<Hole19Round> hole19Rounds = Hole19JsonParser.parse("data/hole19/hole19_export-tom.json");
 		assertFalse(hole19Rounds.isEmpty());
 
-		List<GolfRound> joinRounds = GolfRoundResourceManager.join(simpleRounds, hole19Rounds);
+		List<GolfRound> joinRounds = GolfRoundImporter.join(simpleRounds, hole19Rounds);
 		assertFalse(joinRounds.isEmpty());
 		Map<String, GolfRound> joinRoundsMap = joinRounds.stream().collect(toMap(this::roundKey, identity()));
 
