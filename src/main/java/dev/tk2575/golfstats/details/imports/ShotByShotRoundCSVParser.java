@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
@@ -9,7 +9,6 @@ import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotAbbreviation;
-import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -19,7 +18,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 @Getter
 @Log4j2

@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.course.Course;
@@ -6,7 +6,6 @@ import dev.tk2575.golfstats.core.course.tee.Tee;
 import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
-import dev.tk2575.golfstats.details.CSVFile;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 

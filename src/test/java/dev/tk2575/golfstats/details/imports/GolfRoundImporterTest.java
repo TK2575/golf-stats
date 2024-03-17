@@ -1,17 +1,11 @@
-package dev.tk2575.golfstats.details;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.details.imports.CSVFile;
-import dev.tk2575.golfstats.details.imports.GolfRoundImporter;
-import dev.tk2575.golfstats.details.imports.Hole19JsonParser;
-import dev.tk2575.golfstats.details.imports.Hole19Round;
-import dev.tk2575.golfstats.details.imports.SimpleGolfRoundCSVParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +14,7 @@ class GolfRoundImporterTest {
 
 	@Test
 	void testJoin() {
-		List<CSVFile> files = readCSVFilesInDirectory("data/simple");
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("data/simple");
 		assertFalse(files.isEmpty());
 		List<GolfRound> simpleRounds = new SimpleGolfRoundCSVParser(files).parse();
 		assertFalse(simpleRounds.isEmpty());

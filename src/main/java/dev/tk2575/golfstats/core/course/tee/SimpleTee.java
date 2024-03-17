@@ -9,7 +9,6 @@ import static java.math.RoundingMode.HALF_UP;
 
 @Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.NONE)
 class SimpleTee implements Tee {
 
 	private final String name;

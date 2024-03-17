@@ -1,8 +1,7 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.games.Game;
-import dev.tk2575.golfstats.details.CSVFile;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -10,14 +9,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
-import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HoleByHoleRoundCSVParserTest {
 
 	@Test
 	void testSingleRoundFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory("holeByHoleCSVParser")
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("holeByHoleCSVParser")
 				.stream()
 				.filter(each -> !each.getName().toLowerCase().contains("multi"))
 				.toList();
@@ -37,7 +35,7 @@ class HoleByHoleRoundCSVParserTest {
 
 	@Test
 	void testMultiRoundFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory("holeByHoleCSVParser")
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("holeByHoleCSVParser")
 				.stream()
 				.filter(each -> each.getName().toLowerCase().contains("multi"))
 				.toList();

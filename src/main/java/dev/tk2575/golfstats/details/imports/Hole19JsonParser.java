@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,14 +1,13 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.details.CSVFile;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
 @Log4j2
-public abstract class CSVParser {
+abstract class CSVParser {
 
 	abstract List<CSVFile> getFiles();
 

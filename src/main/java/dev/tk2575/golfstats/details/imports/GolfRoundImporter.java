@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
@@ -7,7 +7,6 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
-import dev.tk2575.golfstats.details.parsers.*;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,27 +14,26 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Log4j2
-public class GolfRoundResourceManager {
+public class GolfRoundImporter {
 
 	public Map<String, List<GolfRound>> getRoundsByGolfer() {
 		return this.golfRoundsFromFiles.stream().collect(groupingBy(each -> each.getGolfer().getName()));
 	}
 
 	@Getter
-	private static final GolfRoundResourceManager instance = new GolfRoundResourceManager();
+	private static final GolfRoundImporter instance = new GolfRoundImporter();
 
 	//TODO need golf round input validator, rather than waiting on 500 error on stats api
 	// support changes to file without requiring restart
 	private final List<GolfRound> golfRoundsFromFiles = readGolfRoundsFromFiles();
 
 	private List<GolfRound> readGolfRoundsFromFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory("data/simple");
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("data/simple");
 		List<GolfRound> simpleRounds = new ArrayList<>();
 		if (!files.isEmpty()) {
 			simpleRounds = new SimpleGolfRoundCSVParser(files).parse();
@@ -46,12 +44,12 @@ public class GolfRoundResourceManager {
 				Hole19JsonParser.parse("data/hole19/hole19_export-tom.json")
 		));
 
-		files = readCSVFilesInDirectory("data/hole-by-hole");
+		files = CSVFile.readCSVFilesInDirectory("data/hole-by-hole");
 		if (!files.isEmpty()) {
 			rounds.addAll(new HoleByHoleRoundCSVParser(files).parse());
 		}
 
-		files = readCSVFilesInDirectory("data/shot-by-shot");
+		files = CSVFile.readCSVFilesInDirectory("data/shot-by-shot");
 		if (!files.isEmpty()) {
 			rounds.addAll(new ShotByShotRoundCSVParser(files).parse());
 		}
@@ -70,7 +68,7 @@ public class GolfRoundResourceManager {
 		Map<String, List<Hole19Round>> hole19Map =
 				hole19Rounds.stream()
 						.filter(each -> !each.getHoles().isEmpty())
-						.collect(groupingBy(GolfRoundResourceManager::roundKey));
+						.collect(groupingBy(GolfRoundImporter::roundKey));
 		/*@formatter:on*/
 
 		Map<String, Course> courseTeeMap = missingCourseDetailsMap();
