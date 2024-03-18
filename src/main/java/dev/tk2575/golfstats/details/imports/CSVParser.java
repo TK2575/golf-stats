@@ -9,8 +9,6 @@ import java.util.function.BiConsumer;
 @Log4j2
 abstract class CSVParser {
 
-	abstract List<CSVFile> getFiles();
-
 	abstract List<GolfRound> parse();
 
 	protected void parse(CSVFile file, BiConsumer<Integer, String[]> parser) {

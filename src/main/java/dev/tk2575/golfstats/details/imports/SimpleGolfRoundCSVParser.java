@@ -42,9 +42,7 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 			if (!EXPECTED_HEADERS.equalsIgnoreCase(file.getHeader())) {
 				log.error(
 						String.format("Problem parsing file %s. Found headers = %s; expected headers = %s",
-								file.getName(),
-								file.getHeader(),
-								EXPECTED_HEADERS)
+								file.getName(), file.getHeader(), EXPECTED_HEADERS)
 				);
 				continue;
 			}
@@ -97,7 +95,11 @@ public class SimpleGolfRoundCSVParser extends CSVParser {
 		var nineHoleRound = Boolean.parseBoolean(row[13]);
 		var golferString = Utils.toTitleCase(row[14]);
 
-		RoundMeta meta = new RoundMeta(date, duration, golfer == null ? Golfer.newGolfer(golferString) : golfer, course, tee, transport);
+		RoundMeta meta = new RoundMeta(date, duration, 
+				golfer == null 
+						? Golfer.newGolfer(golferString) 
+						: golfer, course, tee, transport
+		);
 		return GolfRound.of(meta, score, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
 	}
 

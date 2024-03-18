@@ -194,7 +194,7 @@ public class StatsService {
   //TODO parameterize golfer? get from database eventually
   private static GolfRoundStream getTomStats() {
     return new GolfRoundStream(
-        GolfRoundImporter.getInstance().getRoundsByGolfer().get("Tom")
+        new GolfRoundImporter().getRoundsByGolfer().get("Tom")
     ).compileTo18HoleRounds();
   }
 }

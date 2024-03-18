@@ -22,7 +22,7 @@ class GolfRoundImporterTest {
 		List<Hole19Round> hole19Rounds = Hole19JsonParser.parse("data/hole19/hole19_export-tom.json");
 		assertFalse(hole19Rounds.isEmpty());
 
-		List<GolfRound> joinRounds = GolfRoundImporter.join(simpleRounds, hole19Rounds);
+		List<GolfRound> joinRounds = GolfRoundImporter.merge(simpleRounds, hole19Rounds);
 		assertFalse(joinRounds.isEmpty());
 		Map<String, GolfRound> joinRoundsMap = joinRounds.stream().collect(toMap(this::roundKey, identity()));
 
