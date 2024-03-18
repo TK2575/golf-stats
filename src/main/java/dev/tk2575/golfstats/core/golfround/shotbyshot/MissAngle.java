@@ -51,4 +51,6 @@ public interface MissAngle {
 
 		return sb.toString().trim();
 	}
+	
+	String getAbbreviation();
 }

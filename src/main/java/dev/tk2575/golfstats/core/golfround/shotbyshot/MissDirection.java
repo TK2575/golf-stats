@@ -10,19 +10,21 @@ import java.util.Optional;
 class MissDirection implements MissAngle {
 	private boolean leftMiss;
 	private boolean rightMiss;
+	private final String missShorthand;
 
-	MissDirection(char missDirection) {
-		if (!MissAngle.SHORTHAND_DIRECTIONS.contains(missDirection)) {
-			throw new IllegalArgumentException(missDirection + " not a supported missDirection");
+	MissDirection(char missShorthand) {
+		if (!MissAngle.SHORTHAND_DIRECTIONS.contains(missShorthand)) {
+			throw new IllegalArgumentException(missShorthand + " not a supported missDirection");
 		}
 
+		this.missShorthand = String.valueOf(missShorthand);
 		this.leftMiss = false;
 		this.rightMiss = false;
 
-		if (missDirection == 'l') {
+		if (missShorthand == 'l') {
 			this.leftMiss = true;
 		}
-		else if (missDirection == 'r') {
+		else if (missShorthand == 'r') {
 			this.rightMiss = true;
 		}
 	}
@@ -35,6 +37,11 @@ class MissDirection implements MissAngle {
 	@Override
 	public boolean isLongMiss() {
 		return false;
+	}
+
+	@Override
+	public String getAbbreviation() {
+		return this.missShorthand;
 	}
 
 	@Override
