@@ -66,6 +66,10 @@ public interface Shot {
 	static Shot strokesGained(Shot shot, BigDecimal strokesGainedBaseline, BigDecimal strokesGained) {
 		return new StrokesGainedShot(shot, strokesGainedBaseline, strokesGained);
 	}
+	
+	static Shot of(Lie lie, Integer sequence, Distance distanceFromTarget, MissAngle missAngle, Distance missDistance, Lie resultLie, Integer count) {
+		return new SimpleShot(lie, sequence, distanceFromTarget, missAngle, missDistance, resultLie, count);
+	}
 
 	static List<Shot> compile(@NonNull List<ShotAbbreviation> list) {
 		List<Shot> results = new ArrayList<>();

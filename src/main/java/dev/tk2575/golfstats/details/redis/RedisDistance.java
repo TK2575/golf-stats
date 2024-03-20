@@ -11,4 +11,8 @@ class RedisDistance {
     this.value = distance.getValue();
     this.lengthUnit = distance.getLengthUnit();
   }
+  
+  Distance toDistance() {
+    return Distance.of(this.value, this.lengthUnit);
+  }
 }

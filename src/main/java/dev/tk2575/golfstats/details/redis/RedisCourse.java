@@ -10,4 +10,8 @@ class RedisCourse {
     this.name = course.getName();
     this.location = course.getLocation();
   }
+  
+  Course toCourse() {
+    return Course.of(this.name, this.location);
+  }
 }

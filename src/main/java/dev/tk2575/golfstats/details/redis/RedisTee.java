@@ -20,4 +20,8 @@ class RedisTee {
     this.par = tee.getPar();
     this.holeCount = tee.getHoleCount();
   }
+  
+  Tee toTee() {
+    return Tee.of(this.name, this.rating, this.slope, this.par, this.holeCount);
+  }
 }

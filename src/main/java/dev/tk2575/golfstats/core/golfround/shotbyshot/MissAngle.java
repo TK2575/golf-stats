@@ -13,6 +13,15 @@ public interface MissAngle {
 		}
 		return new MissClockFace(clockFace);
 	}
+	
+	static MissAngle parse(String missAngleAbbreviation) {
+		char firstChar = missAngleAbbreviation.charAt(0);
+		Integer clockFace = null;
+		try {
+			clockFace = Integer.valueOf(missAngleAbbreviation);
+		} catch (NumberFormatException ignored) {}
+		return parse(firstChar, clockFace);
+	}
 
 	static MissAngle missLeft() {
 		return new MissDirection('l');

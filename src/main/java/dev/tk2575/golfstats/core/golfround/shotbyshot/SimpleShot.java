@@ -12,6 +12,16 @@ public class SimpleShot implements Shot {
   private final Lie resultLie;
   private final Integer count;
 
+  SimpleShot(Lie lie, Integer sequence, Distance distanceFromTarget, MissAngle missAngle, Distance missDistance, Lie resultLie, Integer count) {
+    this.lie = lie;
+    this.sequence = sequence;
+    this.distanceFromTarget = distanceFromTarget;
+    this.missAngle = missAngle;
+    this.missDistance = missDistance;
+    this.resultLie = resultLie;
+    this.count = count;
+  }
+  
   SimpleShot(ShotAbbreviation shot, ShotAbbreviation result) {
     this.lie = shot.getLie();
     this.sequence = shot.getSequence();

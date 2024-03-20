@@ -39,6 +39,15 @@ public class RoundMeta {
 		this.tee = tee;
 		this.transport = "Unknown";
 	}
+	
+	public RoundMeta(@NonNull Golfer golfer, LocalDate date, Duration duration, Course course, Tee tee, String transport) {
+		this.date = date;
+		this.duration = duration;
+		this.golfer = golfer;
+		this.course = course;
+		this.tee = tee;
+		this.transport = transport;
+	}
 
 	static RoundMeta compositeOf(GolfRound round1, GolfRound round2) {
 		String transport = round1.getTransport().equalsIgnoreCase(round2.getTransport())

@@ -62,4 +62,11 @@ public interface Distance {
 	}
 
 	boolean isLessThanOrEqualToYards(int yards);
+	
+	static Distance of(long value, String lengthUnit) {
+		if (lengthUnit.equalsIgnoreCase("feet")) {
+			return feet(value);
+		}
+		else { return yards(value); }
+	}
 }

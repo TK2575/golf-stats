@@ -29,6 +29,12 @@ class SimpleCourse implements Course {
 		this.location = UNKNOWN;
 		this.tees = tees;
 	}
+	
+	SimpleCourse(String name, String location) {
+		this.name = name;
+		this.location = location;
+		this.tees = new ArrayList<>();
+	}
 
 	@Override
 	public Course setTees(@NonNull List<Tee> tees) {

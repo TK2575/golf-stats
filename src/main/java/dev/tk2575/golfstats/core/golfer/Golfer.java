@@ -9,6 +9,10 @@ public interface Golfer {
 	static Golfer newGolfer(String golferName) {
 		return new SimpleGolfer(golferName);
 	}
+	
+	static Golfer newGolfer(String golferName, String gender) {
+		return new SimpleGolfer(golferName, null, gender);
+	}
 
 	static Golfer of(String golferName, HandicapIndex index) { return new SimpleGolfer(golferName, index); }
 

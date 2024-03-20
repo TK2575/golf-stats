@@ -17,6 +17,10 @@ public interface Hole {
 	static Hole of(Integer number, Integer index, Integer par, List<Shot> shots) {
 		return new ShotByShotHole(number, index, par, shots, ShotsGainedComputation.broadie());
 	}
+	
+	static Hole of(Integer number, Integer index, Integer par, Integer strokes, Integer strokesAdjusted, Integer netStrokes, Integer putts, boolean fairwayInRegulation) {
+		return new SimpleHoleScore(number, index, par, strokes, strokesAdjusted, netStrokes, putts, fairwayInRegulation);
+	}
 
 	static Hole of(Integer number, Integer index, Integer par, Integer strokes, boolean fairwayInRegulation, Integer putts) {
 		return new SimpleHoleScore(number, index, par, strokes, fairwayInRegulation, putts);

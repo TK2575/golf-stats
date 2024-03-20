@@ -20,6 +20,10 @@ public interface Course {
   static Course of(String courseName) {
     return new SimpleCourse(courseName);
   }
+  
+  static Course of(String courseName, String location) {
+    return new SimpleCourse(courseName, location);
+  }
 
   static Course of(String name, String city, String stateAbbrev) {
     return new CityStateCourse(name, city, stateAbbrev);
