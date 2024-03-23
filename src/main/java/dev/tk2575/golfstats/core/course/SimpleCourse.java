@@ -10,6 +10,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 class SimpleCourse implements Course {
 
 	private static final String UNKNOWN = "UNKNOWN";

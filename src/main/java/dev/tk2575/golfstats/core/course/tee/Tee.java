@@ -32,6 +32,10 @@ public interface Tee {
 	default Map<String, Integer> getHandicapStrokes() {
 		return new HashMap<>();
 	}
+	
+	static Tee unknown() {
+		return new UnknownTee();
+	}
 
 	static Tee of(String teeName, BigDecimal courseRating, BigDecimal slope, Integer par) {
 		return new SimpleTee(teeName, courseRating, slope, par);

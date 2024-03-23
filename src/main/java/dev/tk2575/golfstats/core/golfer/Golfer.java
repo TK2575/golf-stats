@@ -6,6 +6,10 @@ public interface Golfer {
 
 	String UNKNOWN = "UNKNOWN";
 
+	static Golfer unknownGolfer() {
+		return new SimpleGolfer(UNKNOWN);
+	}
+	
 	static Golfer newGolfer(String golferName) {
 		return new SimpleGolfer(golferName);
 	}

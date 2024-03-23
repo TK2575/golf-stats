@@ -17,6 +17,10 @@ public interface Course {
 
   Course setTees(@NonNull List<Tee> tees);
 
+  static Course unknown() {
+    return new SimpleCourse("UNKNOWN");
+  }
+  
   static Course of(String courseName) {
     return new SimpleCourse(courseName);
   }

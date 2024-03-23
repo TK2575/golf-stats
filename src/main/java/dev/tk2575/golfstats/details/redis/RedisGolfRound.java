@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.details.redis;
 
 import dev.tk2575.golfstats.core.course.Course;
 import dev.tk2575.golfstats.core.course.tee.Tee;
+import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
@@ -11,8 +12,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 class RedisGolfRound implements Serializable {
@@ -67,20 +68,24 @@ class RedisGolfRound implements Serializable {
   }
 
   public GolfRound toGolfRound() {
-    List<Hole> holeList = this.holes.stream().map(RedisHole::toHole).toList();
+    List<Hole> holeList = this.holes == null
+        ? new ArrayList<>()
+        : this.holes.stream().map(RedisHole::toHole).toList();
     var meta = new RoundMeta(
-        this.golfer.toGolfer(), 
-        LocalDate.parse(this.date, DateTimeFormatter.ofPattern(DATE_FORMAT)),
-        Duration.ofMinutes(this.durationMinutes),
-        this.course.toCourse(), 
-        this.tee.toTee(), 
-        this.transport
+        this.golfer == null ? Golfer.unknownGolfer() : this.golfer.toGolfer(),
+        this.date == null ? null : LocalDate.parse(this.date, DateTimeFormatter.ofPattern(DATE_FORMAT)),
+        this.durationMinutes == 0 ? null : Duration.ofMinutes(this.durationMinutes),
+        this.course == null ? Course.unknown() : this.course.toCourse(),
+        this.tee == null ? Tee.unknown() : this.tee.toTee(),
+        this.transport == null ? "UNKNOWN" : this.transport
     );
     if (holeList.isEmpty()) {
       return GolfRound.of(meta, this.strokes, this.fairwaysInRegulation, this.fairways, this.greensInRegulation, this.putts, this.nineHoleRound, this.strokesAdjusted, this.netStrokes, this.incomingHandicapIndex, this.scoreDifferential);
     }
     return GolfRound.of(meta, holeList, scoreDifferential, incomingHandicapIndex);
   }
-  
 
+  public boolean isValid() {
+    return this.golfer != null && this.course != null && this.tee != null && this.date != null && this.strokes > 0;
+  }
 }

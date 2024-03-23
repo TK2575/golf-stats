@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,10 +38,11 @@ class RedisServiceTest {
   
   @Test
   void testSerializeAndDeserializeGolfRound() {
+    LocalDate date = LocalDate.of(2023, 1, 1);
     var meta = new RoundMeta(
-        Golfer.newGolfer("Golfer"), 
-        LocalDateTime.now(), 
-        LocalDateTime.now(), 
+        Golfer.newGolfer("Golfer"),
+        LocalDateTime.of(date, LocalTime.of(8, 0)),
+        LocalDateTime.of(date, LocalTime.of(12, 0)),
         Course.of("Course"), 
         Tee.of("Tee", new BigDecimal("72"), new BigDecimal("113"), 72, 18)
     ); 
@@ -50,9 +53,15 @@ class RedisServiceTest {
   }
   
   @Test
-  void testGetAllRounds() {
+  void testGetAllRounds_returnsInvalidRounds() {
     IntStream.range(0, 10).forEach(i -> svc.set("rounds:" + i, "{}"));
     assertEquals(10, svc.getAllRounds().size());
+  }
+  
+  @Test
+  void testGetAllRounds_returnsOnlyValidRounds() {
+    IntStream.range(0, 10).forEach(i -> svc.set("rounds:" + i, "{}"));
+    assertEquals(0, svc.getAllRounds(true).size());
   }
 
 }

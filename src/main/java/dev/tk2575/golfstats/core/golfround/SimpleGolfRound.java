@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 class SimpleGolfRound implements GolfRound {
 
 	@Getter(AccessLevel.NONE)
