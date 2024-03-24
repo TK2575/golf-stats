@@ -10,7 +10,6 @@ import redis.clients.jedis.resps.ScanResult;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
@@ -33,12 +32,26 @@ public class RedisService {
     jedis.set(generateKey(RedisGolfRound.KEY, s), gson.toJson(redisRound));
     return s;
   }
-  
+
+  public int countRounds() {
+    return getAllRoundKeys().size();
+  }
+
   public List<GolfRound> getAllRounds() {
     return getAllRounds(false);
   }
 
   public List<GolfRound> getAllRounds(boolean validOnly) {
+    Set<String> keys = getAllRoundKeys();
+    List<RedisGolfRound> roundDtos = jedis.mget(keys.toArray(String[]::new)).stream()
+        .map(each -> gson.fromJson(each, RedisGolfRound.class)).toList();
+    if (validOnly) {
+      roundDtos = roundDtos.stream().filter(RedisGolfRound::isValid).toList();
+    }
+    return roundDtos.stream().map(RedisGolfRound::toGolfRound).toList();
+  }
+
+  private Set<String> getAllRoundKeys() {
     Set<String> keys = new HashSet<>();
     String cursor = "0";
     do {
@@ -47,13 +60,7 @@ public class RedisService {
       cursor = scan.getCursor();
       keys.addAll(scan.getResult());
     } while (!cursor.equals("0"));
-    
-    List<RedisGolfRound> roundDtos = jedis.mget(keys.toArray(String[]::new)).stream()
-        .map(each -> gson.fromJson(each, RedisGolfRound.class)).toList();
-    if (validOnly) {
-      roundDtos = roundDtos.stream().filter(each -> each.isValid()).toList();
-    }
-    return roundDtos.stream().map(RedisGolfRound::toGolfRound).toList();
+    return keys;
   }
 
   void set(String key, String value) {
