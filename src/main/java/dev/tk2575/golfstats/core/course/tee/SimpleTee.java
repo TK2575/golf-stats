@@ -9,7 +9,6 @@ import static java.math.RoundingMode.HALF_UP;
 
 @Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.NONE)
 class SimpleTee implements Tee {
 
 	private final String name;
@@ -18,13 +17,20 @@ class SimpleTee implements Tee {
 	private final Integer par;
 	private final Integer holeCount;
 
-	SimpleTee(String name, BigDecimal rating, BigDecimal slope,
-	                 Integer par) {
+	SimpleTee(String name, BigDecimal rating, BigDecimal slope, Integer par) {
 		this.name = name;
 		this.slope = slope;
 		this.par = par;
 		this.rating = Tee.correctCourseRating(this.par, rating);
 		this.holeCount = this.par < 54 ? 9 : 18;
+	}
+	
+	SimpleTee(String name, BigDecimal rating, BigDecimal slope, Integer par, Integer holeCount) {
+		this.name = name;
+		this.slope = slope;
+		this.par = par;
+		this.rating = Tee.correctCourseRating(this.par, rating);
+		this.holeCount = holeCount;
 	}
 
 	@Override

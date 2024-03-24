@@ -14,12 +14,14 @@ class MissClockFace implements MissAngle {
 	private final boolean rightMiss;
 	private final boolean shortMiss;
 	private final boolean longMiss;
+	private final int clockFace;
 
 	MissClockFace(int clockFace) {
 		if (clockFace <= 0 || clockFace > 12) {
 			throw new IllegalArgumentException(clockFace + " is not a valid clockFace number");
 		}
 
+		this.clockFace = clockFace;
 		this.angleDegrees = clockFace == 12 ? 0 : clockFace * 30;
 		this.leftMiss = clockFace > 7 && clockFace < 11;
 		this.rightMiss = clockFace > 1 && clockFace < 5;
@@ -31,5 +33,10 @@ class MissClockFace implements MissAngle {
 	public Optional<Integer> getAngleDegrees() {
 		return Optional.of(angleDegrees);
 	}
-	
+
+	@Override
+	public String getAbbreviation() {
+		return String.valueOf(clockFace);
+	}
+
 }

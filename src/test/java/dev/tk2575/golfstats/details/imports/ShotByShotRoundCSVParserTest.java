@@ -1,22 +1,20 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.games.Game;
-import dev.tk2575.golfstats.details.CSVFile;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import static dev.tk2575.Utils.readCSVFilesInDirectory;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShotByShotRoundCSVParserTest {
 
 	@Test
 	void testSingleRoundFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory("shotByShotCSVParser")
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("shotByShotCSVParser")
 				.stream()
 				.filter(each -> !each.getName().toLowerCase().contains("multi"))
 				.toList();
@@ -41,7 +39,7 @@ class ShotByShotRoundCSVParserTest {
 
 	@Test
 	void testMultiRoundFiles() {
-		List<CSVFile> files = readCSVFilesInDirectory("shotByShotCSVParser")
+		List<CSVFile> files = CSVFile.readCSVFilesInDirectory("shotByShotCSVParser")
 				.stream()
 				.filter(each -> each.getName().toLowerCase().contains("multi"))
 				.toList();

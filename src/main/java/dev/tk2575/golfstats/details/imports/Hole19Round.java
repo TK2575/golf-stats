@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;

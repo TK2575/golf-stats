@@ -52,6 +52,16 @@ class SimpleHoleScore implements Hole {
 		this.strokesAdjusted = this.strokes;
 		this.netStrokes = this.strokes;
 		this.fairwayInRegulation = this.isFairwayPresent() && fairwayInRegulation;
-
+	}
+	
+	SimpleHoleScore(Integer number, Integer index, Integer par, Integer strokes, Integer strokesAdjusted, Integer netStrokes, Integer putts, boolean fairwayInRegulation) {
+		this.number = number;
+		this.index = index;
+		this.par = par;
+		this.strokes = strokes;
+		this.strokesAdjusted = strokesAdjusted;
+		this.netStrokes = netStrokes;
+		this.putts = putts;
+		this.fairwayInRegulation = fairwayInRegulation;
 	}
 }

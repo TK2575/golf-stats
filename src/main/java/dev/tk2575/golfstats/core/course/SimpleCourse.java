@@ -10,6 +10,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 class SimpleCourse implements Course {
 
 	private static final String UNKNOWN = "UNKNOWN";
@@ -28,6 +29,12 @@ class SimpleCourse implements Course {
 		this.name = name;
 		this.location = UNKNOWN;
 		this.tees = tees;
+	}
+	
+	SimpleCourse(String name, String location) {
+		this.name = name;
+		this.location = location;
+		this.tees = new ArrayList<>();
 	}
 
 	@Override

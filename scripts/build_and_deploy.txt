@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # from project root
 # build jar
-# mvn package # mac os too old
+# mvn package # macos too old
 docker run -it --rm --name golf-stats-build -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.9.6-amazoncorretto-21 mvn package
 # build docker image from jar
 # FIXME Dockerfile requires changes to the jar name when the version changes in pom.xml

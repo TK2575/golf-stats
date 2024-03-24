@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.parsers;
+package dev.tk2575.golfstats.details.imports;
 
 import java.util.Comparator;
 import java.util.List;

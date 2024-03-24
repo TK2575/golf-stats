@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(toBuilder = true, access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 class SimpleGolfRound implements GolfRound {
 
 	@Getter(AccessLevel.NONE)
@@ -47,6 +48,25 @@ class SimpleGolfRound implements GolfRound {
 	private final Integer putts;
 
 	private final boolean nineHoleRound;
+	
+	SimpleGolfRound(RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound, Integer strokesAdjusted, Integer netStrokes, BigDecimal incomingHandicapIndex, BigDecimal scoreDifferential) {
+		this.date = meta.getDate();
+		this.duration = meta.getDuration();
+		this.golfer = meta.getGolfer();
+		this.course = meta.getCourse();
+		this.tee = meta.getTee();
+		this.transport = meta.getTransport();
+		this.strokes = strokes;
+		this.strokesAdjusted = strokesAdjusted;
+		this.netStrokes = netStrokes;
+		this.fairwaysInRegulation = fairwaysInRegulation;
+		this.fairways = fairways;
+		this.greensInRegulation = greensInRegulation;
+		this.putts = putts;
+		this.nineHoleRound = nineHoleRound;
+		this.scoreDifferential = scoreDifferential;
+		this.incomingHandicapIndex = incomingHandicapIndex;
+	}
 
 	SimpleGolfRound(@NonNull RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
 		this.date = meta.getDate();

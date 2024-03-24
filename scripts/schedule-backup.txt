@@ -1,0 +1,1 @@
+# run daily at midnight# chmod +x ~/repos/golf-stats/scripts/backup-redis.sh# chmod +x ~/repos/golf-stats/scripts/remove-old-backups.sh# crontab -e# backup the golf stats redis db nightly0 0 * * * ~/repos/golf-stats/scripts/backup-redis.sh# remove older golf stats redis db backups0 1 * * * ~/repos/golf-stats/scripts/remove-old-backups.sh

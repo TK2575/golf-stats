@@ -5,7 +5,7 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
-import dev.tk2575.golfstats.details.GolfRoundResourceManager;
+import dev.tk2575.golfstats.details.imports.GolfRoundImporter;
 import dev.tk2575.golfstats.details.api.stats.RoundDetailTableColumn;
 import dev.tk2575.golfstats.details.api.stats.ShotAnalysis;
 import org.springframework.stereotype.Component;
@@ -194,7 +194,7 @@ public class StatsService {
   //TODO parameterize golfer? get from database eventually
   private static GolfRoundStream getTomStats() {
     return new GolfRoundStream(
-        GolfRoundResourceManager.getInstance().getRoundsByGolfer().get("Tom")
+        new GolfRoundImporter().getRoundsByGolfer().get("Tom")
     ).compileTo18HoleRounds();
   }
 }

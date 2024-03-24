@@ -175,9 +175,17 @@ public interface GolfRound {
 	static GolfRound of(RoundMeta round, List<Hole> holes) {
 		return new HoleByHoleRound(round, holes);
 	}
+	
+	static GolfRound of(RoundMeta round, List<Hole> holes, BigDecimal scoreDifferential, BigDecimal incomingHandicapIndex) {
+		return new HoleByHoleRound(round, holes, scoreDifferential, incomingHandicapIndex);
+	}
 
 	static GolfRound of(RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound) {
 		return new SimpleGolfRound(meta, strokes, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound);
+	}
+	
+	static GolfRound of(RoundMeta meta, Integer strokes, Integer fairwaysInRegulation, Integer fairways, Integer greensInRegulation, Integer putts, boolean nineHoleRound, Integer strokesAdjusted, Integer netStrokes, BigDecimal incomingHandicapIndex, BigDecimal scoreDifferential) {
+		return new SimpleGolfRound(meta, strokes, fairwaysInRegulation, fairways, greensInRegulation, putts, nineHoleRound, strokesAdjusted, netStrokes, incomingHandicapIndex, scoreDifferential);
 	}
 
 }

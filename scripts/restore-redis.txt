@@ -1,0 +1,13 @@
+# restore from backup
+# disable append-only file in redis.config
+docker exec golf-stats-redis redis-cli config appendonly no
+# stop redis server
+docker-compose -f docker/docker-compose.yml down
+# rename current dump file
+cp $HOME/golf-stats-data/dump.rdb $HOME/golf-stats-data/dump.rdb.bak
+# stage backup
+cp $HOME/golf-stats-data/20220810/dump.rdb $HOME/golf-stats-data/dump.rdb
+# apply permissions to dump
+chmod 660 $HOME/golf-stats-data/dump.rdb
+# restart server
+docker-compose -f docker/docker-compose.yml up --detach

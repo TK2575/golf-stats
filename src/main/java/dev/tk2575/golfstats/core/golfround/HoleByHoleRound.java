@@ -73,6 +73,33 @@ class HoleByHoleRound implements GolfRound {
 		this.scoreDifferential = computeScoreDifferential();
 	}
 
+	public HoleByHoleRound(RoundMeta round, List<Hole> holes, BigDecimal scoreDifferential, BigDecimal incomingHandicapIndex) {
+		this.date = round.getDate();
+		this.duration = round.getDuration();
+		this.golfer = round.getGolfer();
+		this.course = round.getCourse();
+		this.transport = round.getTransport();
+
+		this.holes = Hole.stream(holes).validate().sortByNumber().toList();
+		this.tee = Tee.of(this.golfer, round.getTee().getName(), round.getTee().getRating(), round.getTee().getSlope(), holes().getPar(), holes().totalYards());
+
+		this.strokes = holes().totalStrokes();
+		this.strokesAdjusted = holes().totalStrokesAdjusted();
+		this.netStrokes = holes().totalNetStrokes();
+		this.fairwaysInRegulation = holes().totalFairwaysInRegulation();
+		this.fairways = holes().totalFairways();
+		this.greensInRegulation = holes().totalGreensInRegulation();
+		this.putts = holes().totalPutts();
+		this.nineHoleRound = holes().isNineHoleRound();
+
+		this.strokesGained = holes().totalStrokesGained();
+		this.strokesGainedByHole = holes().strokesGainedByHole();
+		this.strokesGainedByShotType = holes().strokesGainedByShotType();
+
+		this.scoreDifferential = scoreDifferential;
+		this.incomingHandicapIndex = incomingHandicapIndex;
+	}
+
 	@Override
 	public Long getYards() {
 		Long yards = holes().totalYards();
