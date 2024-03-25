@@ -2,7 +2,7 @@ package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.Utils;
 import dev.tk2575.golfstats.core.stats.PuttingDistanceStat;
-import dev.tk2575.golfstats.core.stats.RollingStat;
+import dev.tk2575.golfstats.core.stats.GolfRoundRollingStat;
 import dev.tk2575.golfstats.core.stats.RoundTableRow;
 import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
 import dev.tk2575.golfstats.core.stats.StatsService;
@@ -63,7 +63,7 @@ public class StatsApi {
   public String latestRound(@RequestParam(defaultValue = "csv") String fileType) {
     return generateDelimitedResponse(
         Optional.empty(), 
-        svc.getLatestRound(), 
+        svc.getRoundDetail(), 
         Utils.lookupDelimOperator(fileType)
     );
   }
@@ -107,10 +107,10 @@ public class StatsApi {
     return toDelimitedString(svc.greatRate(window), fileType);
   }
 
-  private String toDelimitedString(List<RollingStat> stats, String fileType) {
+  private String toDelimitedString(List<GolfRoundRollingStat> stats, String fileType) {
     var list = new ArrayList<>(stats);
-    list.sort(Comparator.comparing(RollingStat::getName).thenComparing(RollingStat::getSequence));
-    return generateDelimitedResponse(Optional.of(RollingStat.headers()), list, Utils.lookupDelimOperator(fileType));
+    list.sort(Comparator.comparing(GolfRoundRollingStat::getName).thenComparing(GolfRoundRollingStat::getSequence));
+    return generateDelimitedResponse(Optional.of(GolfRoundRollingStat.headers()), list, Utils.lookupDelimOperator(fileType));
   }
 
   private String generateDelimitedResponse(Optional<List<String>> headers,
