@@ -2,9 +2,9 @@ package dev.tk2575.golfstats.details;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.details.imports.GolfRoundImporter;
-import dev.tk2575.golfstats.details.redis.RedisConfig;
 import dev.tk2575.golfstats.details.redis.RedisService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,10 +19,7 @@ public class ImportsToRedisRoundMigrationService {
 
   private final RedisService redis;
 
-  public ImportsToRedisRoundMigrationService() {
-    this.redis = new RedisService();
-  }
-  
+  @Autowired
   public ImportsToRedisRoundMigrationService(RedisService redis) {
     this.redis = redis;
   }
@@ -42,8 +39,7 @@ public class ImportsToRedisRoundMigrationService {
   //should only be run as a one-off to import rounds into a fresh redis instance
   public static void main(String[] args) {
     try (ConfigurableApplicationContext context = SpringApplication.run(ImportsToRedisRoundMigrationService.class, args)) {
-      RedisConfig config = context.getBean(RedisConfig.class);
-      ImportsToRedisRoundMigrationService service = new ImportsToRedisRoundMigrationService(new RedisService(config));
+      ImportsToRedisRoundMigrationService service = context.getBean(ImportsToRedisRoundMigrationService.class);
       service.importRounds();
     } catch (Exception e) {
       log.error(e);

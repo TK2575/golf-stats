@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPooled;
 import redis.clients.jedis.params.ScanParams;
@@ -19,19 +20,18 @@ import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 @Component
 public class RedisService {
   private final JedisPooled jedis;
+  private final RedisConfig config;
   private final Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
-
-  public RedisService() {
-    RedisConfig config = new RedisConfig();
-    this.jedis = new JedisPooled(config.getHost(), config.getPort());
-  }
   
+  @Autowired
   public RedisService(RedisConfig config) {
+    this.config = config;
     this.jedis = new JedisPooled(config.getHost(), config.getPort());
   }
 
   protected RedisService(String host, int port) {
-    this.jedis = new JedisPooled(host.equals("0.0.0.0") ? "localhost" : host, port);
+    this.config = new RedisConfig(host.equals("0.0.0.0") ? "localhost" : host, port);
+    this.jedis = new JedisPooled(config.getHost(), config.getPort());
   }
 
   public GolfRound getRound(String roundId) {

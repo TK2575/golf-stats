@@ -27,12 +27,16 @@ import java.util.function.Function;
 @Log4j2
 public class StatsApi {
   
+  private final RedisService redis;
+  
   @Autowired
-  private RedisConfig config;
+  public StatsApi(RedisService redis) {
+    this.redis = redis;
+  }
   
   @RequestMapping("count")
   public int getRoundCount() {
-    return new RedisService(config).countRounds();
+    return redis.countRounds();
   }
 
   /*@RequestMapping(value = "rounds", produces = "text/csv")
