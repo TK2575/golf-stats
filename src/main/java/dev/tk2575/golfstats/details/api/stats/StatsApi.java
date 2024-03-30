@@ -6,8 +6,11 @@ import dev.tk2575.golfstats.core.stats.GolfRoundRollingStat;
 import dev.tk2575.golfstats.core.stats.RoundTableRow;
 import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
 import dev.tk2575.golfstats.core.stats.StatsService;
+import dev.tk2575.golfstats.details.redis.RedisConfig;
+import dev.tk2575.golfstats.details.redis.RedisService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,14 +27,15 @@ import java.util.function.Function;
 @Log4j2
 public class StatsApi {
   
-  private final StatsService svc;
-  
   @Autowired
-  public StatsApi(StatsService svc) {
-    this.svc = svc;
+  private RedisConfig config;
+  
+  @RequestMapping("count")
+  public int getRoundCount() {
+    return new RedisService(config).countRounds();
   }
 
-  @RequestMapping(value = "rounds", produces = "text/csv")
+  /*@RequestMapping(value = "rounds", produces = "text/csv")
   public String getRounds(@RequestParam(defaultValue = "csv") String fileType) {
     return generateDelimitedResponse(
         Optional.of(RoundTableRow.headers()), 
@@ -120,6 +124,6 @@ public class StatsApi {
     headers.ifPresent(strings -> sb.append(delimOp.apply(strings)).append("\n"));
     supplier.forEach(row -> sb.append(delimOp.apply(row.values())).append("\n"));
     return sb.toString();
-  }
+  }*/
   
 }

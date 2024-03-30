@@ -11,6 +11,9 @@ services:
         depends_on:
             - redis
         restart: on-failure
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=16379
     redis:
         container_name: golf-stats-redis
         image: redis:7.2.4-alpine
