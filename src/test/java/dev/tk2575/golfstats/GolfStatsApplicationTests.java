@@ -9,7 +9,7 @@ import static java.math.RoundingMode.HALF_UP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(properties = {"redis.host=localhost", "redis.port=6379"})
 class GolfStatsApplicationTests {
 
 	@Test
