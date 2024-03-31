@@ -12,7 +12,7 @@ public class SimpleStat implements StatsApiValueSupplier {
   private final String label;
   private final BigDecimal value;
   
-  static List<SimpleStat> compile(@NonNull Map<ApproachCategory.Bin,BigDecimal> map) {
+  static List<SimpleStat> compile(@NonNull Map<ApproachBin,BigDecimal> map) {
     return map.entrySet().stream()
               .map(entry -> new SimpleStat(entry.getKey().getLabel(), entry.getValue()))
               .toList();
