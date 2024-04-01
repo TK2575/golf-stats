@@ -3,6 +3,7 @@ package dev.tk2575.golfstats.core.stats;
 import dev.tk2575.MovingAverage;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
 import dev.tk2575.golfstats.details.api.stats.RoundDetailTableColumn;
@@ -10,12 +11,7 @@ import dev.tk2575.golfstats.details.api.stats.ShotAnalysis;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -73,19 +69,19 @@ public class StatsService {
    * @return mean strokes gained per round by approach category
    */
   public List<SimpleStat> getApproaches(List<GolfRound> rounds) {
-    Map<ApproachBin, List<ApproachShot>> shotsByApproachBin = rounds.stream()
-        .map(round -> ApproachShot.compile(round.getShots()))
+    Map<ApproachBin, List<ApproachSummary>> shotsByApproachBin = rounds.stream()
+        .map(round -> ApproachSummary.compile(round.getShots()))
         .flatMap(List::stream)
-        .collect(Collectors.groupingBy(ApproachShot::getBin, Collectors.toList()));
+        .collect(Collectors.groupingBy(ApproachSummary::getBin, Collectors.toList()));
 
     return shotsByApproachBin.entrySet().stream()
         .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachBin.OTHER))
-        .map(e -> ApproachShot.merge(e.getValue()))
-        .map(bin -> new SimpleStat(bin.getBin().getLabel(), bin.getMeanStrokesGainedPerRound()))
+        .map(e -> ApproachSummary.merge(e.getValue()))
+        .map(summary -> new SimpleStat(summary.getBin().getLabel(), summary.getMeanStrokesGainedPerRound()))
         .toList();
   }
 
-  public List<GolfRoundRollingStat> getApproachesRolling(List<GolfRound> rounds) {
+  public List<ApproachPoint> getApproachesRolling(List<GolfRound> rounds) {
     return getApproachesRolling(rounds, 10);
   }
 
@@ -94,24 +90,25 @@ public class StatsService {
    *
    * @param rounds sorted oldest to newest
    * @param window number of rounds to average
-   * @return List of GolfRoundRollingStat
+   * @return List of ApproachPoint for building table of avg strokes gained (date x bin)
    */
-  public List<GolfRoundRollingStat> getApproachesRolling(List<GolfRound> rounds, int window) {
-    //TODO needs a solution for sample gaps
-    List<GolfRoundRollingStat> results = new ArrayList<>();
-    Map<String, MovingAverage> movingAverages = new HashMap<>();
-
-    new GolfRoundStream(rounds).forEachOrdered(round ->
-        round.getShots().collect(Collectors.groupingBy(ApproachBin.shotBinFunction, Collectors.toList()))
-            .entrySet().stream()
-            .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachBin.OTHER))
-            .forEach(e -> {
-              var mAvg = movingAverages.getOrDefault(e.getKey().getLabel(), new MovingAverage(window));
-              results.add(new GolfRoundRollingStat(
-                  e.getKey().getLabel(), mAvg.next(new ShotStream(e.getValue()).totalStrokesGained()), round)
-              );
-              movingAverages.put(e.getKey().getLabel(), mAvg);
-            }));
+  public List<ApproachPoint> getApproachesRolling(List<GolfRound> rounds, int window) {
+    List<ApproachPoint> results = new ArrayList<>();
+    Map<ApproachBin, ApproachPoint> cursors = new EnumMap<>(ApproachBin.class);
+    
+    new GolfRoundStream(rounds).forEachOrdered(round -> {
+      Map<ApproachBin, List<Shot>> shotsByBin = round.getShots().collect(Collectors.groupingBy(ApproachBin.shotBinFunction, Collectors.toList()));
+      Arrays.stream(ApproachBin.values()).forEach(bin -> {
+        if (bin != null && !bin.equals(ApproachBin.OTHER)) {
+          var cursor = cursors.getOrDefault(bin, new ApproachPoint(round.getDate(), bin, BigDecimal.ZERO, new MovingAverage(window)));
+          BigDecimal sg = new ShotStream(shotsByBin.getOrDefault(bin, List.of())).totalStrokesGained();
+          BigDecimal nextAvg = cursor.getMovingAverage().next(sg).getKey();
+          var point = new ApproachPoint(round.getDate(), bin, nextAvg, cursor.getMovingAverage());
+          results.add(point);
+          cursors.put(bin, point);
+        }
+      });
+    });
 
     return results;
   }

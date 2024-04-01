@@ -13,27 +13,27 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class ApproachShot {
+public class ApproachSummary {
 
   private final ApproachBin bin;
   private final long roundCount;
   private final BigDecimal strokesGained;
 
-  public ApproachShot(Shot shot) {
+  public ApproachSummary(Shot shot) {
     this(ApproachBin.shotBinFunction.apply(shot), 1L, shot.getStrokesGained());
   }
 
-  public ApproachShot merge(ApproachShot approachShot) {
-    return new ApproachShot(this.bin, this.roundCount + approachShot.roundCount, this.strokesGained.add(approachShot.strokesGained));
+  public ApproachSummary merge(ApproachSummary approachSummary) {
+    return new ApproachSummary(this.bin, this.roundCount + approachSummary.roundCount, this.strokesGained.add(approachSummary.strokesGained));
   }
 
-  public static List<ApproachShot> compile(ShotStream shots) {
-    return shots.map(ApproachShot::new).toList();
+  public static List<ApproachSummary> compile(ShotStream shots) {
+    return shots.map(ApproachSummary::new).toList();
   }
 
-  public static ApproachShot merge(@NonNull List<ApproachShot> shots) {
+  public static ApproachSummary merge(@NonNull List<ApproachSummary> shots) {
     var bin = shots.isEmpty() ? ApproachBin.OTHER : shots.getFirst().bin;
-    return shots.stream().reduce(new ApproachShot(bin, 0L, BigDecimal.ZERO), ApproachShot::merge);
+    return shots.stream().reduce(new ApproachSummary(bin, 0L, BigDecimal.ZERO), ApproachSummary::merge);
   }
 
   public BigDecimal getMeanStrokesGainedPerRound() {
