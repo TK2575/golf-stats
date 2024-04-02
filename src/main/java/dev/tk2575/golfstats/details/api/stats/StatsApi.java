@@ -1,26 +1,21 @@
 package dev.tk2575.golfstats.details.api.stats;
 
-import dev.tk2575.Utils;
-import dev.tk2575.golfstats.core.stats.PuttingDistanceStat;
-import dev.tk2575.golfstats.core.stats.GolfRoundRollingStat;
+import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.stats.RoundTableRow;
-import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
 import dev.tk2575.golfstats.core.stats.StatsService;
-import dev.tk2575.golfstats.details.redis.RedisConfig;
 import dev.tk2575.golfstats.details.redis.RedisService;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 @RestController
 @RequestMapping("stats")
@@ -28,10 +23,12 @@ import java.util.function.Function;
 public class StatsApi {
   
   private final RedisService redis;
+  private final StatsService stats;
   
   @Autowired
-  public StatsApi(RedisService redis) {
+  public StatsApi(RedisService redis, StatsService stats) {
     this.redis = redis;
+    this.stats = stats;
   }
   
   @RequestMapping("count")
@@ -39,7 +36,19 @@ public class StatsApi {
     return redis.countRounds();
   }
 
-  /*@RequestMapping(value = "rounds", produces = "text/csv")
+  private static Predicate<GolfRound> roundsForGolfer(String name) {
+    return round -> round.getGolfer().getName().equalsIgnoreCase(name);
+  }
+
+  @RequestMapping(value = "roundSummaries", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<RoundTableRow>> getRoundSummaries(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    List<GolfRound> rounds = redis.getAllRounds(true).stream().filter(roundsForGolfer(golfer)).toList();
+    return ResponseEntity.ok(stats.getRoundSummaries(rounds));  
+  }
+
+  //TODO convert to use stats service (still want a csv output endpoint)
+  /*
+  @RequestMapping(value = "rounds", produces = "text/csv")
   public String getRounds(@RequestParam(defaultValue = "csv") String fileType) {
     return generateDelimitedResponse(
         Optional.of(RoundTableRow.headers()), 
@@ -47,8 +56,8 @@ public class StatsApi {
         Utils.lookupDelimOperator(fileType)
     );
   }
-
-  @RequestMapping(value = "shots", produces = "text/csv")
+  
+ @RequestMapping(value = "shots", produces = "text/csv")
   public String getLatestShots(@RequestParam(defaultValue = "csv") String fileType) {
     return generateDelimitedResponse(
         Optional.of(ShotAnalysis.headers()), 
