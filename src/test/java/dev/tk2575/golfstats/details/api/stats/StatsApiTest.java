@@ -11,6 +11,7 @@ import dev.tk2575.golfstats.details.redis.RedisService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,14 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"redis.host=localhost", "redis.port=6379"})
 class StatsApiTest {
   
-  @Mock
+  @Spy
   private StatsService stats;
   
   @Mock
@@ -49,11 +52,14 @@ class StatsApiTest {
     var round = GolfRound.of(meta, 85, 14, 14, 18, 36, false);
     
     when(redis.getAllRounds(true)).thenReturn(List.of(round));
+    when(stats.getRoundSummaries(anyList())).thenCallRealMethod();
 
     ResponseEntity<List<RoundTableRow>> response = api.getRoundSummaries("Tom");
     assertEquals(HttpStatus.OK, response.getStatusCode());
     List<RoundTableRow> summaries = response.getBody();
+    assertNotNull(summaries);
     assertEquals(1, summaries.size());
+    assertEquals(date, summaries.getFirst().getDate());
   }
 
 }

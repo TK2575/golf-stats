@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface Lie {
 
-	Set<Character> SUPPORTED_LIES = Set.of('t','f','y','r','g','s');
+	Set<Character> SUPPORTED_LIES = Set.of('t','f','y','r','g','s','h');
 
 	static Lie parse(char abbrev) {
 		if (Character.isAlphabetic(abbrev)) {
@@ -18,6 +18,7 @@ public interface Lie {
 					case 'r' -> rough();
 					case 'g' -> green();
 					case 's' -> sand();
+					case 'h' -> hole();
 					default -> null;
 				};
 				if (result != null) return result;

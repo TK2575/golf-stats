@@ -1,6 +1,7 @@
 package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
 import dev.tk2575.golfstats.core.stats.RoundTableRow;
 import dev.tk2575.golfstats.core.stats.StatsService;
 import dev.tk2575.golfstats.details.redis.RedisService;
@@ -36,36 +37,29 @@ public class StatsApi {
     return redis.countRounds();
   }
 
-  private static Predicate<GolfRound> roundsForGolfer(String name) {
-    return round -> round.getGolfer().getName().equalsIgnoreCase(name);
+  private List<GolfRound> getRounds(String golferName) {
+    return new GolfRoundStream(redis.getAllRounds(true))
+        .filter(round -> round.getGolfer().getName().equalsIgnoreCase(golferName))
+        .toList();
   }
 
   @RequestMapping(value = "roundSummaries", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<RoundTableRow>> getRoundSummaries(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
-    List<GolfRound> rounds = redis.getAllRounds(true).stream().filter(roundsForGolfer(golfer)).toList();
+  public ResponseEntity<List<RoundTableRow>> getRoundSummaries(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
     return ResponseEntity.ok(stats.getRoundSummaries(rounds));  
+  }
+  
+  @RequestMapping(value = "latestShots", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<ShotAnalysis>> getLatestShots(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().newestRound();
+    return rounds.map(golfRound -> ResponseEntity.ok(stats.analyzeShots(golfRound)))
+        .orElseGet(() -> ResponseEntity.ok(List.of()));
   }
 
   //TODO convert to use stats service (still want a csv output endpoint)
   /*
-  @RequestMapping(value = "rounds", produces = "text/csv")
-  public String getRounds(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(RoundTableRow.headers()), 
-        svc.getRoundSummaries(), 
-        Utils.lookupDelimOperator(fileType)
-    );
-  }
-  
- @RequestMapping(value = "shots", produces = "text/csv")
-  public String getLatestShots(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(ShotAnalysis.headers()), 
-        svc.getLatestShots(), 
-        Utils.lookupDelimOperator(fileType)
-    );
-  }
-
   @RequestMapping(value = "putting", produces = "text/csv")
   public String getPutting(@RequestParam(defaultValue = "csv") String fileType,
                            @RequestParam(defaultValue = "true") String binned) {

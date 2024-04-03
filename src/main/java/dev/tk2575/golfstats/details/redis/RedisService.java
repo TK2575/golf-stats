@@ -12,7 +12,10 @@ import redis.clients.jedis.resps.ScanResult;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
@@ -53,15 +56,24 @@ public class RedisService {
   public List<GolfRound> getAllRounds() {
     return getAllRounds(false);
   }
+  
+  public Map<String, GolfRound> getAllRoundsMap(boolean validOnly) {
+    return getAllRoundDtos(validOnly).stream()
+        .collect(Collectors.toMap(RedisGolfRound::getRoundId, RedisGolfRound::toGolfRound));
+  }
 
   public List<GolfRound> getAllRounds(boolean validOnly) {
+    return getAllRoundDtos(validOnly).stream().map(RedisGolfRound::toGolfRound).toList();
+  }
+  
+  private List<RedisGolfRound> getAllRoundDtos(boolean validOnly) {
     Set<String> keys = getAllRoundKeys();
     List<RedisGolfRound> roundDtos = jedis.mget(keys.toArray(String[]::new)).stream()
         .map(each -> gson.fromJson(each, RedisGolfRound.class)).toList();
     if (validOnly) {
       roundDtos = roundDtos.stream().filter(RedisGolfRound::isValid).toList();
     }
-    return roundDtos.stream().map(RedisGolfRound::toGolfRound).toList();
+    return roundDtos;
   }
 
   private Set<String> getAllRoundKeys() {
