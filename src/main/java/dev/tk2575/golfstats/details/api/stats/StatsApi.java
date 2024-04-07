@@ -2,8 +2,7 @@ package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
-import dev.tk2575.golfstats.core.stats.RoundTableRow;
-import dev.tk2575.golfstats.core.stats.StatsService;
+import dev.tk2575.golfstats.core.stats.*;
 import dev.tk2575.golfstats.details.redis.RedisService;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.NonNull;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 @RestController
 @RequestMapping("stats")
@@ -43,81 +41,87 @@ public class StatsApi {
         .toList();
   }
 
-  @RequestMapping(value = "roundSummaries", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "rounds", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<RoundTableRow>> getRoundSummaries(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
     return ResponseEntity.ok(stats.getRoundSummaries(rounds));  
   }
   
-  @RequestMapping(value = "latestShots", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "latest-shots", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<ShotAnalysis>> getLatestShots(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
-    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().newestRound();
-    return rounds.map(golfRound -> ResponseEntity.ok(stats.analyzeShots(golfRound)))
-        .orElseGet(() -> ResponseEntity.ok(List.of()));
+    return new GolfRoundStream(getRounds(golfer))
+            .compileTo18HoleRounds()
+            .newestRound()
+            .map(golfRound -> ResponseEntity.ok(stats.analyzeShots(golfRound)))
+            .orElseGet(() -> ResponseEntity.ok(List.of()));
+  }
+
+  @RequestMapping(value = "putting", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<PuttingDistanceStat>> getPutting(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    return ResponseEntity.ok(stats.getPuttingStats(rounds));
+  }
+
+  @RequestMapping(value = "latest-round", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<RoundDetailTableRow>> getLatestRound(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    //TODO maybe a different object
+    return new GolfRoundStream(getRounds(golfer))
+            .compileTo18HoleRounds()
+            .newestRound()
+            .map(round -> ResponseEntity.ok(stats.getRoundDetail(round)))
+            .orElseGet(() -> ResponseEntity.ok(List.of()));
+  }
+
+  @RequestMapping(value = "approaches", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<SimpleStat>> getApproaches(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    return ResponseEntity.ok(stats.getApproaches(rounds));
+  }
+  
+  @RequestMapping(value = "trend-approaches", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<ApproachPoint>> getApproachesTrend(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      @RequestParam(defaultValue = "10") int window) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    return ResponseEntity.ok(stats.getApproachesRolling(rounds, window));
+  }
+
+  @RequestMapping(value = "trend-strokes-gained", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<GolfRoundRollingStat>> getStrokesGainedTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    return ResponseEntity.ok(stats.getStrokesGained(rounds, window));
+  }
+
+  @RequestMapping(value = "trend-driving-distance", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<GolfRoundRollingStat>> getDrivingDistanceTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    return ResponseEntity.ok(stats.getDrivingDistance(rounds, window));
+  }
+
+  @RequestMapping(value = "trend-birdie-rate", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<GolfRoundRollingStat>> getBirdieRateTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    return ResponseEntity.ok(stats.getBirdieRate(rounds, window));
+  }
+
+  @RequestMapping(value = "trend-great-rate", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<GolfRoundRollingStat>> getRateRateTrend(
+        @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+        @RequestParam(defaultValue = "10") int window) {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    return ResponseEntity.ok(stats.getGreatRate(rounds, window));
   }
 
   //TODO convert to use stats service (still want a csv output endpoint)
   /*
-  @RequestMapping(value = "putting", produces = "text/csv")
-  public String getPutting(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "true") String binned) {
-    return generateDelimitedResponse(
-        Optional.of(PuttingDistanceStat.headers()),
-        svc.getPuttingStats(Boolean.parseBoolean(binned)),
-        Utils.lookupDelimOperator(fileType)
-    );
-  }
-
-  @RequestMapping(value = "latest", produces = "text/csv")
-  public String latestRound(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.empty(), 
-        svc.getRoundDetail(), 
-        Utils.lookupDelimOperator(fileType)
-    );
-  }
-
-  @RequestMapping(value = "approaches", produces = "text/csv")
-  public String approaches(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(List.of("Approach Category", "Strokes Gained")),
-        svc.getApproaches(),
-        Utils.lookupDelimOperator(fileType)
-    );
-  }
-
-  @RequestMapping(value = "approaches-trend", produces = "text/csv")
-  public String approachesTrend(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getApproachesRolling(window), fileType);
-  }
-
-  @RequestMapping(value = "strokesgained", produces = "text/csv")
-  public String strokesGained(@RequestParam(defaultValue = "csv") String fileType,
-                              @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getStrokesGained(window), fileType);
-  }
-
-  @RequestMapping(value = "drivingdistance", produces = "text/csv")
-  public String drivingDistance(@RequestParam(defaultValue = "csv") String fileType,
-                                @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getDrivingDistance(window), fileType);
-  }
-
-  @RequestMapping(value = "birdierate", produces = "text/csv")
-  public String birdieRate(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.birdieRate(window), fileType);
-  }
-
-  @RequestMapping(value = "greatrate", produces = "text/csv")
-  public String greatRate(@RequestParam(defaultValue = "csv") String fileType,
-                          @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.greatRate(window), fileType);
-  }
-
   private String toDelimitedString(List<GolfRoundRollingStat> stats, String fileType) {
     var list = new ArrayList<>(stats);
     list.sort(Comparator.comparing(GolfRoundRollingStat::getName).thenComparing(GolfRoundRollingStat::getSequence));

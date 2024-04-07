@@ -113,10 +113,12 @@ public class StatsService {
     return results;
   }
 
-  public List<GolfRoundRollingStat> getStrokesGained(List<GolfRound> rounds) {
-    return getStrokesGained(rounds, 10);
-  }
-
+  /**
+   *
+   * @param rounds golf rounds with shots
+   * @param window moving average window size
+   * @return moving average strokes gained per shot category
+   */
   public List<GolfRoundRollingStat> getStrokesGained(List<GolfRound> rounds, int window) {
     List<GolfRoundRollingStat> results = new ArrayList<>();
     Map<String, MovingAverage> movingAverages = new HashMap<>();
@@ -135,6 +137,11 @@ public class StatsService {
     return results;
   }
 
+  /**
+   *
+   * @param rounds golf rounds with shots, sorted oldest to newest
+   * @return
+   */
   public List<GolfRoundRollingStat> getDrivingDistance(List<GolfRound> rounds) {
     return getDrivingDistance(rounds, 10);
   }
@@ -145,19 +152,11 @@ public class StatsService {
     );
   }
 
-  public List<GolfRoundRollingStat> birdieRate(List<GolfRound> rounds) {
-    return birdieRate(rounds, 10);
-  }
-
-  public List<GolfRoundRollingStat> birdieRate(List<GolfRound> rounds, int window) {
+  public List<GolfRoundRollingStat> getBirdieRate(List<GolfRound> rounds, int window) {
     return GolfRoundRollingStat.generate(new GolfRoundStream(rounds), "Birdie Rate",
         round -> round.getHoles().getBirdieVsDoubleRatio(),
         window, Optional.empty()
     );
-  }
-
-  public List<GolfRoundRollingStat> greatRate(List<GolfRound> rounds) {
-    return greatRate(rounds, 10);
   }
 
   /**
@@ -167,7 +166,7 @@ public class StatsService {
    * @param window number of rounds to average
    * @return List of GolfRoundRollingStat
    */
-  public List<GolfRoundRollingStat> greatRate(List<GolfRound> rounds, int window) {
+  public List<GolfRoundRollingStat> getGreatRate(List<GolfRound> rounds, int window) {
     return GolfRoundRollingStat.generate(
         new GolfRoundStream(rounds),
         "Great vs Bad Shots",
