@@ -11,6 +11,7 @@ import dev.tk2575.golfstats.core.stats.RoundSummaryStat;
 import dev.tk2575.golfstats.core.stats.StatsService;
 import dev.tk2575.golfstats.details.redis.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,6 +29,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,8 +47,8 @@ class StatsApiTest {
   @InjectMocks
   private StatsApi api;
   
-  @Test
-  void test() throws HttpMediaTypeNotAcceptableException {
+  @BeforeEach
+  void setup() {
     LocalDate date = LocalDate.of(2023, 1, 1);
     var meta = new RoundMeta(
         Golfer.newGolfer("Tom"),
@@ -57,6 +60,10 @@ class StatsApiTest {
     var round = GolfRound.of(meta, 85, 14, 14, 18, 36, false);
     
     when(redis.getAllRounds(true)).thenReturn(List.of(round));
+  }
+  
+  @Test
+  void testRoundSummaries() throws HttpMediaTypeNotAcceptableException {
     when(stats.getRoundSummaries(anyList())).thenCallRealMethod();
 
     HttpServletRequest request = mock(HttpServletRequest.class);
@@ -70,6 +77,19 @@ class StatsApiTest {
     RoundSummaryStat summary = summaries.getFirst();
     assertEquals("2023-01-01", summary.getDate());
     assertEquals("Course", summary.getLabel());
+  }
+  
+  void testLatestShots() throws HttpMediaTypeNotAcceptableException {
+    when(stats.analyzeShots(any())).thenCallRealMethod();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getHeader("Accept")).thenReturn("application/json");
+
+    ResponseEntity<String> response = api.getLatestShots("Tom", request);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    List<ShotAnalysis> shots = new Gson().fromJson(response.getBody(), new TypeToken<List<ShotAnalysis>>(){}.getType());;
+    assertNotNull(shots);
+    assertTrue(shots.isEmpty());
   }
 
 }

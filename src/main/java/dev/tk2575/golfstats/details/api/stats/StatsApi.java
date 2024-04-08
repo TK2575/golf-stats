@@ -46,15 +46,14 @@ public class StatsApi {
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
-    List<RoundSummaryStat> roundSummaries = stats.getRoundSummaries(rounds);
-    return mediaTypeConversion(request, roundSummaries);
+    return mediaTypeConversion(request, stats.getRoundSummaries(rounds));
   }
 
   @RequestMapping(value = "latest-shots", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> getLatestShots(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
-    List<ShotAnalysis> shotAnalyses = new GolfRoundStream(getRounds(golfer))
+    var shotAnalyses = new GolfRoundStream(getRounds(golfer))
         .compileTo18HoleRounds()
         .newestRound().map(stats::analyzeShots)
         .orElseGet(List::of);
@@ -67,64 +66,78 @@ public class StatsApi {
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
-    List<PuttingDistanceStat> puttingStats = stats.getPuttingStats(rounds);
-    return mediaTypeConversion(request, puttingStats);
+    return mediaTypeConversion(request, stats.getPuttingStats(rounds));
   }
 
   @RequestMapping(value = "latest-round", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<RoundDetailTableRow>> getLatestRound(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
-    //TODO maybe a different object
-    return new GolfRoundStream(getRounds(golfer))
+  public ResponseEntity<String> getLatestRound(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var details = new GolfRoundStream(getRounds(golfer))
             .compileTo18HoleRounds()
             .newestRound()
-            .map(round -> ResponseEntity.ok(stats.getRoundDetail(round)))
-            .orElseGet(() -> ResponseEntity.ok(List.of()));
+            .map(stats::getRoundDetail)
+            .orElseGet(List::of);
+    
+    return mediaTypeConversion(request, details);
   }
 
   @RequestMapping(value = "approaches", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<SimpleStat>> getApproaches(@NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer) {
+  public ResponseEntity<String> getApproaches(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
-    return ResponseEntity.ok(stats.getApproaches(rounds));
+    return mediaTypeConversion(request, stats.getApproaches(rounds));
   }
   
   @RequestMapping(value = "trend-approaches", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<ApproachPoint>> getApproachesTrend(
+  public ResponseEntity<String> getApproachesTrend(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
-      @RequestParam(defaultValue = "10") int window) {
+      @RequestParam(defaultValue = "10") int window,
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
-    return ResponseEntity.ok(stats.getApproachesRolling(rounds, window));
+    List<ApproachPoint> approachesRolling = stats.getApproachesRolling(rounds, window);
+    return mediaTypeConversion(request, approachesRolling);
   }
 
   @RequestMapping(value = "trend-strokes-gained", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<GolfRoundRollingStat>> getStrokesGainedTrend(
+  public ResponseEntity<String> getStrokesGainedTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
-          @RequestParam(defaultValue = "10") int window) {
+          @RequestParam(defaultValue = "10") int window,
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
-    return ResponseEntity.ok(stats.getStrokesGained(rounds, window));
+    List<GolfRoundRollingStat> strokesGained = stats.getStrokesGained(rounds, window);
+    return mediaTypeConversion(request, strokesGained);
   }
 
   @RequestMapping(value = "trend-driving-distance", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<GolfRoundRollingStat>> getDrivingDistanceTrend(
+  public ResponseEntity<String> getDrivingDistanceTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
-          @RequestParam(defaultValue = "10") int window) {
+          @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
-    return ResponseEntity.ok(stats.getDrivingDistance(rounds, window));
+    List<GolfRoundRollingStat> drivingDistance = stats.getDrivingDistance(rounds, window);
+    return mediaTypeConversion(request, drivingDistance);
   }
 
   @RequestMapping(value = "trend-birdie-rate", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<GolfRoundRollingStat>> getBirdieRateTrend(
+  public ResponseEntity<String> getBirdieRateTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
-          @RequestParam(defaultValue = "10") int window) {
+          @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
-    return ResponseEntity.ok(stats.getBirdieRate(rounds, window));
+    List<GolfRoundRollingStat> birdieRate = stats.getBirdieRate(rounds, window);
+    return mediaTypeConversion(request, birdieRate);
   }
 
   @RequestMapping(value = "trend-great-rate", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<GolfRoundRollingStat>> getRateRateTrend(
+  public ResponseEntity<String> getRateRateTrend(
         @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
-        @RequestParam(defaultValue = "10") int window) {
+        @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
-    return ResponseEntity.ok(stats.getGreatRate(rounds, window));
+    List<GolfRoundRollingStat> greatRate = stats.getGreatRate(rounds, window);
+    return mediaTypeConversion(request, greatRate);
   }
   
   private List<GolfRound> getRounds(String golferName) {
