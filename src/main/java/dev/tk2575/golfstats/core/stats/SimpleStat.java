@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class SimpleStat implements StatsApiValueSupplier {
+public class SimpleStat {
   private final String label;
   private final BigDecimal value;
   
@@ -16,10 +16,5 @@ public class SimpleStat implements StatsApiValueSupplier {
     return map.entrySet().stream()
               .map(entry -> new SimpleStat(entry.getKey().getLabel(), entry.getValue()))
               .toList();
-  }
-  
-  @Override
-  public List<String> values() {
-    return List.of(label, value.toPlainString());
   }
 }

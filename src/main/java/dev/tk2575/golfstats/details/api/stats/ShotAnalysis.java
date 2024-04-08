@@ -1,14 +1,13 @@
 package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
-import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
-public class ShotAnalysis implements StatsApiValueSupplier {
+public class ShotAnalysis {
 	private final int hole;
 	private final int sequence;
 	private final String lie;
@@ -44,45 +43,5 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 						: String.valueOf(shot.getMissAngle().getAngleDegrees().get());
 		this.missDescription = shot.getMissAngle().getDescription();
 		this.count = shot.getCount();
-	}
-	
-	public static List<String> headers() {
-		return List.of(
-				"Hole",
-				"Sequence",
-				"Lie",
-				"Category",
-				"Target Distance",
-				"Target Distance Unit",
-				"Shot Distance",
-				"Shot Distance Unit",
-				"SG",
-				"Result Lie",
-				"Miss Distance",
-				"Unit",
-				"Miss Angle",
-				"Miss Description",
-				"Count"
-		);
-	}
-	
-	public List<String> values() {
-		return List.of(
-				String.valueOf(hole),
-				String.valueOf(sequence),
-				lie,
-				category,
-				String.valueOf(distanceFromHole),
-				distanceFromHoleUnit,
-				String.valueOf(shotDistance),
-				shotDistanceUnit,
-				strokesGained.toPlainString(),
-				resultLie,
-				String.valueOf(missDistanceValue),
-				missDistanceUnit,
-				missAngle,
-				missDescription,
-				String.valueOf(count)
-		);
 	}
 }

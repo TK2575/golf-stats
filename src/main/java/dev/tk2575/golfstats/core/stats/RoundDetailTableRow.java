@@ -1,14 +1,12 @@
 package dev.tk2575.golfstats.core.stats;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class RoundDetailTableRow implements StatsApiValueSupplier {
+@Getter
+public class RoundDetailTableRow {
   private final List<String> values;
-  @Override
-  public List<String> values() {
-    return this.values;
-  }
 }

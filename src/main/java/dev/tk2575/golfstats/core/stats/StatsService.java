@@ -23,9 +23,9 @@ public class StatsService {
    * @param rounds 18 hole rounds, sorted oldest to newest
    * @return List of RoundTableRow
    */
-  public List<RoundTableRow> getRoundSummaries(List<GolfRound> rounds) {
+  public List<RoundSummaryStat> getRoundSummaries(List<GolfRound> rounds) {
     HandicapIndex index = HandicapIndex.newIndex(rounds);
-    return rounds.stream().map(round -> new RoundTableRow(round, index)).toList();
+    return rounds.stream().map(round -> new RoundSummaryStat(round, index)).toList();
   }
 
   /**
@@ -60,6 +60,7 @@ public class StatsService {
    * @param round 18 hole round, previously expecting the most recent
    * @return List of RoundDetailTableRow
    */
+  //TODO revise class structure
   public List<RoundDetailTableRow> getRoundDetail(GolfRound round) {
     return RoundDetailTableColumn.toRows(RoundDetailTableColumn.compile(round));
   }
@@ -68,6 +69,7 @@ public class StatsService {
    * @param rounds rounds with shots
    * @return mean strokes gained per round by approach category
    */
+  //TODO revise class structure
   public List<SimpleStat> getApproaches(List<GolfRound> rounds) {
     Map<ApproachBin, List<ApproachSummary>> shotsByApproachBin = rounds.stream()
         .map(round -> ApproachSummary.compile(round.getShots()))
