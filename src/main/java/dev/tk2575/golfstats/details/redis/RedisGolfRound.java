@@ -6,6 +6,7 @@ import dev.tk2575.golfstats.core.golfer.Golfer;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.RoundMeta;
+import lombok.Getter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ class RedisGolfRound implements Serializable {
 
   private static final String DATE_FORMAT = "yyyy-MM-dd";
 
+  @Getter
   private String roundId;
   private String date;
   private long durationMinutes;

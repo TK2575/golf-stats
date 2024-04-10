@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Getter
-public class PuttingDistanceStat implements StatsApiValueSupplier {
+public class PuttingDistanceStat {
   private final Integer distance;
   private final BigDecimal makePercentage;
   private final BigDecimal threePuttPercentage;
@@ -48,11 +48,7 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
   }
   
   public PuttingDistanceStat(@NonNull List<Shot> shots) {
-    this(shots, shots.get(0).getDistanceFromTarget().getValue());
-  }
-
-  public static List<String> headers() {
-    return List.of("Distance", "Make %", "3-Putt %", "Avg Putts", "Count", "Strokes Gained", "Avg SG");
+    this(shots, shots.getFirst().getDistanceFromTarget().getValue());
   }
   
   public static Function<Shot, Long> distance() {
@@ -68,16 +64,5 @@ public class PuttingDistanceStat implements StatsApiValueSupplier {
       if (dist <= 30) return 30L;
       return 40L;
     };
-  }
-
-  public List<String> values() {
-    return List.of(
-        distance.toString(),
-        makePercentage.toString(),
-        threePuttPercentage.toString(),
-        averagePutts.toString(),
-        count.toString(),
-        strokesGained.toPlainString(),
-        avgStrokesGained.toPlainString());
   }
 }

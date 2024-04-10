@@ -4,15 +4,11 @@ import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.Hole;
 import dev.tk2575.golfstats.core.golfround.HoleStream;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotCategory;
-import dev.tk2575.golfstats.core.stats.RoundDetailTableRow;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.BinaryOperator;
 
 @Getter
 public class RoundDetailTableColumn {
@@ -101,32 +97,6 @@ public class RoundDetailTableColumn {
     this.greenInRegulation = new HoleStream(holes).totalGreensInRegulation() + "/" + holes.size();
     this.fairwayHit = new HoleStream(holes).totalFairwaysInRegulation() + "/" + new HoleStream(holes).totalFairways();
     this.drivingDistance = BigDecimal.valueOf(new HoleStream(holes).allShots().p75DrivingDistance());
-  }
-
-  public static List<RoundDetailTableRow> toRows(List<RoundDetailTableColumn> columns) {
-    Map<Integer, List<String>> results = new TreeMap<>();
-    for (int i = 0; i < HEADERS.size(); i++) {
-      results.put(i+1, List.of(HEADERS.get(i)));
-    }
-    BinaryOperator<List<String>> mergeLists = (oldValue, newValue) -> {
-      var list = new ArrayList<>(oldValue);
-      list.addAll(newValue);
-      return list;
-    };
-    for (RoundDetailTableColumn column : columns) {
-      results.merge(1, List.of(column.getHeader()), mergeLists);
-      results.merge(2, List.of(column.getPar().toString()), mergeLists);
-      results.merge(3, List.of(column.getStrokes().toString()), mergeLists);
-      results.merge(4, List.of(column.getStrokesGainedTotal()), mergeLists);
-      results.merge(5, List.of(column.getStrokesGainedTee()), mergeLists);
-      results.merge(6, List.of(column.getStrokesGainedApproach()), mergeLists);
-      results.merge(7, List.of(column.getStrokesGainedAroundGreen()), mergeLists);
-      results.merge(8, List.of(column.getStrokesGainedPutting()), mergeLists);
-      results.merge(9, List.of(column.getGreenInRegulation()), mergeLists);
-      results.merge(10, List.of(column.getFairwayHit()), mergeLists);
-      results.merge(11, List.of(column.getDrivingDistance()), mergeLists);
-    }
-    return results.values().stream().map(RoundDetailTableRow::new).toList();
   }
   
   private static final List<String> HEADERS = List.of(

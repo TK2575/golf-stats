@@ -1,14 +1,15 @@
 package dev.tk2575.golfstats.details.api.stats;
 
 import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
-import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
-public class ShotAnalysis implements StatsApiValueSupplier {
+@RequiredArgsConstructor
+public class ShotAnalysis {
 	private final int hole;
 	private final int sequence;
 	private final String lie;
@@ -38,51 +39,9 @@ public class ShotAnalysis implements StatsApiValueSupplier {
 		this.resultLie = shot.getResultLie().getLabel();
 		this.missDistanceValue = shot.getMissDistance().getValue();
 		this.missDistanceUnit = shot.getMissDistance().getLengthUnit();
-		this.missAngle = 
-				shot.getMissAngle().getAngleDegrees().isEmpty() 
-						? "" 
-						: String.valueOf(shot.getMissAngle().getAngleDegrees().get());
+		Optional<Integer> angleDegrees = shot.getMissAngle().getAngleDegrees();
+		this.missAngle = angleDegrees.isPresent() ? String.valueOf(angleDegrees.get()) : "";
 		this.missDescription = shot.getMissAngle().getDescription();
 		this.count = shot.getCount();
-	}
-	
-	public static List<String> headers() {
-		return List.of(
-				"Hole",
-				"Sequence",
-				"Lie",
-				"Category",
-				"Target Distance",
-				"Target Distance Unit",
-				"Shot Distance",
-				"Shot Distance Unit",
-				"SG",
-				"Result Lie",
-				"Miss Distance",
-				"Unit",
-				"Miss Angle",
-				"Miss Description",
-				"Count"
-		);
-	}
-	
-	public List<String> values() {
-		return List.of(
-				String.valueOf(hole),
-				String.valueOf(sequence),
-				lie,
-				category,
-				String.valueOf(distanceFromHole),
-				distanceFromHoleUnit,
-				String.valueOf(shotDistance),
-				shotDistanceUnit,
-				strokesGained.toPlainString(),
-				resultLie,
-				String.valueOf(missDistanceValue),
-				missDistanceUnit,
-				missAngle,
-				missDescription,
-				String.valueOf(count)
-		);
 	}
 }

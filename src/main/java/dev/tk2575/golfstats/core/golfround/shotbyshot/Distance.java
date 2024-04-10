@@ -10,7 +10,7 @@ public interface Distance {
 	}
 
 	static Distance shotDistance(Distance distanceFromTarget, Distance missDistance, MissAngle missAngle) {
-		if (missAngle.getAngleDegrees().isEmpty()) {
+		if (missAngle == null || missAngle.getAngleDegrees().isEmpty()) {
 			return distanceFromTarget.subtract(missDistance);
 		} 
 		int missAngleDegrees = missAngle.getAngleDegrees().get();

@@ -3,22 +3,38 @@ package dev.tk2575.golfstats.details.redis;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPooled;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
+@Log4j2
+@Component
 public class RedisService {
   private final JedisPooled jedis;
+  private final RedisConfig config;
   private final Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
+  
+  @Autowired
+  public RedisService(RedisConfig config) {
+    this.config = config;
+    this.jedis = new JedisPooled(config.getHost(), config.getPort());
+  }
 
-  public RedisService(String host, int port) {
-    this.jedis = new JedisPooled(host.equals("0.0.0.0") ? "localhost" : host, port);
+  protected RedisService(String host, int port) {
+    this.config = new RedisConfig(host.equals("0.0.0.0") ? "localhost" : host, port);
+    this.jedis = new JedisPooled(config.getHost(), config.getPort());
   }
 
   public GolfRound getRound(String roundId) {
@@ -40,15 +56,24 @@ public class RedisService {
   public List<GolfRound> getAllRounds() {
     return getAllRounds(false);
   }
+  
+  public Map<String, GolfRound> getAllRoundsMap(boolean validOnly) {
+    return getAllRoundDtos(validOnly).stream()
+        .collect(Collectors.toMap(RedisGolfRound::getRoundId, RedisGolfRound::toGolfRound));
+  }
 
   public List<GolfRound> getAllRounds(boolean validOnly) {
+    return getAllRoundDtos(validOnly).stream().map(RedisGolfRound::toGolfRound).toList();
+  }
+  
+  private List<RedisGolfRound> getAllRoundDtos(boolean validOnly) {
     Set<String> keys = getAllRoundKeys();
     List<RedisGolfRound> roundDtos = jedis.mget(keys.toArray(String[]::new)).stream()
         .map(each -> gson.fromJson(each, RedisGolfRound.class)).toList();
     if (validOnly) {
       roundDtos = roundDtos.stream().filter(RedisGolfRound::isValid).toList();
     }
-    return roundDtos.stream().map(RedisGolfRound::toGolfRound).toList();
+    return roundDtos;
   }
 
   private Set<String> getAllRoundKeys() {

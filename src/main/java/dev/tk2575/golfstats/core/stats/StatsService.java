@@ -3,136 +3,131 @@ package dev.tk2575.golfstats.core.stats;
 import dev.tk2575.MovingAverage;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
+import dev.tk2575.golfstats.core.golfround.shotbyshot.Shot;
 import dev.tk2575.golfstats.core.golfround.shotbyshot.ShotStream;
 import dev.tk2575.golfstats.core.handicapindex.HandicapIndex;
-import dev.tk2575.golfstats.details.imports.GolfRoundImporter;
 import dev.tk2575.golfstats.details.api.stats.RoundDetailTableColumn;
 import dev.tk2575.golfstats.details.api.stats.ShotAnalysis;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.function.LongPredicate;
-import java.util.function.ToLongFunction;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Component
 public class StatsService {
-  public List<RoundTableRow> getRoundSummaries() {
-    var rounds = getTomStats()
-        .compileTo18HoleRounds()
-        .sortNewestToOldest().toList();
-
+  /**
+   * Summarizes each round in the list into RoundTableRow
+   *
+   * @param rounds 18 hole rounds, sorted oldest to newest
+   * @return List of RoundTableRow
+   */
+  public List<RoundSummaryStat> getRoundSummaries(List<GolfRound> rounds) {
     HandicapIndex index = HandicapIndex.newIndex(rounds);
-    return rounds.stream().map(round -> new RoundTableRow(round, index)).toList();
+    return rounds.stream().map(round -> new RoundSummaryStat(round, index)).toList();
   }
-  
-  public List<ShotAnalysis> getLatestShots() {
-    GolfRound latestRound = getTomStats().compileTo18HoleRounds().sortNewestToOldest().findFirst().orElseThrow();
-    return latestRound.getHoles().flatMap(
-        hole -> hole.getShots().map(shot -> new ShotAnalysis(hole.getNumber(), shot))
-    ).toList();
+
+  /**
+   * Analyzes each shot in the round and summarizes into ShotAnalysis
+   * Previously used on the latest 18 hole round (.compileTo18HoleRounds().sortNewestToOldest().findFirst().orElseThrow();)
+   *
+   * @param round 18 hole round with shots
+   * @return List of ShotAnalysis
+   */
+  public List<ShotAnalysis> analyzeShots(GolfRound round) {
+    if (round != null) {
+      return round.getHoles().flatMap(
+          hole -> hole.getShots().map(shot -> new ShotAnalysis(hole.getNumber(), shot))
+      ).toList();
+    }
+    return List.of();
   }
-  
-  public List<PuttingDistanceStat> getPuttingStats() {
-    return getPuttingStats(true);
+
+  public List<PuttingDistanceStat> getPuttingStats(List<GolfRound> rounds) {
+    return getPuttingStats(rounds, true);
   }
-  
-  public List<PuttingDistanceStat> getPuttingStats(boolean binned) {
+
+  public List<PuttingDistanceStat> getPuttingStats(List<GolfRound> rounds, boolean binned) {
     var groupingFunction = binned ? PuttingDistanceStat.binDistance() : PuttingDistanceStat.distance();
 
-    return getTomStats().flatMap(round -> round.getShots().greenShots())
+    return new GolfRoundStream(rounds).flatMap(round -> round.getShots().greenShots())
         .collect(Collectors.groupingBy(groupingFunction, Collectors.toList()))
         .entrySet().stream().map(e -> new PuttingDistanceStat(e.getValue(), e.getKey()))
         .sorted(Comparator.comparing(PuttingDistanceStat::getDistance)).toList();
   }
 
-  public List<RoundDetailTableRow> getLatestRound() {
-    return getTomStats()
-        .compileTo18HoleRounds()
-        .sortNewestToOldest()
-        .findFirst()
-        .map(RoundDetailTableColumn::compile)
-        .map(RoundDetailTableColumn::toRows)
-        .orElseThrow();
+  /**
+   * Details of each hole in the round, summarized into RoundDetailTableColumn
+   *
+   * @param round 18 hole round, previously expecting the most recent
+   * @return List of RoundDetailTableColumn
+   */
+  public List<RoundDetailTableColumn> getRoundDetail(GolfRound round) {
+    return RoundDetailTableColumn.compile(round);
   }
-  
-  public List<SimpleStat> getApproaches() {
-    Map<ApproachCategory.Bin, List<BigDecimal>> roundSgByCat = new HashMap<>();
 
-    getTomStats().map(round ->
-        round.getShots()
-            .collect(Collectors.groupingBy(ApproachCategory.shotBinFunction, Collectors.toList()))
-            .entrySet().stream()
-            .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachCategory.Bin.OTHER))
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> new ShotStream(e.getValue()).totalStrokesGained())
-            )
-    //TODO reduce instead of forEach?
-    ).forEach(sgByCat -> 
-        sgByCat.forEach((cat, sgList) -> 
-            roundSgByCat.merge(cat, List.of(sgList), (l1, l2) -> 
-                Stream.of(l1, l2).flatMap(Collection::stream).toList()
-            )
-        )
-    );
+  /**
+   * @param rounds rounds with shots
+   * @return mean strokes gained per round by approach category
+   */
+  public Map<String,BigDecimal> getApproaches(List<GolfRound> rounds) {
+    Map<ApproachBin, List<ApproachSummary>> shotsByApproachBin = rounds.stream()
+        .map(round -> ApproachSummary.compile(round.getShots()))
+        .flatMap(List::stream)
+        .collect(Collectors.groupingBy(ApproachSummary::getBin, Collectors.toList()));
 
-    Map<ApproachCategory.Bin, BigDecimal> roundAvgSgByCat = new TreeMap<>();
-    roundSgByCat.forEach((k, v) ->
-        roundAvgSgByCat.put(k, v.stream()
-            .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .divide(BigDecimal.valueOf(v.size()), 2, RoundingMode.HALF_UP)));
-
-    return SimpleStat.compile(roundAvgSgByCat);
+    return shotsByApproachBin.entrySet().stream()
+        .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachBin.OTHER))
+        .map(e -> ApproachSummary.merge(e.getValue()))
+        .collect(Collectors.toMap(
+            e -> e.getBin().getLabel(), 
+            ApproachSummary::getMeanStrokesGainedPerRound)
+        );
   }
-  
-  public List<RollingStat> getApproachesRolling() {
-    return getApproachesRolling(10);
-  }
-  
-  public List<RollingStat> getApproachesRolling(int window) {
-    //TODO needs a solution for sample gaps
-    List<RollingStat> results = new ArrayList<>();
-    Map<String, MovingAverage> movingAverages = new HashMap<>();
 
-    getTomStats().forEachOrdered(round ->
-        round.getShots().collect(Collectors.groupingBy(ApproachCategory.shotBinFunction, Collectors.toList()))
-            .entrySet().stream()
-            .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachCategory.Bin.OTHER))
-            .forEach(e -> {
-              var mAvg = movingAverages.getOrDefault(e.getKey().getLabel(), new MovingAverage(window));
-              results.add(new RollingStat(
-                  e.getKey().getLabel(), mAvg.next(new ShotStream(e.getValue()).totalStrokesGained()), round)
-              );
-              movingAverages.put(e.getKey().getLabel(), mAvg);
-            }));
+  /**
+   * Rolling average of strokes gained by approach category
+   *
+   * @param rounds sorted oldest to newest
+   * @param window number of rounds to average
+   * @return List of ApproachPoint for building table of avg strokes gained (date x bin)
+   */
+  public List<ApproachPoint> getApproachesRolling(List<GolfRound> rounds, int window) {
+    List<ApproachPoint> results = new ArrayList<>();
+    Map<ApproachBin, ApproachPoint> cursors = new EnumMap<>(ApproachBin.class);
+    
+    new GolfRoundStream(rounds).forEachOrdered(round -> {
+      Map<ApproachBin, List<Shot>> shotsByBin = round.getShots().collect(Collectors.groupingBy(ApproachBin.shotBinFunction, Collectors.toList()));
+      Arrays.stream(ApproachBin.values()).forEach(bin -> {
+        if (bin != null && !bin.equals(ApproachBin.OTHER)) {
+          var cursor = cursors.getOrDefault(bin, new ApproachPoint(round.getDate(), bin, BigDecimal.ZERO, new MovingAverage(window)));
+          BigDecimal sg = new ShotStream(shotsByBin.getOrDefault(bin, List.of())).totalStrokesGained();
+          BigDecimal nextAvg = cursor.getMovingAverage().next(sg).getKey();
+          var point = new ApproachPoint(round.getDate(), bin, nextAvg, cursor.getMovingAverage());
+          results.add(point);
+          cursors.put(bin, point);
+        }
+      });
+    });
 
     return results;
   }
-  
-  public List<RollingStat> getStrokesGained() {
-    return getStrokesGained(10);
-  }
-  
-  public List<RollingStat> getStrokesGained(int window) {
-    List<RollingStat> results = new ArrayList<>();
+
+  /**
+   *
+   * @param rounds golf rounds with shots
+   * @param window moving average window size
+   * @return moving average strokes gained per shot category
+   */
+  public List<GolfRoundRollingStat> getStrokesGained(List<GolfRound> rounds, int window) {
+    List<GolfRoundRollingStat> results = new ArrayList<>();
     Map<String, MovingAverage> movingAverages = new HashMap<>();
 
-    getTomStats().forEachOrdered(round -> {
+    new GolfRoundStream(rounds).forEachOrdered(round -> {
       for (Map.Entry<String, BigDecimal> entry : round.getStrokesGainedByCategory().entrySet()) {
         var mAvg = movingAverages.getOrDefault(entry.getKey(), new MovingAverage(window));
-        results.add(new RollingStat(
+        results.add(new GolfRoundRollingStat(
             "Strokes Gained: " + entry.getKey(),
             mAvg.next(entry.getValue()),
             round));
@@ -142,59 +137,42 @@ public class StatsService {
 
     return results;
   }
-  
-  public List<RollingStat> getDrivingDistance() {
-    return getDrivingDistance(10);
+
+  /**
+   *
+   * @param rounds golf rounds with shots, sorted oldest to newest
+   * @return
+   */
+  public List<GolfRoundRollingStat> getDrivingDistance(List<GolfRound> rounds) {
+    return getDrivingDistance(rounds, 10);
   }
-  
-  public List<RollingStat> getDrivingDistance(int window) {
-    return generateRollingStat(getTomStats(), "Driving Distance",
+
+  public List<GolfRoundRollingStat> getDrivingDistance(List<GolfRound> rounds, int window) {
+    return GolfRoundRollingStat.generate(new GolfRoundStream(rounds), "Driving Distance",
         GolfRound::getP75DrivingDistance, window, Optional.of(val -> val > 0)
     );
   }
-  
-  public List<RollingStat> birdieRate() {
-    return birdieRate(10);
-  }
-  
-  public List<RollingStat> birdieRate(int window) {
-    return generateRollingStat(getTomStats(), "Birdie Rate",
+
+  public List<GolfRoundRollingStat> getBirdieRate(List<GolfRound> rounds, int window) {
+    return GolfRoundRollingStat.generate(new GolfRoundStream(rounds), "Birdie Rate",
         round -> round.getHoles().getBirdieVsDoubleRatio(),
         window, Optional.empty()
     );
   }
-  
-  public List<RollingStat> greatRate() {
-    return greatRate(10);
-  }
-  
-  public List<RollingStat> greatRate(int window) {
-    return generateRollingStat(
-        new GolfRoundStream(getTomStats().filter(round -> !round.getStrokesGainedByCategory().isEmpty()).toList()),
+
+  /**
+   * Rolling average of great vs bad shots
+   *
+   * @param rounds sorted oldest to newest, filtered to where round.getStrokesGainedByCategory() is not empty
+   * @param window number of rounds to average
+   * @return List of GolfRoundRollingStat
+   */
+  public List<GolfRoundRollingStat> getGreatRate(List<GolfRound> rounds, int window) {
+    return GolfRoundRollingStat.generate(
+        new GolfRoundStream(rounds),
         "Great vs Bad Shots",
         round -> round.getShots().getGreatVsBadShots(),
         window, Optional.empty()
     );
-  }
-  
-  //TODO move to RollingStat?
-  private List<RollingStat> generateRollingStat(GolfRoundStream rounds, String statName, ToLongFunction<GolfRound> statFunction,
-                                     int window, Optional<LongPredicate> filter) {
-    var movingAverage = new MovingAverage(window);
-    List<RollingStat> results = new ArrayList<>();
-    rounds.forEachOrdered(round -> {
-      long val = statFunction.applyAsLong(round);
-      if (filter.isEmpty() || filter.get().test(val)) {
-        results.add(new RollingStat(statName, movingAverage.next(new BigDecimal(val)), round));
-      }
-    });
-    return results;
-  }
-  
-  //TODO parameterize golfer? get from database eventually
-  private static GolfRoundStream getTomStats() {
-    return new GolfRoundStream(
-        new GolfRoundImporter().getRoundsByGolfer().get("Tom")
-    ).compileTo18HoleRounds();
   }
 }

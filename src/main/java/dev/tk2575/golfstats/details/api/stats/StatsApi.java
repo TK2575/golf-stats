@@ -1,125 +1,223 @@
 package dev.tk2575.golfstats.details.api.stats;
 
-import dev.tk2575.Utils;
-import dev.tk2575.golfstats.core.stats.PuttingDistanceStat;
-import dev.tk2575.golfstats.core.stats.RollingStat;
-import dev.tk2575.golfstats.core.stats.RoundTableRow;
-import dev.tk2575.golfstats.core.stats.StatsApiValueSupplier;
-import dev.tk2575.golfstats.core.stats.StatsService;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.google.gson.Gson;
+import dev.tk2575.golfstats.core.golfround.GolfRound;
+import dev.tk2575.golfstats.core.golfround.GolfRoundStream;
+import dev.tk2575.golfstats.core.stats.*;
+import dev.tk2575.golfstats.details.redis.RedisService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.Map;
 
 @RestController
-@RequestMapping("stats")
+@RequestMapping("/stats")
 @Log4j2
 public class StatsApi {
   
-  private final StatsService svc;
+  private final RedisService redis;
+  private final StatsService stats;
   
   @Autowired
-  public StatsApi(StatsService svc) {
-    this.svc = svc;
+  public StatsApi(RedisService redis, StatsService stats) {
+    this.redis = redis;
+    this.stats = stats;
+  }
+  
+  @RequestMapping("count")
+  public int getRoundCount() {
+    return redis.countRounds();
   }
 
-  @RequestMapping(value = "rounds", produces = "text/csv")
-  public String getRounds(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(RoundTableRow.headers()), 
-        svc.getRoundSummaries(), 
-        Utils.lookupDelimOperator(fileType)
-    );
+  @GetMapping(value = "rounds", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getRoundSummaries(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    return mediaTypeConversion(request, stats.getRoundSummaries(rounds));
   }
 
-  @RequestMapping(value = "shots", produces = "text/csv")
-  public String getLatestShots(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(ShotAnalysis.headers()), 
-        svc.getLatestShots(), 
-        Utils.lookupDelimOperator(fileType)
-    );
+  @RequestMapping(value = "latest-shots", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getLatestShots(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var shotAnalyses = new GolfRoundStream(getRounds(golfer))
+        .compileTo18HoleRounds()
+        .newestRound().map(stats::analyzeShots)
+        .orElseGet(List::of);
+    
+    return mediaTypeConversion(request, shotAnalyses);
   }
 
-  @RequestMapping(value = "putting", produces = "text/csv")
-  public String getPutting(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "true") String binned) {
-    return generateDelimitedResponse(
-        Optional.of(PuttingDistanceStat.headers()),
-        svc.getPuttingStats(Boolean.parseBoolean(binned)),
-        Utils.lookupDelimOperator(fileType)
-    );
+  @RequestMapping(value = "putting", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getPutting(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    return mediaTypeConversion(request, stats.getPuttingStats(rounds));
   }
 
-  @RequestMapping(value = "latest", produces = "text/csv")
-  public String latestRound(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.empty(), 
-        svc.getLatestRound(), 
-        Utils.lookupDelimOperator(fileType)
-    );
+  @RequestMapping(value = "latest-round", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getLatestRound(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var details = new GolfRoundStream(getRounds(golfer))
+            .compileTo18HoleRounds()
+            .newestRound()
+            .map(stats::getRoundDetail)
+            .orElseGet(List::of);
+    
+    return mediaTypeConversion(request, details);
   }
 
-  @RequestMapping(value = "approaches", produces = "text/csv")
-  public String approaches(@RequestParam(defaultValue = "csv") String fileType) {
-    return generateDelimitedResponse(
-        Optional.of(List.of("Approach Category", "Strokes Gained")),
-        svc.getApproaches(),
-        Utils.lookupDelimOperator(fileType)
-    );
+  @RequestMapping(value = "approaches", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getApproaches(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    Map<String, BigDecimal> approaches = stats.getApproaches(rounds);
+    
+    //TODO refactor: this nearly duplicates mediaTypeConversion
+    
+    String acceptHeader = request.getHeader("Accept");
+    if (acceptHeader == null || acceptHeader.contains(MediaType.APPLICATION_JSON_VALUE)) {
+      try {
+        String json = new Gson().toJson(approaches);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+      }
+      catch (Exception e) {
+        log.error("Failed to convert to JSON", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to JSON");
+      }
+    }
+    if (List.of("text/csv", "text/tab-separated-values").contains(acceptHeader)) {
+      try {
+        String result = "";
+        if (!approaches.isEmpty()) {
+          var mapper = new CsvMapper();
+          var schema = mapper
+              .schemaFor(Map.Entry.class)
+              .withHeader()
+              .withColumnSeparator(acceptHeader.contains("csv") ? ',' : '\t');
+          result = mapper.writer(schema).writeValueAsString(approaches.entrySet());
+        }
+        return ResponseEntity.ok()
+            .contentType(MediaType.valueOf(acceptHeader))
+            .body(result);
+      } catch (Exception e) {
+        log.error("Failed to convert to CSV", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to CSV");
+      }
+    }
+    throw new HttpMediaTypeNotAcceptableException("Requested output type is not supported");
+  }
+  
+  @RequestMapping(value = "trend-approaches", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getApproachesTrend(
+      @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+      @RequestParam(defaultValue = "10") int window,
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
+    List<ApproachPoint> approachesRolling = stats.getApproachesRolling(rounds, window);
+    return mediaTypeConversion(request, approachesRolling);
   }
 
-  @RequestMapping(value = "approaches-trend", produces = "text/csv")
-  public String approachesTrend(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getApproachesRolling(window), fileType);
+  @RequestMapping(value = "trend-strokes-gained", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getStrokesGainedTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window,
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    List<GolfRoundRollingStat> strokesGained = stats.getStrokesGained(rounds, window);
+    return mediaTypeConversion(request, strokesGained);
   }
 
-  @RequestMapping(value = "strokesgained", produces = "text/csv")
-  public String strokesGained(@RequestParam(defaultValue = "csv") String fileType,
-                              @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getStrokesGained(window), fileType);
+  @RequestMapping(value = "trend-driving-distance", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getDrivingDistanceTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    List<GolfRoundRollingStat> drivingDistance = stats.getDrivingDistance(rounds, window);
+    return mediaTypeConversion(request, drivingDistance);
   }
 
-  @RequestMapping(value = "drivingdistance", produces = "text/csv")
-  public String drivingDistance(@RequestParam(defaultValue = "csv") String fileType,
-                                @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.getDrivingDistance(window), fileType);
+  @RequestMapping(value = "trend-birdie-rate", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getBirdieRateTrend(
+          @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+          @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    List<GolfRoundRollingStat> birdieRate = stats.getBirdieRate(rounds, window);
+    return mediaTypeConversion(request, birdieRate);
   }
 
-  @RequestMapping(value = "birdierate", produces = "text/csv")
-  public String birdieRate(@RequestParam(defaultValue = "csv") String fileType,
-                           @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.birdieRate(window), fileType);
+  @RequestMapping(value = "trend-great-rate", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
+  public ResponseEntity<String> getRateRateTrend(
+        @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
+        @RequestParam(defaultValue = "10") int window, 
+          HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
+    var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().sortOldestToNewest().toList();
+    List<GolfRoundRollingStat> greatRate = stats.getGreatRate(rounds, window);
+    return mediaTypeConversion(request, greatRate);
   }
-
-  @RequestMapping(value = "greatrate", produces = "text/csv")
-  public String greatRate(@RequestParam(defaultValue = "csv") String fileType,
-                          @RequestParam(defaultValue = "10") int window) {
-    return toDelimitedString(svc.greatRate(window), fileType);
+  
+  private List<GolfRound> getRounds(String golferName) {
+    return new GolfRoundStream(redis.getAllRounds(true))
+        .filter(round -> round.getGolfer().getName().equalsIgnoreCase(golferName))
+        .toList();
   }
+  
+  private static ResponseEntity<String> mediaTypeConversion(HttpServletRequest request, List<?> values) throws HttpMediaTypeNotAcceptableException {
+    String acceptHeader = request.getHeader("Accept");
+    if (acceptHeader == null || acceptHeader.contains(MediaType.APPLICATION_JSON_VALUE)) {
+      try {
+        String json = new Gson().toJson(values);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+      }
+      catch (Exception e) {
+        log.error("Failed to convert to JSON", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to JSON");
+      }
+    }
 
-  private String toDelimitedString(List<RollingStat> stats, String fileType) {
-    var list = new ArrayList<>(stats);
-    list.sort(Comparator.comparing(RollingStat::getName).thenComparing(RollingStat::getSequence));
-    return generateDelimitedResponse(Optional.of(RollingStat.headers()), list, Utils.lookupDelimOperator(fileType));
-  }
+    if (List.of("text/csv", "text/tab-separated-values").contains(acceptHeader)) {
+      try {
+        String result = "";
+        if (!values.isEmpty()) {
+          Class<?> clazz = values.stream().findAny().get().getClass();
+          var mapper = new CsvMapper();
+          var schema = mapper
+              .schemaFor(clazz)
+              .withHeader()
+              .withColumnSeparator(acceptHeader.contains("csv") ? ',' : '\t');
+          result = mapper.writer(schema).writeValueAsString(values);
+        }
+        return ResponseEntity.ok()
+            .contentType(MediaType.valueOf(acceptHeader))
+            .body(result);
+      } catch (Exception e) {
+        log.error("Failed to convert to CSV", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to CSV");
+      }
+    }
 
-  private String generateDelimitedResponse(Optional<List<String>> headers,
-                                           Collection<? extends StatsApiValueSupplier> supplier,
-                                           Function<Collection<String>, String> delimOp) {
-    StringBuilder sb = new StringBuilder();
-    headers.ifPresent(strings -> sb.append(delimOp.apply(strings)).append("\n"));
-    supplier.forEach(row -> sb.append(delimOp.apply(row.values())).append("\n"));
-    return sb.toString();
+    throw new HttpMediaTypeNotAcceptableException("Requested output type is not supported");
   }
   
 }

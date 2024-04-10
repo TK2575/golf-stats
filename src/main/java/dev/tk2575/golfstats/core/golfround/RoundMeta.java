@@ -54,9 +54,13 @@ public class RoundMeta {
 				? round1.getTransport()
 				: "Various";
 
+		var duration = round1.getDuration() == null || round2.getDuration() == null
+				? null
+				: round1.getDuration().plus(round2.getDuration());
+		
 		return RoundMeta.builder()
 				.date(round2.getDate())
-				.duration(round1.getDuration().plus(round2.getDuration()))
+				.duration(duration)
 				.golfer(round2.getGolfer())
 				.course(Course.compositeOf(round1.getCourse(), round2.getCourse()))
 				.tee(Tee.compositeOf(round1.getTee(), round2.getTee()))
