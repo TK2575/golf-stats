@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/stats")
@@ -49,7 +52,7 @@ public class StatsApi {
     return mediaTypeConversion(request, stats.getRoundSummaries(rounds));
   }
 
-  @RequestMapping(value = "latest-shots", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "latest-shots", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getLatestShots(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
@@ -61,7 +64,7 @@ public class StatsApi {
     return mediaTypeConversion(request, shotAnalyses);
   }
 
-  @RequestMapping(value = "putting", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "putting", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getPutting(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
@@ -69,7 +72,7 @@ public class StatsApi {
     return mediaTypeConversion(request, stats.getPuttingStats(rounds));
   }
 
-  @RequestMapping(value = "latest-round", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "latest-round", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getLatestRound(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
@@ -82,15 +85,49 @@ public class StatsApi {
     return mediaTypeConversion(request, details);
   }
 
-  @RequestMapping(value = "approaches", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "approaches", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getApproaches(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       HttpServletRequest request) throws HttpMediaTypeNotAcceptableException {
     var rounds = new GolfRoundStream(getRounds(golfer)).compileTo18HoleRounds().toList();
-    return mediaTypeConversion(request, stats.getApproaches(rounds));
+    Map<String, BigDecimal> approaches = stats.getApproaches(rounds);
+    
+    //TODO refactor: this nearly duplicates mediaTypeConversion
+    
+    String acceptHeader = request.getHeader("Accept");
+    if (acceptHeader == null || acceptHeader.contains(MediaType.APPLICATION_JSON_VALUE)) {
+      try {
+        String json = new Gson().toJson(approaches);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+      }
+      catch (Exception e) {
+        log.error("Failed to convert to JSON", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to JSON");
+      }
+    }
+    if (List.of("text/csv", "text/tab-separated-values").contains(acceptHeader)) {
+      try {
+        String result = "";
+        if (!approaches.isEmpty()) {
+          var mapper = new CsvMapper();
+          var schema = mapper
+              .schemaFor(Map.Entry.class)
+              .withHeader()
+              .withColumnSeparator(acceptHeader.contains("csv") ? ',' : '\t');
+          result = mapper.writer(schema).writeValueAsString(approaches.entrySet());
+        }
+        return ResponseEntity.ok()
+            .contentType(MediaType.valueOf(acceptHeader))
+            .body(result);
+      } catch (Exception e) {
+        log.error("Failed to convert to CSV", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to convert to CSV");
+      }
+    }
+    throw new HttpMediaTypeNotAcceptableException("Requested output type is not supported");
   }
   
-  @RequestMapping(value = "trend-approaches", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "trend-approaches", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getApproachesTrend(
       @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
       @RequestParam(defaultValue = "10") int window,
@@ -100,7 +137,7 @@ public class StatsApi {
     return mediaTypeConversion(request, approachesRolling);
   }
 
-  @RequestMapping(value = "trend-strokes-gained", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "trend-strokes-gained", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getStrokesGainedTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
           @RequestParam(defaultValue = "10") int window,
@@ -110,7 +147,7 @@ public class StatsApi {
     return mediaTypeConversion(request, strokesGained);
   }
 
-  @RequestMapping(value = "trend-driving-distance", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "trend-driving-distance", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getDrivingDistanceTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
           @RequestParam(defaultValue = "10") int window, 
@@ -120,7 +157,7 @@ public class StatsApi {
     return mediaTypeConversion(request, drivingDistance);
   }
 
-  @RequestMapping(value = "trend-birdie-rate", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "trend-birdie-rate", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getBirdieRateTrend(
           @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
           @RequestParam(defaultValue = "10") int window, 
@@ -130,7 +167,7 @@ public class StatsApi {
     return mediaTypeConversion(request, birdieRate);
   }
 
-  @RequestMapping(value = "trend-great-rate", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "trend-great-rate", produces = {MediaType.APPLICATION_JSON_VALUE, "text/csv", "text/tab-separated-values"})
   public ResponseEntity<String> getRateRateTrend(
         @NonNull @NotEmpty @RequestParam(value = "golfer", defaultValue = "Tom") String golfer,
         @RequestParam(defaultValue = "10") int window, 

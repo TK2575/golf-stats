@@ -5,8 +5,10 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
+@RequiredArgsConstructor
 public class ShotAnalysis {
 	private final int hole;
 	private final int sequence;
@@ -37,10 +39,8 @@ public class ShotAnalysis {
 		this.resultLie = shot.getResultLie().getLabel();
 		this.missDistanceValue = shot.getMissDistance().getValue();
 		this.missDistanceUnit = shot.getMissDistance().getLengthUnit();
-		this.missAngle = 
-				shot.getMissAngle().getAngleDegrees().isEmpty() 
-						? "" 
-						: String.valueOf(shot.getMissAngle().getAngleDegrees().get());
+		Optional<Integer> angleDegrees = shot.getMissAngle().getAngleDegrees();
+		this.missAngle = angleDegrees.isPresent() ? String.valueOf(angleDegrees.get()) : "";
 		this.missDescription = shot.getMissAngle().getDescription();
 		this.count = shot.getCount();
 	}

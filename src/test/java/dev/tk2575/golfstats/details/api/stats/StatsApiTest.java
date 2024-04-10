@@ -26,10 +26,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
@@ -56,7 +57,8 @@ class StatsApiTest {
         LocalDateTime.of(date, LocalTime.of(12, 0)),
         Course.of("Course"), 
         Tee.of("Tee", new BigDecimal("72"), new BigDecimal("113"), 72, 18)
-    ); 
+    );
+    
     var round = GolfRound.of(meta, 85, 14, 14, 18, 36, false);
     
     when(redis.getAllRounds(true)).thenReturn(List.of(round));
@@ -64,32 +66,60 @@ class StatsApiTest {
   
   @Test
   void testRoundSummaries() throws HttpMediaTypeNotAcceptableException {
-    when(stats.getRoundSummaries(anyList())).thenCallRealMethod();
-
+    RoundSummaryStat mockSummary = new RoundSummaryStat("2024-01-01", "Mock Label", 85, 14, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, 0L, 0L, 0L, 0L, BigDecimal.ZERO, BigDecimal.ZERO, 0L);
+    when(stats.getRoundSummaries(anyList())).thenReturn(List.of(mockSummary));
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getHeader("Accept")).thenReturn("application/json");
 
     ResponseEntity<String> response = api.getRoundSummaries("Tom", request);
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    
     List<RoundSummaryStat> summaries = new Gson().fromJson(response.getBody(), new TypeToken<List<RoundSummaryStat>>(){}.getType());;
     assertNotNull(summaries);
     assertEquals(1, summaries.size());
+    
     RoundSummaryStat summary = summaries.getFirst();
-    assertEquals("2023-01-01", summary.getDate());
-    assertEquals("Course", summary.getLabel());
+    assertEquals("2024-01-01", summary.getDate());
+    assertEquals("Mock Label", summary.getLabel());
   }
   
+  @Test
   void testLatestShots() throws HttpMediaTypeNotAcceptableException {
-    when(stats.analyzeShots(any())).thenCallRealMethod();
-
+    ShotAnalysis mockAnalysis = new ShotAnalysis(1, 1, "Lie", "Category", 0, "unit", 0, "unit", BigDecimal.ZERO, "Result Lie", 0, "unit", "0", "Description", 0L);
+    when(stats.analyzeShots(any())).thenReturn(List.of(mockAnalysis));
     HttpServletRequest request = mock(HttpServletRequest.class);
     when(request.getHeader("Accept")).thenReturn("application/json");
 
     ResponseEntity<String> response = api.getLatestShots("Tom", request);
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    
     List<ShotAnalysis> shots = new Gson().fromJson(response.getBody(), new TypeToken<List<ShotAnalysis>>(){}.getType());;
     assertNotNull(shots);
-    assertTrue(shots.isEmpty());
+    assertFalse(shots.isEmpty());
+    
+    ShotAnalysis shot = shots.getFirst();
+    assertEquals(1, shot.getHole());
+    assertEquals("Lie", shot.getLie());
+    assertEquals("Category", shot.getCategory());
+  }
+  
+  @Test
+  void testApproachesTrend_requestJson() throws HttpMediaTypeNotAcceptableException {
+    Map<String, BigDecimal> mapMock = Map.of(
+        "Cat 1", new BigDecimal("1"), "Cat 2", new BigDecimal("2"), "Cat 3", new BigDecimal("3")
+    );
+    when(stats.getApproaches(anyList())).thenReturn(mapMock);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    when(request.getHeader("Accept")).thenReturn("application/json");
+
+    ResponseEntity<String> response = api.getApproaches("Tom", request);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    
+    Map<String, BigDecimal> map = new Gson().fromJson(response.getBody(), new TypeToken<Map<String, BigDecimal>>(){}.getType());
+    assertNotNull(map);
+    assertFalse(map.isEmpty());
+    assertEquals(mapMock, map);
+    
   }
 
 }

@@ -36,9 +36,12 @@ public class StatsService {
    * @return List of ShotAnalysis
    */
   public List<ShotAnalysis> analyzeShots(GolfRound round) {
-    return round.getHoles().flatMap(
-        hole -> hole.getShots().map(shot -> new ShotAnalysis(hole.getNumber(), shot))
-    ).toList();
+    if (round != null) {
+      return round.getHoles().flatMap(
+          hole -> hole.getShots().map(shot -> new ShotAnalysis(hole.getNumber(), shot))
+      ).toList();
+    }
+    return List.of();
   }
 
   public List<PuttingDistanceStat> getPuttingStats(List<GolfRound> rounds) {
@@ -55,22 +58,20 @@ public class StatsService {
   }
 
   /**
-   * Details of each hole in the round, summarized into RoundDetailTableRow
+   * Details of each hole in the round, summarized into RoundDetailTableColumn
    *
    * @param round 18 hole round, previously expecting the most recent
-   * @return List of RoundDetailTableRow
+   * @return List of RoundDetailTableColumn
    */
-  //TODO revise class structure
-  public List<RoundDetailTableRow> getRoundDetail(GolfRound round) {
-    return RoundDetailTableColumn.toRows(RoundDetailTableColumn.compile(round));
+  public List<RoundDetailTableColumn> getRoundDetail(GolfRound round) {
+    return RoundDetailTableColumn.compile(round);
   }
 
   /**
    * @param rounds rounds with shots
    * @return mean strokes gained per round by approach category
    */
-  //TODO revise class structure
-  public List<SimpleStat> getApproaches(List<GolfRound> rounds) {
+  public Map<String,BigDecimal> getApproaches(List<GolfRound> rounds) {
     Map<ApproachBin, List<ApproachSummary>> shotsByApproachBin = rounds.stream()
         .map(round -> ApproachSummary.compile(round.getShots()))
         .flatMap(List::stream)
@@ -79,12 +80,10 @@ public class StatsService {
     return shotsByApproachBin.entrySet().stream()
         .filter(e -> e.getKey() != null && !e.getKey().equals(ApproachBin.OTHER))
         .map(e -> ApproachSummary.merge(e.getValue()))
-        .map(summary -> new SimpleStat(summary.getBin().getLabel(), summary.getMeanStrokesGainedPerRound()))
-        .toList();
-  }
-
-  public List<ApproachPoint> getApproachesRolling(List<GolfRound> rounds) {
-    return getApproachesRolling(rounds, 10);
+        .collect(Collectors.toMap(
+            e -> e.getBin().getLabel(), 
+            ApproachSummary::getMeanStrokesGainedPerRound)
+        );
   }
 
   /**
