@@ -99,7 +99,23 @@ public class RoundDetailTableColumn {
     this.drivingDistance = BigDecimal.valueOf(new HoleStream(holes).allShots().p75DrivingDistance());
   }
   
-  private static final List<String> HEADERS = List.of(
+  public List<String> toValues() {
+    return List.of(
+        header,
+        par.toString(),
+        strokes.toString(),
+        getStrokesGainedTotal(),
+        getStrokesGainedTee(),
+        getStrokesGainedApproach(),
+        getStrokesGainedAroundGreen(),
+        getStrokesGainedPutting(),
+        greenInRegulation,
+        fairwayHit,
+        getDrivingDistance()
+    );
+  }
+  
+  public static final List<String> HEADERS = List.of(
       "Hole",
       "Par",
       "Strokes",

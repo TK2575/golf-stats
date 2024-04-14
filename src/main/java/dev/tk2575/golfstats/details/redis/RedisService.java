@@ -2,6 +2,7 @@ package dev.tk2575.golfstats.details.redis;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.tk2575.golfstats.ApplicationProperties;
 import dev.tk2575.golfstats.core.golfround.GolfRound;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
@@ -23,18 +23,15 @@ import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 @Component
 public class RedisService {
   private final JedisPooled jedis;
-  private final RedisConfig config;
   private final Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES).create();
   
   @Autowired
-  public RedisService(RedisConfig config) {
-    this.config = config;
-    this.jedis = new JedisPooled(config.getHost(), config.getPort());
+  public RedisService(ApplicationProperties config) {
+    this.jedis = new JedisPooled(config.getRedisHost(), config.getRedisPort());
   }
 
   protected RedisService(String host, int port) {
-    this.config = new RedisConfig(host.equals("0.0.0.0") ? "localhost" : host, port);
-    this.jedis = new JedisPooled(config.getHost(), config.getPort());
+    this.jedis = new JedisPooled(host.equals("0.0.0.0") ? "localhost" : host, port);
   }
 
   public GolfRound getRound(String roundId) {
