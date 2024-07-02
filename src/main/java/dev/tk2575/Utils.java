@@ -33,7 +33,7 @@ public class Utils {
 
     public static Long percentile(@NonNull Collection<Long> samples, long percentile) {
         if (samples.isEmpty()) {
-            throw new IllegalArgumentException("cannot compute percentile of empty list");
+            return 0L;
         }
 
         var items = new ArrayList<>(samples);
