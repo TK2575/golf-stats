@@ -16,6 +16,7 @@ services:
         environment:
             - REDIS_HOST=redis
             - REDIS_PORT=6379
+            - NOTION_TOKEN=<YOUR_NOTION_TOKEN>
     redis:
         container_name: golf-stats-redis
         image: redis:7.2.4-alpine

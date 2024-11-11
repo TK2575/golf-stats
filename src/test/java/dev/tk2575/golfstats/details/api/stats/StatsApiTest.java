@@ -36,7 +36,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(properties = {"redis.host=localhost", "redis.port=6379"})
+@SpringBootTest(properties = {"redis.host=localhost", "redis.port=6379", "notion.token=secret_token"})
 class StatsApiTest {
   
   @Spy
