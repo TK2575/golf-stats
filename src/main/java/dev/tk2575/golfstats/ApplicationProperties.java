@@ -1,4 +1,4 @@
-package dev.tk2575.golfstats.details.redis;
+package dev.tk2575.golfstats;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,10 +12,13 @@ import org.springframework.stereotype.Component;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RedisConfig {
+public class ApplicationProperties {
   @Value("${redis.host}")
-  private String host;
+  private String redisHost;
 
   @Value("${redis.port}")
-  private int port;
+  private int redisPort;
+  
+  @Value("${notion.token}")
+  private String notionToken;
 }
