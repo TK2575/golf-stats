@@ -2,34 +2,18 @@ package dev.tk2575.golfstats.details.notion;
 
 import dev.tk2575.Application;
 import dev.tk2575.golfstats.ApplicationProperties;
-import dev.tk2575.golfstats.core.course.Course;
-import dev.tk2575.golfstats.core.course.tee.Tee;
-import dev.tk2575.golfstats.core.golfer.Golfer;
-import dev.tk2575.golfstats.core.golfround.GolfRound;
-import dev.tk2575.golfstats.core.golfround.RoundMeta;
-import dev.tk2575.golfstats.details.api.stats.RoundDetailTableColumn;
 import lombok.extern.log4j.Log4j2;
 import notion.api.v1.NotionClient;
-import notion.api.v1.model.blocks.Block;
-import notion.api.v1.model.blocks.BlockElementUpdate;
-import notion.api.v1.model.blocks.BlockType;
 import notion.api.v1.model.blocks.Blocks;
-import notion.api.v1.model.blocks.TableRowBlock;
-import notion.api.v1.model.pages.PageProperty;
+import notion.api.v1.model.blocks.ChildDatabaseBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j2
 @Service
@@ -45,19 +29,34 @@ public class NotionService {
 
   private void run() {
     try (var notion = new NotionClient(notionToken)) {
-      String uuid = "bcfdfbf7-6c91-4776-92cd-868fe28a8c3a";
-      var page = notion.retrievePage(uuid, List.of()); //latest round detail
-      log.info("Page ID: {}", page.getId());
-      log.info("Page properties:");
-      page.getProperties().forEach((k, v) -> log.info("{} : {}", k, v));
-
-      Blocks blocks = notion.retrieveBlockChildren(uuid, null, 100);
-      blocks.getResults().forEach(block -> {
-        if (block.getId() != null) {
-          log.info("Block ID: {}; Block type: {}", block.getId(), block.getType());
-        }
-      });
+      // golf rounds database
+      String url = "https://www.notion.so/tk2575/ee0e935d0b7d4a268974508179012383?v=25203d645af84a09bacdc3e4df8965ad";
+      String uuid = getUUIDFromUrl(url);
+      var db = notion.retrieveDatabase(uuid);
+      log.info("db ID: {}", db.getId());
+      log.info("db properties:");
+      db.getProperties().forEach((k, v) -> log.info("{} : {}", k, v));
+      //TODO query database for those needing validation
     }
+  }
+
+  protected static String getUUIDFromUrl(String pageUrl) {
+    // Regular expression to capture the last 32-character ID in the URL
+    Pattern pattern = Pattern.compile("([a-fA-F0-9]{32})(?:\\?|$)");
+    Matcher matcher = pattern.matcher(pageUrl);
+
+    if (matcher.find()) {
+      String id = matcher.group(1);
+
+      // Convert the ID into UUID format by inserting hyphens
+      return id.substring(0, 8) + "-" +
+          id.substring(8, 12) + "-" +
+          id.substring(12, 16) + "-" +
+          id.substring(16, 20) + "-" +
+          id.substring(20);
+    }
+
+    throw new IllegalArgumentException("No valid ID found in the URL");
   }
 
 
