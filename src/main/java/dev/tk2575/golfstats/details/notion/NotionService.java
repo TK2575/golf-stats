@@ -6,6 +6,10 @@ import lombok.extern.log4j.Log4j2;
 import notion.api.v1.NotionClient;
 import notion.api.v1.model.blocks.Blocks;
 import notion.api.v1.model.blocks.ChildDatabaseBlock;
+import notion.api.v1.model.databases.QueryResults;
+import notion.api.v1.model.databases.query.filter.QueryTopLevelFilter;
+import notion.api.v1.model.pages.Page;
+import notion.api.v1.request.databases.QueryDatabaseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,14 +33,23 @@ public class NotionService {
 
   private void run() {
     try (var notion = new NotionClient(notionToken)) {
+      // TODO disable request/response logging
       // golf rounds database
       String url = "https://www.notion.so/tk2575/ee0e935d0b7d4a268974508179012383?v=25203d645af84a09bacdc3e4df8965ad";
       String uuid = getUUIDFromUrl(url);
       var db = notion.retrieveDatabase(uuid);
       log.info("db ID: {}", db.getId());
-      log.info("db properties:");
+//      log.info("db properties:");
       db.getProperties().forEach((k, v) -> log.info("{} : {}", k, v));
-      //TODO query database for those needing validation
+      QueryDatabaseRequest query = new QueryDatabaseRequest(db.getId());
+      //TODO add filter for "Trigger Validation" is true/checked
+      QueryResults queryResults = notion.queryDatabase(query);
+//      log.info("query results: {}", queryResults);
+//      log.info("first result property keys: {}", queryResults.getResults().getFirst().getProperties().keySet());
+      var urls = queryResults.getResults().stream().filter(page -> page.getProperties().get("Trigger Validation").getCheckbox()).map(Page::getUrl).toList();
+      log.info("page urls: {}", urls);
+      // TODO parse shorthands
+      // TODO change values on page
     }
   }
 
