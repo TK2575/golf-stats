@@ -4,10 +4,8 @@ import dev.tk2575.Application;
 import dev.tk2575.golfstats.ApplicationProperties;
 import lombok.extern.log4j.Log4j2;
 import notion.api.v1.NotionClient;
-import notion.api.v1.model.blocks.Blocks;
-import notion.api.v1.model.blocks.ChildDatabaseBlock;
+import notion.api.v1.logging.NotionLogger;
 import notion.api.v1.model.databases.QueryResults;
-import notion.api.v1.model.databases.query.filter.QueryTopLevelFilter;
 import notion.api.v1.model.pages.Page;
 import notion.api.v1.request.databases.QueryDatabaseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,22 +31,38 @@ public class NotionService {
 
   private void run() {
     try (var notion = new NotionClient(notionToken)) {
-      // TODO disable request/response logging
+      notion.setLogger(new NoLog()); // hack to disables request/response logging
+
       // golf rounds database
       String url = "https://www.notion.so/tk2575/ee0e935d0b7d4a268974508179012383?v=25203d645af84a09bacdc3e4df8965ad";
       String uuid = getUUIDFromUrl(url);
       var db = notion.retrieveDatabase(uuid);
       log.info("db ID: {}", db.getId());
-//      log.info("db properties:");
-      db.getProperties().forEach((k, v) -> log.info("{} : {}", k, v));
+
+      //TODO add filter for "Trigger Validation" is true/checked on query
       QueryDatabaseRequest query = new QueryDatabaseRequest(db.getId());
-      //TODO add filter for "Trigger Validation" is true/checked
       QueryResults queryResults = notion.queryDatabase(query);
 //      log.info("query results: {}", queryResults);
-//      log.info("first result property keys: {}", queryResults.getResults().getFirst().getProperties().keySet());
-      var urls = queryResults.getResults().stream().filter(page -> page.getProperties().get("Trigger Validation").getCheckbox()).map(Page::getUrl).toList();
-      log.info("page urls: {}", urls);
+      log.info("first result property keys: {}", queryResults.getResults().getFirst().getProperties().keySet());
+      List<Page> awaitingValidation =
+          queryResults.getResults().stream()
+              .filter(page -> page.getProperties().get("Trigger Validation").getCheckbox())
+              .toList();
+
       // TODO parse shorthands
+      Page last = awaitingValidation.getLast();
+//      log.info(last.getProperties())
+      var shorthand = last.getProperties().get("Shots Shorthand").getRichText();
+      if (shorthand == null) {
+        log.info("no shorthands");
+      }
+      else if (shorthand.size() > 1) {
+        log.info("shorthand is of size {}", shorthand.size());
+      }
+      else {
+        log.info("shorthand: {}", shorthand.getFirst().getPlainText());
+      }
+
       // TODO change values on page
     }
   }
