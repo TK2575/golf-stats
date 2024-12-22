@@ -1,5 +1,6 @@
 package dev.tk2575.golfstats.details.notion;
 
+import dev.tk2575.Utils;
 import lombok.*;
 import notion.api.v1.model.pages.Page;
 import notion.api.v1.model.pages.PageProperty;
@@ -46,37 +47,13 @@ public class NotionGolfRound {
 	public NotionGolfRound(Page page) {
 		var props = page.getProperties();
 
-		this.slope = Optional.ofNullable(props.get("Slope"))
-				.map(
-						property -> property.getNumber() == null
-								? 0f // Default to 0 if null
-								: property.getNumber().floatValue()
-				)
-				.filter(f -> f != 0f)
-				.map(BigDecimal::valueOf);
+		this.slope = Utils.getNullSafe(() -> 
+				BigDecimal.valueOf(props.get("Slope").getNumber().floatValue())
+		);
 
-		this.validationFailure = getValidationFailure(props);
+		this.validationFailure = Utils.getNullSafe(() -> 
+				props.get("Validation Failure").getRichText().getFirst().getText().getContent()
+		);
 	}
-
-	private Optional<String> getValidationFailure(Map<String, PageProperty> props) {
-		PageProperty vf = props.get("Validation Failure");
-		if (vf != null) {
-			var rt = vf.getRichText();
-			if (rt != null) {
-				var first = rt.getFirst();
-				if (first != null) {
-					var text = first.getText();
-					if (text != null) {
-						var content = text.getContent();
-						if (content != null) {
-							return Optional.of(content);
-						}
-					}
-				}
-			}
-		}
-		return Optional.empty();
-	}
-
 
 }
