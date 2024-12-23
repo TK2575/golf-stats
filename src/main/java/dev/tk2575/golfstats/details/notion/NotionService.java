@@ -40,36 +40,18 @@ public class NotionService {
       String uuid = getUUIDFromUrl(url);
       var db = notion.retrieveDatabase(uuid);
 
-      //TODO add filter for "Trigger Validation" is true/checked on query
-      QueryDatabaseRequest query = new QueryDatabaseRequest(db.getId());
-      QueryResults queryResults = notion.queryDatabase(query);
-      log.info("first result property keys: {}", queryResults.getResults().getFirst().getProperties().keySet());
-      List<Page> awaitingValidation =
+      QueryResults queryResults = notion.queryDatabase(new QueryDatabaseRequest(db.getId()));
+      var awaitingValidation =
           queryResults.getResults().stream()
               .filter(page -> page.getProperties().get("Trigger Validation").getCheckbox())
-//              .sorted((p1, p2) -> p2.getProperties().get("Date").getDate().getStart())
-              //TODO sort by dates
+              .map(NotionGolfRound::new)
+              .filter(NotionGolfRound::isValidationReady)
+              .sorted(Comparator.comparing(r -> r.getStart().orElseThrow()))
               .toList();
 
       // TODO parse shorthands
-      Page last = awaitingValidation.getLast();
-      /*var shorthand = last.getProperties().get("Shots Shorthand").getRichText();
-      if (shorthand == null) {
-        log.info("no shorthands");
-      }
-      else if (shorthand.size() > 1) {
-        log.info("shorthand is of size {}", shorthand.size());
-      }
-      else {
-        log.info("shorthand: {}", shorthand.getFirst().getPlainText());
-      }*/
 
       // TODO change values on page
-      PageProperty.UniqueId id = last.getProperties().get("ID").getUniqueId();
-      if (id != null) {
-        log.info("ID: {}-{}", id.getPrefix(), id.getNumber());
-      }
-      log.info("Date: {}", last.getProperties().get("Date").getDate());
     }
   }
 
